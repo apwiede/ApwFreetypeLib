@@ -1,0 +1,35 @@
+/*!
+  \defgroup grpFTAddModule FTAddModule
+  @{
+    <h2>FTAddModule</h2>
+      <ul>
+        <li>switch (module_clazz.module_type)<br>
+          <ul>
+            <li>case FT_MODULE<br>
+              <ul>
+                <li>module = new \ref grpFTModuleRec <br>
+              </ul>
+            <li>case FT_RENDERER<br>
+              <ul>
+                <li>module = new \ref grpFTRendererRec <br>
+                <li>renderer = ( \ref grpFTRendererRec )module<br>
+                <li>renderer.clazz = ( \ref grpFTRendererClassRec )module_clazz<br>
+              </ul>
+            <li>case TT_DRIVER<br>
+              <ul>
+                <li>module = new \ref grpTTDriverRec <br>
+                <li>driver = ( \ref grpTTDriverRec )module<br>
+              </ul>
+            <li><br>
+          <ul>
+      </ul>
+        <br>
+        <li><a href="classorg_1_1apwtcl_1_1apwfreetypelib_1_1aftbase_1_1FTModules.html">-&gt; class FTModules</a><br>
+      </ul>
+
+    \addtogroup grpFTClasses
+        @{
+        @}
+
+  @}
+*/

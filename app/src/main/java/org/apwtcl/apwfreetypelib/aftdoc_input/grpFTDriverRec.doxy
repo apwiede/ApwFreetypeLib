@@ -1,0 +1,20 @@
+/*!
+  \defgroup grpFTDriverRec FTDriverRec
+  @{
+    <h2>FTDriverRec</h2>
+      <li>super: \ref grpFTModuleRec <br>
+      <ul>
+        <li>\ref grpFTDriverClassRec driver_clazz = null<br>
+        <li>\ref grpFTListRec faces_list = null<br>
+        <li>\ref grpFTGlyphLoaderRec glyph_loader = null<br>
+      </ul>
+        <br>
+        <li><a href="classorg_1_1apwtcl_1_1apwfreetypelib_1_1aftbase_1_1FTDriverRec.html">-&gt; class FTDriverRec</a><br>
+      </ul>
+
+    \addtogroup grpFTClasses
+        @{
+        @}
+
+  @}
+*/

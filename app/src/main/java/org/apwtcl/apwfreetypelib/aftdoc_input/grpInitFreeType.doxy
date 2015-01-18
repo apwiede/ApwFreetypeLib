@@ -1,0 +1,39 @@
+/*!
+  \defgroup grpInitFreeType InitFreeType
+  @{
+    <h2>InitFreeType</h2>
+      <ul>
+        <li>library = new FTLibraryRec<br>
+        <li>ft_modules.FTAddDefaultModules(library)<br>
+          <ul>
+            <li>TTDriverClass tt_driver_class = new \ref grpTTDriverClass ()<br>
+            <li>default_modules[FTTags.ModuleTag.TT_DRIVER] = tt_driver_class<br>
+            <br>
+            <li>FTRaster1RendererClass ft_raster1_renderer_class = new FTRaster1RendererClass()<br>
+            <li>default_modules[FTTags.ModuleTag.FT_RASTER1_RENDERER] = ft_raster1_renderer_class<br>
+            <br>
+            <li>SfntModuleClass sfnt_module_class = new SfntModuleClass()<br>
+            <li>default_modules[FTTags.ModuleTag.SFNT_MODULE.getVal()] = sfnt_module_class<br>
+            <br>
+            <li>FTSmoothRendererClass ft_smooth_renderer_class = new FTSmoothRendererClass()<br>
+            <li>default_modules[FTTags.ModuleTag.FT_SMOOTH_RENDERER.getVal()] = ft_smooth_renderer_class<br>
+            <br>
+            <li>for (i = 0; i < FT_MAX_MODULES; i++)<br>
+              <ul>
+                <li>if (used_modules[i])<br>
+                  <ul>
+                    <li>error = \ref grpFTAddModule (library, default_modules[i])<br>
+                  </ul>
+              </ul>
+          </ul>
+      </ul>
+        <br>
+        <li><a href="classorg_1_1apwtcl_1_1apwfreetypelib_1_1aftbase_1_1InitFreeType.html">-&gt; class InitFreeType</a><br>
+      </ul>
+
+    \addtogroup grpFTClasses
+        @{
+        @}
+
+  @}
+*/

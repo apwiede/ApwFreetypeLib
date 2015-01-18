@@ -1,0 +1,20 @@
+/*!
+  \defgroup grpTTDriverRec TTDriverRec
+  @{
+    <h2>TTDriverRec</h2>
+      <li>super: \ref grpFTDriverRec <br>
+      <ul>
+        <li>\ref grpTTExecContextRec context<br>
+        <li>\ref grpTTGlyphZoneRec zone<br>
+        <li>int interpreter_version<br>
+      </ul>
+        <br>
+        <li><a href="classorg_1_1apwtcl_1_1apwfreetypelib_1_1afttruetype_1_1TTDriverRec.html">-&gt; class TTDriverRec</a><br>
+      </ul>
+
+    \addtogroup grpFTClasses
+        @{
+        @}
+
+  @}
+*/
