@@ -182,11 +182,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "fill TTSizeRec\n");
         size.tt_size_run_prep(pedantic);
       }
       /* see whether the cvt program has disabled hinting */
-      if ((exec.graphics_state.instruct_control & 1) != 0) {
+      if ((exec.graphics_state.getInstruct_control() & 1) != 0) {
         load_flags = Flags.Load.getTableTag(load_flags.getVal() | Flags.Load.NO_HINTING.getVal());
       }
       /* load default graphics state -- if needed */
-      if ((exec.graphics_state.instruct_control & 2) != 0) {
+      if ((exec.graphics_state.getInstruct_control() & 2) != 0) {
         exec.graphics_state = new TTDefaultGraphicsStateClass();
       }
       exec.pedantic_hinting = (load_flags.getVal() & Flags.Load.PEDANTIC.getVal()) != 0;
@@ -720,7 +720,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       }
         /* store drop-out mode in bits 5-7; set bit 2 also as a marker */
       current_outline.getTags()[0] = Flags.Curve.getTableTag(current_outline.getTags()[0].getVal() |
-          (exec.graphics_state.scan_type << 5) | Flags.Curve.HAS_SCANMODE.getVal());
+          (exec.graphics_state.getScan_type() << 5) | Flags.Curve.HAS_SCANMODE.getVal());
     }
       /* save glyph phantom points */
     if (!preserve_pps) {

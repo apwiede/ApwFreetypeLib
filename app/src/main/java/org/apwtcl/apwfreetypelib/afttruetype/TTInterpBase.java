@@ -57,7 +57,7 @@ public class TTInterpBase extends FTDebug {
     public void setValueOfCurField(String name, int value) {
       try {
     	Class<?> cls = cur.getClass();
-Debug(0, DebugTag.DBG_INTERP, TAG, "S1:"+cur.graphics_state.round_state);
+Debug(0, DebugTag.DBG_INTERP, TAG, "S1:"+cur.graphics_state.getRound_state());
     	name = "GS";
     	Field fld = cls.getDeclaredField(name);
 Debug(0, DebugTag.DBG_INTERP, TAG, "fld:"+fld+"!"+cls);
@@ -78,7 +78,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "fld2:"+fld2);
       } catch (ClassNotFoundException x) {
           x.printStackTrace();
       }
-Debug(0, DebugTag.DBG_INTERP, TAG, "var:"+name+"!"+cur.graphics_state.round_state+"!");
+Debug(0, DebugTag.DBG_INTERP, TAG, "var:"+name+"!"+cur.graphics_state.getRound_state()+"!");
     }
  
     /* ==================== callCurFunc ===================================== */

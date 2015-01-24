@@ -76,17 +76,17 @@ for( int i = 0; i < 6; i++) {
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.org[i].x, cur.zp1.org[i].y));
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.org[i].x, cur.zp0.org[i].y));
 }
-      exec.graphics_state.gep0 = 1;
-      exec.graphics_state.gep1 = 1;
-      exec.graphics_state.gep2 = 1;
-      exec.graphics_state.projVector.x = 0x4000;
-      exec.graphics_state.projVector.y = 0x0000;
-      exec.graphics_state.freeVector.x = exec.graphics_state.projVector.x;
-      exec.graphics_state.freeVector.y = exec.graphics_state.projVector.y;
-      exec.graphics_state.dualVector.x = exec.graphics_state.projVector.x;
-      exec.graphics_state.dualVector.y = exec.graphics_state.projVector.y;
-      exec.graphics_state.round_state = TTInterpTags.RoundState.To_Grid;
-      exec.graphics_state.loop = 1;
+      exec.graphics_state.setGep0(1);
+      exec.graphics_state.setGep1(1);
+      exec.graphics_state.setGep2(1);
+      exec.graphics_state.getProjVector().x = 0x4000;
+      exec.graphics_state.getProjVector().y = 0x0000;
+      exec.graphics_state.getFreeVector().x = exec.graphics_state.getProjVector().x;
+      exec.graphics_state.getFreeVector().y = exec.graphics_state.getProjVector().y;
+      exec.graphics_state.getDualVector().x = exec.graphics_state.getProjVector().x;
+      exec.graphics_state.getDualVector().y = exec.graphics_state.getProjVector().y;
+      exec.graphics_state.setRound_state(TTInterpTags.RoundState.To_Grid);
+      exec.graphics_state.setLoop(1);
       /* some glyphs leave something on the stack. so we clean it */
       /* before a new execution.                                  */
       exec.top = 0;

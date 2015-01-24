@@ -217,9 +217,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * ComputePointDisplacement
    * =====================================================================
    */
-  private boolean ComputePointDisplacement(FTReference<Integer> x_ref, FTReference<Integer> y_ref, FTReference<TTGlyphZoneRec> zone_ref, FTReference<Short> short_ref) {
+  private boolean ComputePointDisplacement(FTReference<Integer> x_ref, FTReference<Integer> y_ref, FTReference<TTGlyphZoneRec> zone_ref, FTReference<Integer> int_ref) {
     TTGlyphZoneRec zp;
-    short p;
+    int p;
     int d;
     int x;
     int y;
@@ -235,11 +235,11 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
-      short_ref.Set((short)0);
+      int_ref.Set(0);
       return false;
     }
     zone_ref.Set(zp);
-    short_ref.Set(p);
+    int_ref.Set(p);
     d = cur.funcProject(zp.getCurPoint_x(p) - zp.getOrgPoint_x(p),
         zp.getCurPoint_y(p) - zp.getOrgPoint_y(p));
     x = FTCalc.FT_MulDiv(d, cur.graphics_state.freeVector.x, cur.F_dot_P);
@@ -371,7 +371,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
     FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
-    FTReference<Short> short_ref = new FTReference<Short>();
+    FTReference<Integer> int_ref = new FTReference<>();
 
     if (cur.top < cur.graphics_state.loop) {
       if (cur.pedantic_hinting) {
@@ -381,7 +381,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       cur.new_top = cur.stack_idx;
       return;
     }
-    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, short_ref)) {
+    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, int_ref)) {
       return;
     }
     dx = dx_ref.Get();
@@ -415,7 +415,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    */
   public void SHC() {
     TTGlyphZoneRec zp;
-    short ref;
+    int ref;
     int dx;
     int dy;
     int contour;
@@ -426,7 +426,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
     FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
-    FTReference<Short> short_ref = new FTReference<Short>();
+    FTReference<Integer> int_ref = new FTReference<>();
 
     contour = (short)cur.stack[cur.stack_idx + 0];
     bounds  = (cur.graphics_state.gep2 == 0) ? 1 : cur.zp2.getN_contours();
@@ -436,13 +436,13 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       }
       return;
     }
-    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, short_ref)) {
+    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, int_ref)) {
       return;
     }
     dx = dx_ref.Get();
     dy = dy_ref.Get();
     zp = zp_ref.Get();
-    ref = short_ref.Get();
+    ref = int_ref.Get();
     if (contour == 0) {
       start = 0;
     } else {
@@ -469,7 +469,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    */
   public void SHZ() {
     TTGlyphZoneRec zp;
-    short ref;
+    int ref;
     int dx;
     int dy;
     int limit;
@@ -477,7 +477,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
     FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
-    FTReference<Short> short_ref = new FTReference<Short>();
+    FTReference<Integer> int_ref = new FTReference<>();
 
     if (TTUtil.BOUNDS(cur.stack[cur.stack_idx + 0], 2)) {
       if (cur.pedantic_hinting) {
@@ -485,13 +485,13 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       }
       return;
     }
-    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, short_ref)) {
+    if (ComputePointDisplacement(dx_ref, dy_ref, zp_ref, int_ref)) {
       return;
     }
     dx = dx_ref.Get();
     dy = dy_ref.Get();
     zp = zp_ref.Get();
-    ref = short_ref.Get();
+    ref = int_ref.Get();
       /* XXX: UNDOCUMENTED! SHZ doesn't move the phantom points.     */
       /*      Twilight zone has no real contours, so use `n_points'. */
       /*      Normal zone's `n_points' includes phantoms, so must    */

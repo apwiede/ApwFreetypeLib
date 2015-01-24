@@ -513,7 +513,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     this.cur_idx = cur_idx;
   }
 
-  /* ==================== xgetOrus ================================== */
+  /* ==================== getOrus ================================== */
   public FTVectorRec[] getOrus() {
     return orus;
   }

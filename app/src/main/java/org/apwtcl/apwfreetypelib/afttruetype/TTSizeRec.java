@@ -354,19 +354,19 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
 
       /* UNDOCUMENTED!  The MS rasterizer doesn't allow the following */
       /* graphics state variables to be modified by the CVT program.  */
-    exec.graphics_state.dualVector.x = 0x4000;
-    exec.graphics_state.dualVector.y = 0;
-    exec.graphics_state.projVector.x = 0x4000;
-    exec.graphics_state.projVector.y = 0x0;
-    exec.graphics_state.freeVector.x = 0x4000;
-    exec.graphics_state.freeVector.y = 0x0;
-    exec.graphics_state.rp0 = 0;
-    exec.graphics_state.rp1 = 0;
-    exec.graphics_state.rp2 = 0;
-    exec.graphics_state.gep0 = 1;
-    exec.graphics_state.gep1 = 1;
-    exec.graphics_state.gep2 = 1;
-    exec.graphics_state.loop = 1;
+    exec.graphics_state.getDualVector().x = 0x4000;
+    exec.graphics_state.getDualVector().y = 0;
+    exec.graphics_state.getProjVector().x = 0x4000;
+    exec.graphics_state.getProjVector().y = 0x0;
+    exec.graphics_state.getFreeVector().x = 0x4000;
+    exec.graphics_state.getFreeVector().y = 0x0;
+    exec.graphics_state.setRp0(0);
+    exec.graphics_state.setRp1(0);
+    exec.graphics_state.setRp2(0);
+    exec.graphics_state.setGep0(1);
+    exec.graphics_state.setGep1(1);
+    exec.graphics_state.setGep2(1);
+    exec.graphics_state.setLoop(1);
       /* save as default graphics state */
     graphics_state = exec.graphics_state;
     TTSaveContext(exec);

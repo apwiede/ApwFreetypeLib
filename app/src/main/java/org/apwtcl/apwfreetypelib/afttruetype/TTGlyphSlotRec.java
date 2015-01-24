@@ -130,10 +130,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "load_truetype_glyph");
 
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "IS_HINTED: "+((load_flags & Flags.Load.NO_HINTING.getVal()) == 0));
       if ((load_flags & Flags.Load.NO_HINTING.getVal()) == 0) {
-        if (loader.getExec().graphics_state.scan_control) {
+        if (loader.getExec().graphics_state.isScan_control()) {
             /* convert scan conversion mode to FT_OUTLINE_XXX flags */
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("IS_HINTED2: %d", loader.getExec().graphics_state.scan_type));
-          switch (loader.getExec().graphics_state.scan_type) {
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("IS_HINTED2: %d", loader.getExec().graphics_state.getScan_type()));
+          switch (loader.getExec().graphics_state.getScan_type()) {
             case 0: /* simple drop-outs including stubs */
               outline.setFlags(outline.getFlags() | Flags.Outline.INCLUDE_STUBS.getVal());
               break;
