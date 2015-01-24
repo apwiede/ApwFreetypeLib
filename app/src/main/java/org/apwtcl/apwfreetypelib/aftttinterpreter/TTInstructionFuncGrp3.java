@@ -253,7 +253,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * MoveZp2Point
    * =====================================================================
    */
-  private void MoveZp2Point(short point, int dx, int dy, boolean touch) {
+  private void MoveZp2Point(int point, int dx, int dy, boolean touch) {
     if (cur.graphics_state.freeVector.x != 0) {
       cur.zp2.setCurPoint_x(point, (cur.zp2.getCurPoint_x(point) + dx));
       if (touch) {
@@ -283,7 +283,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int first_touched; /* first touched point in contour   */
     int cur_touched;   /* current touched point in contour */
     int point;         /* current point   */
-    short contour;     /* current contour */
+    int contour;     /* current contour */
     boolean useX = true;
 
     Debug(0, DebugTag.DBG_INTERP, TAG, "insIUP");
@@ -364,10 +364,10 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    */
   public void SHP() {
     TTGlyphZoneRec zp;
-    short ref;
+    int ref;
     int dx;
     int dy;
-    short point;
+    int point;
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
     FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
@@ -388,7 +388,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     dy = dy_ref.Get();
     while (cur.graphics_state.loop > 0) {
       cur.stack_idx--;
-      point = (short)cur.stack[cur.stack_idx];
+      point = cur.stack[cur.stack_idx];
       if (TTUtil.BOUNDS(point, cur.zp2.getN_points())) {
         if (cur.pedantic_hinting) {
           cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -428,7 +428,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
     FTReference<Integer> int_ref = new FTReference<>();
 
-    contour = (short)cur.stack[cur.stack_idx + 0];
+    contour = cur.stack[cur.stack_idx];
     bounds  = (cur.graphics_state.gep2 == 0) ? 1 : cur.zp2.getN_contours();
     if (TTUtil.BOUNDS(contour, bounds)) {
       if (cur.pedantic_hinting) {
@@ -446,17 +446,17 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     if (contour == 0) {
       start = 0;
     } else {
-      start = (short)(cur.zp2.getContours()[contour - 1] + 1 - cur.zp2.getFirst_point());
+      start = cur.zp2.getContours()[contour - 1] + 1 - cur.zp2.getFirst_point();
     }
       /* we use the number of points if in the twilight zone */
     if (cur.graphics_state.gep2 == 0) {
       limit = cur.zp2.getN_points();
     } else {
-      limit = (short)(cur.zp2.getContours()[contour] - cur.zp2.getFirst_point() + 1);
+      limit = cur.zp2.getContours()[contour] - cur.zp2.getFirst_point() + 1;
     }
     for (i = start; i < limit; i++) {
       if (zp.getCur() != cur.zp2.getCur() || ref != i) {
-        MoveZp2Point((short)i, dx, dy, true);
+        MoveZp2Point(i, dx, dy, true);
       }
     }
   }
@@ -497,10 +497,10 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       /*      Normal zone's `n_points' includes phantoms, so must    */
       /*      use end of last contour.                               */
     if (cur.graphics_state.gep2 == 0) {
-      limit = (short)cur.zp2.getN_points();
+      limit = cur.zp2.getN_points();
     } else {
       if (cur.graphics_state.gep2 == 1 && cur.zp2.getN_contours() > 0) {
-        limit = (short)(cur.zp2.getContours()[cur.zp2.getN_contours() - 1] + 1);
+        limit = cur.zp2.getContours()[cur.zp2.getN_contours() - 1] + 1;
       } else {
         limit = 0;
       }
@@ -508,7 +508,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       /* XXX: UNDOCUMENTED! SHZ doesn't touch the points */
     for (i = 0; i < limit; i++) {
       if (zp.getCur() != cur.zp2.getCur() || ref != i) {
-        MoveZp2Point((short)i, dx, dy, false);
+        MoveZp2Point(i, dx, dy, false);
       }
     }
   }
@@ -522,7 +522,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   public void SHPIX() {
     int dx;
     int dy;
-    short point;
+    int point;
 
     if (cur.top < cur.graphics_state.loop + 1) {
       if (cur.pedantic_hinting) {
@@ -536,7 +536,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     dy = TTUtil.TTMulFix14(cur.stack[cur.stack_idx + 0], cur.graphics_state.freeVector.y);
     while (cur.graphics_state.loop > 0) {
       cur.stack_idx--;
-      point = (short)cur.stack[cur.stack_idx];
+      point = cur.stack[cur.stack_idx];
       if (TTUtil.BOUNDS(point, cur.zp2.getN_points())) {
         if (cur.pedantic_hinting) {
           cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -630,7 +630,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     }
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("old_range:%d cur_range: %d", old_range, cur_range));
     for (; cur.graphics_state.loop > 0; --cur.graphics_state.loop) {
-      short point = (short)cur.stack[--cur.stack_idx];
+      int point = cur.stack[--cur.stack_idx];
       int org_dist;
       int cur_dist;
       int new_dist;
@@ -693,10 +693,10 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * =====================================================================
    */
   public void MSIRP() {
-    short point;
+    int point;
     int distance;
 
-    point = (short)cur.stack[cur.stack_idx + 0];
+    point = cur.stack[cur.stack_idx];
     if (TTUtil.BOUNDS(point, cur.zp1.getN_points()) || TTUtil.BOUNDS(cur.graphics_state.rp0, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -727,7 +727,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * =====================================================================
    */
   public void ALIGNRP() {
-    short point;
+    int point;
     int distance;
 
     if (cur.top < cur.graphics_state.loop || TTUtil.BOUNDS(cur.graphics_state.rp0, cur.zp0.getN_points())) {
@@ -740,7 +740,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     }
     while (cur.graphics_state.loop > 0) {
       cur.stack_idx--;
-      point = (short)cur.stack[cur.stack_idx];
+      point = cur.stack[cur.stack_idx];
       if (TTUtil.BOUNDS(point, cur.zp1.getN_points())) {
         if (cur.pedantic_hinting) {
           cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -778,14 +778,14 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    */
   public void MIAP() {
     int cvtEntry;
-    short point;
+    int point;
     int distance;
     int org_dist;
     int control_value_cutin;
 
     control_value_cutin = cur.graphics_state.control_value_cutin;
     cvtEntry = cur.stack[cur.stack_idx + 1];
-    point = (short)cur.stack[cur.stack_idx + 0];
+    point = cur.stack[cur.stack_idx];
     if (TTUtil.BOUNDS(point, cur.zp0.getN_points()) || TTUtil.BOUNDSL(cvtEntry, cur.cvtSize)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
