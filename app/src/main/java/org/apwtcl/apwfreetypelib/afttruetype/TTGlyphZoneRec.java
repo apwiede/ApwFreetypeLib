@@ -400,13 +400,50 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   }
 
   /* ==================== getOrg ================================== */
-  public FTVectorRec[] getOrg() {
+  public FTVectorRec[] xgetOrg() {
     return org;
   }
 
+  /* ==================== getOrgPoint ================================== */
+  public FTVectorRec getOrgPoint(int point_idx) {
+    return org[org_idx + point_idx];
+  }
+
+  /* ==================== getOrgPoint_x ================================== */
+  public int getOrgPoint_x(int point_idx) {
+    return org[org_idx + point_idx].x;
+  }
+
+  /* ==================== getOrgPoint_y ================================== */
+  public int getOrgPoint_y(int point_idx) {
+    return org[org_idx + point_idx].y;
+  }
+
   /* ==================== setOrg ================================== */
-  public void setOrg(FTVectorRec[] org) {
+  public void xsetOrg(FTVectorRec[] org) {
     this.org = org;
+  }
+
+  /* ==================== setOrgPoint ================================== */
+  public void setOrgPoint(int point_idx, FTVectorRec vec) {
+    org[org_idx + point_idx].x = vec.x;
+    org[org_idx + point_idx].y = vec.y;
+  }
+
+  /* ==================== setOrgPoint_x ================================== */
+  public void setOrgPoint_x(int point_idx, int value) {
+    org[org_idx + point_idx].x = value;
+  }
+
+  /* ==================== setOrgPoint_y ================================== */
+  public void setOrgPoint_y(int point_idx, int value) {
+    org[org_idx + point_idx].y = value;
+  }
+
+  /* ==================== resetOrgPoint ================================== */
+  public void resetOrgPoint(int point_idx) {
+    org[org_idx + point_idx].x = 0;
+    org[org_idx + point_idx].y = 0;
   }
 
   /* ==================== getOrg_idx ================================== */
@@ -420,13 +457,50 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   }
 
   /* ==================== getCur ================================== */
-  public FTVectorRec[] getCur() {
+  public FTVectorRec[] xgetCur() {
     return cur;
   }
 
+  /* ==================== getCurPoint ================================== */
+  public FTVectorRec getCurPoint(int point_idx) {
+    return cur[cur_idx + point_idx];
+  }
+
+  /* ==================== getCurPoint_x ================================== */
+  public int getCurPoint_x(int point_idx) {
+    return cur[cur_idx + point_idx].x;
+  }
+
+  /* ==================== getCurPoint_y ================================== */
+  public int getCurPoint_y(int point_idx) {
+    return cur[cur_idx + point_idx].y;
+  }
+
   /* ==================== setCur ================================== */
-  public void setCur(FTVectorRec[] cur) {
+  public void xsetCur(FTVectorRec[] cur) {
     this.cur = cur;
+  }
+
+  /* ==================== setCurPoint ================================== */
+  public void setCurPoint(int point_idx, FTVectorRec vec) {
+    cur[cur_idx + point_idx].x = vec.x;
+    cur[cur_idx + point_idx].y = vec.y;
+  }
+
+  /* ==================== setCurPoint_x ================================== */
+  public void setCurPoint_x(int point_idx, int value) {
+    cur[cur_idx + point_idx].x = value;
+  }
+
+  /* ==================== setCurPoint_y ================================== */
+  public void setCurPoint_y(int point_idx, int value) {
+    cur[cur_idx + point_idx].y = value;
+  }
+
+  /* ==================== resetCurPoint ================================== */
+  public void resetCurPoint(int point_idx) {
+    cur[cur_idx + point_idx].x = 0;
+    cur[cur_idx + point_idx].y = 0;
   }
 
   /* ==================== getCur_idx ================================== */
@@ -442,6 +516,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   /* ==================== getOrus ================================== */
   public FTVectorRec[] getOrus() {
     return orus;
+  }
+
+  /* ==================== getOrusPoint ================================== */
+  public FTVectorRec getOrusPoint(int point_idx) {
+    return orus[orus_idx + point_idx];
   }
 
   /* ==================== setOrus ================================== */
@@ -464,6 +543,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     return tags;
   }
 
+  /* ==================== getTag ================================== */
+  public Flags.Curve getTag(int tag_idx) {
+    return tags[tags_idx + tag_idx];
+  }
+
   /* ==================== setTags ================================== */
   public void setTags(Flags.Curve[] tags) {
     this.tags = tags;
@@ -482,6 +566,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   /* ==================== getContours ================================== */
   public int[] getContours() {
     return contours;
+  }
+
+  /* ==================== getContour ================================== */
+  public int getContour(int contour_idx) {
+    return contours[contours_idx + contour_idx];
   }
 
   /* ==================== setContours ================================== */

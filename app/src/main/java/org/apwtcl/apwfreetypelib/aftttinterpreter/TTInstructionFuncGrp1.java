@@ -145,8 +145,8 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SRP0() {
-    cur.graphics_state.rp0 = (short)cur.stack[cur.numArgs + 0];
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.numArgs: %d", cur.graphics_state.rp0, cur.numArgs));
+    cur.graphics_state.rp0 = (short)cur.stack[cur.stack_idx + 0];
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.stack_idx: %d", cur.graphics_state.rp0, cur.stack_idx));
   }
 
 
@@ -157,7 +157,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SRP1() {
-    cur.graphics_state.rp1 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.rp1 = (short)cur.stack[cur.stack_idx + 0];
   }
 
 
@@ -168,7 +168,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SRP2() {
-    cur.graphics_state.rp2 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.rp2 = (short)cur.stack[cur.stack_idx + 0];
   }
 
 
@@ -179,7 +179,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SZP0() {
-    switch (cur.stack[cur.numArgs + 0]) {
+    switch (cur.stack[cur.stack_idx + 0]) {
       case 0:
         cur.zp0 = cur.twilight;
         break;
@@ -192,7 +192,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
         }
         return;
     }
-    cur.graphics_state.gep0 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.gep0 = (short)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -202,7 +202,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SZP1() {
-    switch ((int)cur.stack[cur.numArgs + 0]) {
+    switch ((int)cur.stack[cur.stack_idx + 0]) {
       case 0:
         cur.zp1 = cur.twilight;
         break;
@@ -215,7 +215,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
         }
         return;
     }
-    cur.graphics_state.gep1 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.gep1 = (short)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -225,7 +225,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SZP2() {
-    switch ((int)cur.stack[cur.numArgs + 0]) {
+    switch ((int)cur.stack[cur.stack_idx + 0]) {
       case 0:
         cur.zp2 = cur.twilight;
         break;
@@ -238,7 +238,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
         }
         return;
     }
-    cur.graphics_state.gep2 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.gep2 = (short)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -248,7 +248,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SZPS() {
-    switch (cur.stack[cur.numArgs + 0]) {
+    switch (cur.stack[cur.stack_idx + 0]) {
       case 0:
         cur.zp0 = cur.twilight;
         break;
@@ -263,9 +263,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     }
     cur.zp1 = cur.zp0;
     cur.zp2 = cur.zp0;
-    cur.graphics_state.gep0 = (short)cur.stack[cur.numArgs + 0];
-    cur.graphics_state.gep1 = (short)cur.stack[cur.numArgs + 0];
-    cur.graphics_state.gep2 = (short)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.gep0 = (short)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.gep1 = (short)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.gep2 = (short)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -275,10 +275,10 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SLOOP() {
-    if (cur.stack[cur.numArgs + 0] < 0) {
+    if (cur.stack[cur.stack_idx + 0] < 0) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
     } else {
-      cur.graphics_state.loop = cur.stack[cur.numArgs + 0];
+      cur.graphics_state.loop = cur.stack[cur.stack_idx + 0];
     }
   }
 
@@ -311,7 +311,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SMD() {
-    cur.graphics_state.minimum_distance = cur.stack[cur.numArgs + 0];
+    cur.graphics_state.minimum_distance = cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -346,10 +346,10 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void JMPR() {
-    if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
+    if (cur.stack[cur.stack_idx + 0] == 0 && cur.stack_idx == 0) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
     }
-    cur.IP += cur.stack[cur.numArgs + 0];
+    cur.IP += cur.stack[cur.stack_idx + 0];
     if (cur.IP < 0 ||
         (cur.callTop > 0 && cur.IP > cur.callStack[cur.callTop - 1].getCur_end())) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
@@ -364,7 +364,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SCVTCI() {
-    cur.graphics_state.control_value_cutin = (int)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.control_value_cutin = (int)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -374,7 +374,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SSWCI() {
-    cur.graphics_state.single_width_cutin = (int)cur.stack[cur.numArgs + 0];
+    cur.graphics_state.single_width_cutin = (int)cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -384,7 +384,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SSW() {
-    cur.graphics_state.single_width_value = FTCalc.FTMulFix(cur.stack[cur.numArgs + 0], cur.tt_metrics.getScale());
+    cur.graphics_state.single_width_value = FTCalc.FTMulFix(cur.stack[cur.stack_idx + 0], cur.tt_metrics.getScale());
   }
 
 }

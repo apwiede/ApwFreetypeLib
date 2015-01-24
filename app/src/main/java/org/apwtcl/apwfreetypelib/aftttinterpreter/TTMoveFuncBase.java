@@ -63,20 +63,20 @@ public class TTMoveFuncBase extends FTDebug {
   /* ==================== _showZp0Zp1OrgCur ================================ */
   protected static void _showZp0Zp1OrgCur( String str, TTExecContextRec cur ) {
     Debug(0, DebugTag.DBG_RENDER, TAG, str);
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.org: "+cur.zp0.getOrg());
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.org: "+cur.zp1.getOrg());
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.org: "+cur.zp2.getOrg());
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.cur: "+cur.zp0.getCur());
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.cur: "+cur.zp1.getCur());
-    Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.cur: "+cur.zp2.getCur());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.org: "+cur.zp0.xgetOrg());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.org: "+cur.zp1.xgetOrg());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.org: "+cur.zp2.xgetOrg());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.cur: "+cur.zp0.xgetCur());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.cur: "+cur.zp1.xgetCur());
+    Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.cur: "+cur.zp2.xgetCur());
     Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.orus: "+cur.zp0.getOrus());
     Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.orus: "+cur.zp1.getOrus());
     Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.orus: "+cur.zp2.getOrus());
     for( int i = 0; i < 6; i++) {
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.getOrg()[cur.zp0.getOrg_idx() + i].x, cur.zp0.getOrg()[cur.zp0.getOrg_idx() + i].y));
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.getOrg()[cur.zp1.getOrg_idx() + i].x, cur.zp1.getOrg()[cur.zp1.getOrg_idx() + i].y));
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp0.cur: %d x: %d, y: %d\n", i, cur.zp0.getCur()[cur.zp0.getCur_idx() + i].x, cur.zp0.getCur()[cur.zp0.getCur_idx() + i].y));
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp1.cur: %d x: %d, y: %d\n", i, cur.zp1.getCur()[cur.zp1.getCur_idx() + i].x, cur.zp1.getCur()[cur.zp1.getCur_idx() + i].y));
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.getOrgPoint_x(i), cur.zp0.getOrgPoint_y(i)));
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.getOrgPoint_x(i), cur.zp1.getOrgPoint_y(i)));
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp0.cur: %d x: %d, y: %d\n", i, cur.zp0.getCurPoint_x(i), cur.zp0.getCurPoint_y(i)));
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("zp1.cur: %d x: %d, y: %d\n", i, cur.zp1.getCurPoint_x(i), cur.zp1.getCurPoint_y(i)));
     }
   }
 

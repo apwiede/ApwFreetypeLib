@@ -65,13 +65,13 @@ public class TTMoveXFunc extends TTMoveFuncBase {
   /* ==================== move ===================================== */
   @Override
   public void move(TTGlyphZoneRec zone, int point, int distance) {
-    Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveX");
+Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveX");
 //    FTGlyphLoaderRec._showLoaderZone("DirectMoveX");
-    Debug(0, DebugTag.DBG_INTERP, TAG, "zone: "+zone.toDebugString()+"!");
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X: point: %d x: %d distance: %d\n", point, zone.getCur()[zone.getCur_idx() + point].x, distance));
-    zone.getCur()[zone.getCur_idx() + point].x += distance;
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X2: cur_idx: %d point: %d x: %d distance: %d\n",
-        zone.getCur_idx(), point, zone.getCur()[zone.getCur_idx() + point].x, distance));
+Debug(0, DebugTag.DBG_INTERP, TAG, "zone: "+zone.toDebugString()+"!");
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X: point: %d x: %d distance: %d\n", point, zone.getCurPoint_x(point), distance));
+    zone.setCurPoint_y(point, zone.getCurPoint_y(point) + distance);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X2: cur_idx: %d point: %d x: %d distance: %d\n",
+        zone.getCur_idx(), point, zone.getCurPoint_x(point), distance));
     zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
   }
 
@@ -84,7 +84,7 @@ public class TTMoveXFunc extends TTMoveFuncBase {
   @Override
   public void moveOrig(TTGlyphZoneRec zone,  int point, int distance) {
     Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveOrigX");
-    zone.getOrg()[zone.getOrg_idx() + point].x += distance;
+    zone.setOrgPoint_x(point, zone.getOrgPoint_x(point) + distance);
   }
 
 }

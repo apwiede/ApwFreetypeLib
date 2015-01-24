@@ -658,33 +658,32 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
           glyph.getControl_len()));
     }
     n_ins = (glyph.getControl_len());
-    origin = zone.getCur()[zone.getN_points() - 4].x;
+    origin = zone.getCurPoint(zone.getN_points() - 4).x;
     origin = FTCalc.FT_PIX_ROUND(origin) - origin;
     Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
     if (origin != 0) {
-      FTGlyphLoaderRec.translate_array(zone.getN_points(), zone.getCur(), 0, origin, 0);
+      FTGlyphLoaderRec.translate_array(zone.getN_points(), zone.xgetCur(), 0, origin, 0);
     }
     for (int i = 0; i < 5; i++) {
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d cur.x: %d, cur.y: %d", i, zone.getCur()[zone.getCur_idx() + i].x, zone.getCur()[zone.getCur_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d org.x: %d, org.y: %d", i, zone.getOrg()[zone.getOrg_idx() + i].x, zone.getOrg()[zone.getOrg_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
     for (int i = zone.getN_points() - 4; i < zone.getN_points(); i++) {
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d cur.x: %d, cur.y: %d", i, zone.getCur()[zone.getCur_idx() + i].x, zone.getCur()[zone.getCur_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d org.x: %d, org.y: %d", i, zone.getOrg()[zone.getOrg_idx() + i].x, zone.getOrg()[zone.getOrg_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
       /* save original point position in org */
     if (n_ins > 0) {
       for (int i = 0; i < (zone.getN_points()); i++) {
-        zone.getOrg()[zone.getOrg_idx() + i].x = zone.getCur()[zone.getCur_idx() + i].x;
-        zone.getOrg()[zone.getOrg_idx() + i].y = zone.getCur()[zone.getCur_idx() + i].y;
+        zone.setOrgPoint(i, zone.getCurPoint(i));
       }
     }
     for (int i = 0; i < 5; i++) {
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d cur.x: %d, cur.y: %d", i, zone.getCur()[zone.getCur_idx() + i].x, zone.getCur()[zone.getCur_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d org.x: %d, org.y: %d", i, zone.getOrg()[zone.getOrg_idx() + i].x, zone.getOrg()[zone.getOrg_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
       /* Reset graphics state. */
     exec.graphics_state = ((TTSizeRec)size).getGraphics_state();
@@ -694,14 +693,14 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       exec.metrics.setX_scale(1 << 16);
       exec.metrics.setY_scale(1 << 16);
       // FIXME !! eventually problem with Arrays.copyOf!!
-      zone.setOrus(java.util.Arrays.copyOf(zone.getCur(), zone.getN_points()));
+      zone.setOrus(java.util.Arrays.copyOf(zone.xgetCur(), zone.getN_points()));
     } else {
       exec.metrics.setX_scale(((TTSizeRec)size).getMetrics().getX_scale());
       exec.metrics.setY_scale(((TTSizeRec)size).getMetrics().getY_scale());
     }
       /* round pp2 and pp4 */
-    zone.getCur()[zone.getN_points() - 3].x = FTCalc.FT_PIX_ROUND(zone.getCur()[zone.getN_points() - 3].x);
-    zone.getCur()[zone.getN_points() - 1].y = FTCalc.FT_PIX_ROUND(zone.getCur()[zone.getN_points() - 1].y);
+    zone.setCurPoint_x(zone.getN_points() - 3, FTCalc.FT_PIX_ROUND(zone.getCurPoint_x(zone.getN_points() - 3)));
+    zone.setCurPoint_y(zone.getN_points() - 1, FTCalc.FT_PIX_ROUND(zone.getCurPoint_y(zone.getN_points() - 1)));
     if (n_ins > 0) {
       boolean debug;
       FTGlyphLoaderRec gloader = this.gloader;
@@ -726,10 +725,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
     }
       /* save glyph phantom points */
     if (!preserve_pps) {
-      pp1 = zone.getCur()[zone.getN_points() - 4];
-      pp2 = zone.getCur()[zone.getN_points() - 3];
-      pp3 = zone.getCur()[zone.getN_points() - 2];
-      pp4 = zone.getCur()[zone.getN_points() - 1];
+      pp1 = zone.getCurPoint(zone.getN_points() - 4);
+      pp2 = zone.getCurPoint(zone.getN_points() - 3);
+      pp3 = zone.getCurPoint(zone.getN_points() - 2);
+      pp4 = zone.getCurPoint(zone.getN_points() - 1);
     }
     return FTError.ErrorTag.ERR_OK;
   }

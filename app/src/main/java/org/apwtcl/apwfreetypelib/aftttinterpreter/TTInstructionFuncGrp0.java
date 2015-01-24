@@ -18,11 +18,7 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 0  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
-import org.apwtcl.apwfreetypelib.afttruetype.TTIUPWorkerRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -80,8 +76,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
       }
       return false;
     }
-    p1 = cur.zp1.getCur()[cur.zp1.getCur_idx() + aIdx2];
-    p2 = cur.zp2.getCur()[cur.zp2.getCur_idx() + aIdx1];
+    p1 = cur.zp1.getCurPoint(aIdx2);
+    p2 = cur.zp2.getCurPoint(aIdx1);
     A = p1.x - p2.x;
     B = p1.y - p2.y;
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("1: A: %d B: %d", A, B));
@@ -115,8 +111,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     FTReference<FTVectorRec> ft_unit_ref = new FTReference<FTVectorRec>();
 
     ft_unit_ref.Set(cur.graphics_state.projVector);
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("SPvTL: %d, %d", cur.stack[cur.numArgs + 1], cur.stack[cur.numArgs + 0]));
-    if (SxVTL(cur.stack[cur.numArgs + 1], cur.stack[cur.numArgs + 0], cur.opcode, ft_unit_ref)) {
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("SPvTL: %d, %d", cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0]));
+    if (SxVTL(cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0], cur.opcode, ft_unit_ref)) {
       cur.graphics_state.projVector = ft_unit_ref.Get();
       cur.graphics_state.dualVector = ft_unit_ref.Get();
       cur.render_funcs.ComputeFuncs(cur);
@@ -133,7 +129,7 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     FTReference<FTVectorRec> ft_unit_ref = new FTReference<FTVectorRec>();
 
     ft_unit_ref.Set(cur.graphics_state.freeVector);
-    if (SxVTL((short)cur.stack[cur.numArgs + 1], (short)cur.stack[cur.numArgs + 0], cur.opcode, ft_unit_ref)) {
+    if (SxVTL((short)cur.stack[cur.stack_idx + 1], (short)cur.stack[cur.stack_idx + 0], cur.opcode, ft_unit_ref)) {
       cur.graphics_state.freeVector = ft_unit_ref.Get();
       cur.render_funcs.ComputeFuncs(cur);
     }
@@ -153,9 +149,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
 
     ft_unit_ref.Set(cur.graphics_state.projVector);
     // Only use low 16bits, then sign extend
-    S = (short)cur.stack[cur.numArgs + 1];
+    S = (short)cur.stack[cur.stack_idx + 1];
     Y = S;
-    S = (short)cur.stack[cur.numArgs + 0];
+    S = (short)cur.stack[cur.stack_idx + 0];
     X = S;
     TTUtil.Normalize(X, Y, ft_unit_ref);
     cur.graphics_state.projVector = ft_unit_ref.Get();
@@ -177,9 +173,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
 
     ft_unit_ref.Set(cur.graphics_state.freeVector);
     // Only use low 16bits, then sign extend
-    S = (short)cur.stack[cur.numArgs + 1];
+    S = (short)cur.stack[cur.stack_idx + 1];
     Y = (int)S;
-    S = (short)cur.stack[cur.numArgs + 0];
+    S = (short)cur.stack[cur.stack_idx + 0];
     X = S;
     TTUtil.Normalize(X, Y, ft_unit_ref);
     cur.graphics_state.freeVector = ft_unit_ref.Get();
@@ -194,8 +190,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
    * =====================================================================
    */
   public void GPV() {
-    cur.stack[cur.numArgs + 0] = cur.graphics_state.projVector.x & 0xFFFF;
-    cur.stack[cur.numArgs + 1] = cur.graphics_state.projVector.y & 0xFFFF;
+    cur.stack[cur.stack_idx + 0] = cur.graphics_state.projVector.x & 0xFFFF;
+    cur.stack[cur.stack_idx + 1] = cur.graphics_state.projVector.y & 0xFFFF;
   }
 
   /* =====================================================================
@@ -205,8 +201,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
    * =====================================================================
    */
   public void GFV() {
-    cur.stack[cur.numArgs + 0] = cur.graphics_state.freeVector.x & 0xFFFF;
-    cur.stack[cur.numArgs + 1] = cur.graphics_state.freeVector.y & 0xFFFF;
+    cur.stack[cur.stack_idx + 0] = cur.graphics_state.freeVector.x & 0xFFFF;
+    cur.stack[cur.stack_idx + 1] = cur.graphics_state.freeVector.y & 0xFFFF;
   }
 
   /* =====================================================================
@@ -245,11 +241,11 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     int val;
     FTVectorRec R = new FTVectorRec();
 
-    point = (short)cur.stack[cur.numArgs + 0];
-    a0 = (short)cur.stack[cur.numArgs + 1];
-    a1 = (short)cur.stack[cur.numArgs + 2];
-    b0 = (short)cur.stack[cur.numArgs + 3];
-    b1 = (short)cur.stack[cur.numArgs + 4];
+    point = (short)cur.stack[cur.stack_idx + 0];
+    a0 = (short)cur.stack[cur.stack_idx + 1];
+    a1 = (short)cur.stack[cur.stack_idx + 2];
+    b0 = (short)cur.stack[cur.stack_idx + 3];
+    b1 = (short)cur.stack[cur.stack_idx + 4];
 
     if (TTUtil.BOUNDS(b0, cur.zp0.getN_points()) ||
         TTUtil.BOUNDS(b1, cur.zp0.getN_points()) ||
@@ -262,12 +258,12 @@ public class TTInstructionFuncGrp0 extends FTDebug {
       return;
     }
       /* Cramer's rule */
-    dbx = (int)(cur.zp0.getCur()[cur.zp0.getCur_idx() + b1].x - cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].x);
-    dby = (int)(cur.zp0.getCur()[cur.zp0.getCur_idx() + b1].y - cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].y);
-    dax = (int)(cur.zp1.getCur()[cur.zp1.getCur_idx() + a1].x - cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].x);
-    day = (int)(cur.zp1.getCur()[cur.zp1.getCur_idx() + a1].y - cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].y);
-    dx = (int)(cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].x - cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].x);
-    dy = (int)(cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].y - cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].y);
+    dbx = cur.zp0.getCurPoint_x(b1) - cur.zp0.getCurPoint_x(b0);
+    dby = cur.zp0.getCurPoint_y(b1) - cur.zp0.getCurPoint_y(b0);
+    dax = cur.zp1.getCurPoint_x(a1) - cur.zp1.getCurPoint_x(a0);
+    day = cur.zp1.getCurPoint_y(a1) - cur.zp1.getCurPoint_y(a0);
+    dx = cur.zp0.getCurPoint_x(b0) - cur.zp1.getCurPoint_x(a0);
+    dy = cur.zp0.getCurPoint_y(b0) - cur.zp1.getCurPoint_y(a0);
     cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | (Flags.Curve.TOUCH_X.getVal() | Flags.Curve.TOUCH_Y.getVal()));
     discriminant = FTCalc.FT_MulDiv(dax, -dby, 0x40) + FTCalc.FT_MulDiv(day, dbx, 0x40);
     dotproduct = FTCalc.FT_MulDiv(dax, dbx, 0x40) + FTCalc.FT_MulDiv(day, dby, 0x40);
@@ -283,14 +279,14 @@ public class TTInstructionFuncGrp0 extends FTDebug {
       val = FTCalc.FT_MulDiv(dx, -dby, 0x40) + FTCalc.FT_MulDiv(dy, dbx, 0x40);
       R.x = FTCalc.FT_MulDiv(val, dax, discriminant);
       R.y = FTCalc.FT_MulDiv(val, day, discriminant);
-      cur.zp2.getCur()[cur.zp2.getCur_idx() + point].x = (cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].x + R.x);
-      cur.zp2.getCur()[cur.zp2.getCur_idx() + point].y = (cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].y + R.y);
+      cur.zp2.setCurPoint_x(point, (cur.zp1.getCurPoint_x(a0) + R.x));
+      cur.zp2.setCurPoint_y(point, (cur.zp1.getCurPoint_y(a0) + R.y));
     } else {
         /* else, take the middle of the middles of A and B */
-      cur.zp2.getCur()[cur.zp2.getCur_idx() + point].x = ((cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].x + cur.zp1.getCur()[cur.zp1.getCur_idx() + a1].x +
-          cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].x + cur.zp0.getCur()[cur.zp0.getCur_idx() + b1].x) / 4);
-      cur.zp2.getCur()[cur.zp2.getCur_idx() + point].y = ((cur.zp1.getCur()[cur.zp1.getCur_idx() + a0].y + cur.zp1.getCur()[cur.zp1.getCur_idx() + a1].y +
-          cur.zp0.getCur()[cur.zp0.getCur_idx() + b0].y + cur.zp0.getCur()[cur.zp0.getCur_idx() + b1].y) / 4);
+      cur.zp2.setCurPoint_x(point, ((cur.zp1.getCurPoint_x(a0) + cur.zp1.getCurPoint_x(a1) +
+          cur.zp0.getCurPoint_x(b0) + cur.zp0.getCurPoint_x(b1)) / 4));
+      cur.zp2.setCurPoint_y(point, ((cur.zp1.getCurPoint_y(a0) + cur.zp1.getCurPoint_y(a1) +
+          cur.zp0.getCurPoint_y(b0) + cur.zp0.getCurPoint_y(b1)) / 4));
     }
   }
 

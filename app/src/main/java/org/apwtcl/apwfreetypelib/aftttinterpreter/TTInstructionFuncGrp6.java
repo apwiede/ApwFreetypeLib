@@ -62,7 +62,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void ADD() {
-    cur.stack[cur.numArgs + 0] += cur.stack[cur.numArgs + 1];
+    cur.stack[cur.stack_idx + 0] += cur.stack[cur.stack_idx + 1];
   }
 
   /* =====================================================================
@@ -72,7 +72,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void SUB() {
-    cur.stack[cur.numArgs + 0] -= cur.stack[cur.numArgs + 1];
+    cur.stack[cur.stack_idx + 0] -= cur.stack[cur.stack_idx + 1];
   }
 
   /* =====================================================================
@@ -82,10 +82,10 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void DIV() {
-    if (cur.stack[cur.numArgs + 1] == 0) {
+    if (cur.stack[cur.stack_idx + 1] == 0) {
       cur.error = FTError.ErrorTag.INTERP_DIVIDE_BY_ZERO;
     } else {
-      cur.stack[cur.numArgs + 0] = FTCalc.FT_MulDivNoRound(cur.stack[cur.numArgs + 0], 64, cur.stack[cur.numArgs + 1]);
+      cur.stack[cur.stack_idx + 0] = FTCalc.FT_MulDivNoRound(cur.stack[cur.stack_idx + 0], 64, cur.stack[cur.stack_idx + 1]);
     }
   }
 
@@ -96,7 +96,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void MUL() {
-    cur.stack[cur.numArgs + 0] = FTCalc.FT_MulDiv(cur.stack[cur.numArgs + 0], cur.stack[cur.numArgs + 1], 64);
+    cur.stack[cur.stack_idx + 0] = FTCalc.FT_MulDiv(cur.stack[cur.stack_idx + 0], cur.stack[cur.stack_idx + 1], 64);
   }
 
   /* =====================================================================
@@ -106,7 +106,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void ABS() {
-    cur.stack[cur.numArgs + 0] = (int)(FTCalc.FT_ABS(cur.stack[cur.numArgs + 0]) & 0xFFFF);
+    cur.stack[cur.stack_idx + 0] = (int)(FTCalc.FT_ABS(cur.stack[cur.stack_idx + 0]) & 0xFFFF);
   }
 
   /* =====================================================================
@@ -116,7 +116,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void NEG() {
-    cur.stack[cur.numArgs + 0] = -cur.stack[cur.numArgs + 0];
+    cur.stack[cur.stack_idx + 0] = -cur.stack[cur.stack_idx + 0];
   }
 
   /* =====================================================================
@@ -126,7 +126,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void FLOOR() {
-    cur.stack[cur.numArgs + 0] = FTCalc.FT_PIX_FLOOR(cur.stack[cur.numArgs + 0]);
+    cur.stack[cur.stack_idx + 0] = FTCalc.FT_PIX_FLOOR(cur.stack[cur.stack_idx + 0]);
   }
 
   /* =====================================================================
@@ -136,7 +136,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void CEILING() {
-    cur.stack[cur.numArgs + 0] = FTCalc.FT_PIX_CEIL(cur.stack[cur.numArgs + 0]);
+    cur.stack[cur.stack_idx + 0] = FTCalc.FT_PIX_CEIL(cur.stack[cur.stack_idx + 0]);
   }
 
   /* =====================================================================
@@ -146,7 +146,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void ROUND() {
-    cur.stack[cur.numArgs + 0] = cur.render_funcs.curr_round_func.round(cur.stack[cur.numArgs + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x68]);
+    cur.stack[cur.stack_idx + 0] = cur.render_funcs.curr_round_func.round(cur.stack[cur.stack_idx + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x68]);
   }
 
   /* =====================================================================
@@ -156,7 +156,7 @@ public class TTInstructionFuncGrp6 extends FTDebug {
    * =====================================================================
    */
   public void NROUND() {
-    cur.stack[cur.numArgs + 0] = cur.render_funcs.round_none.round(cur.stack[cur.numArgs + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x6C]);
+    cur.stack[cur.stack_idx + 0] = cur.render_funcs.round_none.round(cur.stack[cur.stack_idx + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x6C]);
   }
 
 }

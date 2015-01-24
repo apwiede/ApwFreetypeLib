@@ -75,8 +75,8 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Ins_MIRP: cur.GS.rp0: %d, cur.GS.rp1: %d", cur.graphics_state.rp0, cur.graphics_state.rp1));
     minimum_distance = cur.graphics_state.minimum_distance;
     control_value_cutin = cur.graphics_state.control_value_cutin;
-    point = (short)cur.stack[cur.numArgs + 0];
-    cvtEntry = cur.stack[cur.numArgs + 1] + 1;
+    point = (short)cur.stack[cur.stack_idx + 0];
+    cvtEntry = cur.stack[cur.stack_idx + 1] + 1;
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Ins_MIRP: minimum_distance: %d, control_value_cutin: %d, point: %d, cvtEntry: %d", minimum_distance, control_value_cutin, point, cvtEntry));
       /* XXX: UNDOCUMENTED! cvt[-1] = 0 always */
     if (TTUtil.BOUNDS(point, cur.zp1.getN_points()) ||
@@ -110,15 +110,15 @@ public class TTInstructionFuncGrp9 extends FTDebug {
       /* UNDOCUMENTED!  The MS rasterizer does that with */
       /* twilight points (confirmed by Greg Hitchcock)   */
     if (cur.graphics_state.gep1 == 0) {
-      cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].x = (cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].x + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.x));
-      cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].y = (cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].y + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.y));
-      cur.zp1.getCur()[cur.zp1.getCur_idx() + point] = cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point];
+      cur.zp1.setOrgPoint_x(point, (cur.zp0.getOrgPoint_x(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.x)));
+      cur.zp1.setOrgPoint_y(point, (cur.zp0.getOrgPoint_y(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.y)));
+      cur.zp1.setCurPoint(point, cur.zp1.getOrgPoint(point));
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("dualproj: point: %d, GS.rp0: %d, zp1.org[point].x: %d, zp1.org[point].y: %d, zp0.org[GS.rp0].x: %d, zp0.org[GS.rp0].y: %d", point, cur.graphics_state.rp0, cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].x, cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].y, cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].x, cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].y));
-    org_dist = cur.funcDualproj(cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].x - cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].x,
-        cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point].y - cur.zp0.getOrg()[cur.zp0.getOrg_idx() + cur.graphics_state.rp0].y);
-    cur_dist = cur.funcProject(cur.zp1.getCur()[cur.zp1.getCur_idx() + point].x - cur.zp0.getCur()[cur.zp0.getCur_idx() + cur.graphics_state.rp0].x,
-        cur.zp1.getCur()[cur.zp1.getCur_idx() + point].y - cur.zp0.getCur()[cur.zp0.getCur_idx() + cur.graphics_state.rp0].y);
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("dualproj: point: %d, GS.rp0: %d, zp1.org[point].x: %d, zp1.org[point].y: %d, zp0.org[GS.rp0].x: %d, zp0.org[GS.rp0].y: %d", point, cur.graphics_state.rp0, cur.zp1.getOrgPoint_x(point), cur.zp1.getOrgPoint_y(point), cur.zp0.getOrgPoint_x(cur.graphics_state.rp0), cur.zp0.getOrgPoint_y(cur.graphics_state.rp0)));
+    org_dist = cur.funcDualproj(cur.zp1.getOrgPoint_x(point) - cur.zp0.getOrgPoint_x(cur.graphics_state.rp0),
+        cur.zp1.getOrgPoint_y(point) - cur.zp0.getOrgPoint_y(cur.graphics_state.rp0));
+    cur_dist = cur.funcProject(cur.zp1.getCurPoint_x(point) - cur.zp0.getCurPoint_x(cur.graphics_state.rp0),
+        cur.zp1.getCurPoint_y(point) - cur.zp0.getCurPoint_y(cur.graphics_state.rp0));
       /* auto-flip test */
     if (cur.graphics_state.auto_flip) {
       if ((org_dist ^ cvt_dist) < 0) {
@@ -183,7 +183,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
 
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MDRP: cur.GS.gep0: %d, cur.GS.gep1: %d", cur.graphics_state.gep0, cur.graphics_state.gep1));
     minimum_distance = cur.graphics_state.minimum_distance;
-    point = (short)cur.stack[cur.numArgs + 0];
+    point = (short)cur.stack[cur.stack_idx + 0];
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MDRP: minimum_distance: %d point: %d rp0: %d",  minimum_distance, point, cur.graphics_state.rp0));
     if (TTUtil.BOUNDS(point, cur.zp1.getN_points()) || TTUtil.BOUNDS(cur.graphics_state.rp0, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
@@ -201,8 +201,8 @@ public class TTInstructionFuncGrp9 extends FTDebug {
       /* XXX: UNDOCUMENTED: twilight zone special case */
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cur.GS.gep0: %d, cur.GS.gep1: %d\n", cur.graphics_state.gep0, cur.graphics_state.gep1));
     if (cur.graphics_state.gep0 == 0 || cur.graphics_state.gep1 == 0) {
-      FTVectorRec vec1 = cur.zp1.getOrg()[cur.zp1.getOrg_idx() + point];
-      FTVectorRec vec2 = cur.zp0.getOrg()[cur.zp1.getOrg_idx() + cur.graphics_state.rp0];
+      FTVectorRec vec1 = cur.zp1.getOrgPoint(point);
+      FTVectorRec vec2 = cur.zp0.getOrgPoint(cur.graphics_state.rp0);
 
       org_dist = cur.funcDualproj(vec1.x - vec2.x, vec1.y - vec2.y);
     } else {
@@ -257,8 +257,8 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     Debug(0, DebugTag.DBG_INTERP, TAG, "distance2: "+distance);
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insMDRP 3: cur.GS.rp0: %d, cur.GS.rp1: %d, cur.GS.gep0: %d, cur.GS.gep1: %d", cur.graphics_state.rp0, cur.graphics_state.rp1, cur.graphics_state.gep0, cur.graphics_state.gep1));
       /* now move the point */
-    org_dist = cur.funcProject(cur.zp1.getCur()[cur.zp1.getCur_idx() + point].x - cur.zp0.getCur()[cur.zp0.getCur_idx() + cur.graphics_state.rp0].x,
-        cur.zp1.getCur()[cur.zp1.getCur_idx() + point].y - cur.zp0.getCur()[cur.zp0.getCur_idx() + cur.graphics_state.rp0].y);
+    org_dist = cur.funcProject(cur.zp1.getCurPoint_x(point) - cur.zp0.getCurPoint_x(cur.graphics_state.rp0),
+        cur.zp1.getCurPoint_y(point) - cur.zp0.getCurPoint_y(cur.graphics_state.rp0));
     Debug(0, DebugTag.DBG_INTERP, TAG, "org_dist3: "+org_dist);
     cur.render_funcs.curr_move_func.move(cur.zp1 , point,distance - org_dist);
 
@@ -291,7 +291,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "PUSHW");
     }
     cur.IP++;
     for (K = 0; K < L; K++) {
-      cur.stack[cur.numArgs + K] = TTInstructionFuncGrp4.GetShortIns(cur);
+      cur.stack[cur.stack_idx + K] = TTInstructionFuncGrp4.GetShortIns(cur);
     }
     cur.step_ins = false;
   }
@@ -307,13 +307,13 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "PUSHW");
     int idx;
 
     length = (cur.opcode.getVal() - TTOpCode.OpCode.PushB_0.getVal() + 1);
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("PUSHB numArgs: %d length: %d", cur.numArgs, length));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("PUSHB stack_idx: %d length: %d", cur.stack_idx, length));
     if (TTUtil.BOUNDS(length, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;
     }
     for (idx = 0; idx< length; idx++) {
-      cur.stack[cur.numArgs + idx] = (cur.code[cur.IP + idx + 1].getVal() & 0xFF);
+      cur.stack[cur.stack_idx + idx] = (cur.code[cur.IP + idx + 1].getVal() & 0xFF);
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("idx: %d IP: %d %s", idx, cur.IP, cur.code[cur.IP + idx + 1].toString()));
     }
   }

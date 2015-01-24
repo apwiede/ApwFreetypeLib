@@ -51,7 +51,7 @@ public class TTExecContextRec extends FTDebug {
   public int top = 0;                         /* top of exec. stack   */
   protected int stackSize = MAX_STACK_SIZE;   /* size of exec. stack  */
   protected int[] stack = null;               /* current exec. stack  */
-  protected int numArgs = 0;
+  protected int stack_idx = 0;
   protected int[] args = null;
   protected int new_top = 0;                  /* new top after exec.  */
   public TTGlyphZoneRec zp0 = null;           /* zone records */

@@ -62,14 +62,14 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void WCVTF() {
-    int I = (int)cur.stack[cur.numArgs + 0];
+    int I = (int)cur.stack[cur.stack_idx + 0];
 
     if (TTUtil.BOUNDSL(I, cur.cvtSize)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_ARRAY_BOUND_ERROR;
       }
     } else {
-      cur.cvt[I] = FTCalc.FTMulFix(cur.stack[cur.numArgs + 1], cur.tt_metrics.getScale());
+      cur.cvt[I] = FTCalc.FTMulFix(cur.stack[cur.stack_idx + 1], cur.tt_metrics.getScale());
     }
   }
 
@@ -86,19 +86,19 @@ public class TTInstructionFuncGrp7 extends FTDebug {
     int C;
     int B;
 
-    nump = cur.stack[cur.numArgs + 0];
+    nump = cur.stack[cur.stack_idx + 0];
     for (k = 1; k <= nump; k++) {
-      if (cur.numArgs < 2) {
+      if (cur.stack_idx < 2) {
         if (cur.pedantic_hinting) {
           cur.error = FTError.ErrorTag.INTERP_TOO_FEW_ARGUMENTS;
         }
-        cur.numArgs = 0;
-        cur.new_top = cur.numArgs;
+        cur.stack_idx = 0;
+        cur.new_top = cur.stack_idx;
         return;
       }
-      cur.numArgs -= 2;
-      A = cur.stack[cur.numArgs + 1];
-      B = cur.stack[cur.numArgs];
+      cur.stack_idx -= 2;
+      A = cur.stack[cur.stack_idx + 1];
+      B = cur.stack[cur.stack_idx];
       if (TTUtil.BOUNDSL(A, cur.cvtSize)) {
         if (cur.pedantic_hinting) {
           cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -127,7 +127,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
         }
       }
     }
-    cur.new_top = cur.numArgs;
+    cur.new_top = cur.stack_idx;
   }
 
   /* =====================================================================
@@ -137,7 +137,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void SROUND() {
-    cur.render_funcs.round_super.SetSuperRound(0x4000, cur.stack[cur.numArgs + 0]);
+    cur.render_funcs.round_super.SetSuperRound(0x4000, cur.stack[cur.stack_idx + 0]);
     cur.graphics_state.round_state = TTInterpTags.RoundState.Super;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super;
   }
@@ -149,7 +149,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void S45ROUND() {
-    cur.render_funcs.round_super.SetSuperRound(0x2D41, cur.stack[cur.numArgs + 0]);
+    cur.render_funcs.round_super.SetSuperRound(0x2D41, cur.stack[cur.stack_idx + 0]);
     cur.graphics_state.round_state = TTInterpTags.RoundState.Super_45;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super45;
   }
@@ -161,11 +161,11 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void JROT() {
-    if (cur.stack[cur.numArgs + 1] != 0) {
-      if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
+    if (cur.stack[cur.stack_idx + 1] != 0) {
+      if (cur.stack[cur.stack_idx + 0] == 0 && cur.stack_idx == 0) {
         cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
       }
-      cur.IP += cur.stack[cur.numArgs + 0];
+      cur.IP += cur.stack[cur.stack_idx + 0];
       if ( cur.IP < 0 ||
           (cur.callTop > 0 && cur.IP > cur.callStack[cur.callTop - 1].getCur_end())) {
         cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
@@ -181,11 +181,11 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void JROF() {
-    if (cur.stack[cur.numArgs + 1] == 0) {
-      if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
+    if (cur.stack[cur.stack_idx + 1] == 0) {
+      if (cur.stack[cur.stack_idx + 0] == 0 && cur.stack_idx == 0) {
         cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
       }
-      cur.IP += cur.stack[cur.numArgs + 0];
+      cur.IP += cur.stack[cur.stack_idx + 0];
       if (cur.IP < 0  ||
           (cur.callTop > 0 && cur.IP > cur.callStack[cur.callTop - 1].getCur_end())) {
         cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;

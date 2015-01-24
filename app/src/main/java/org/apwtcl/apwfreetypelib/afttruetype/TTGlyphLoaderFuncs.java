@@ -98,8 +98,8 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         loader.getZone().tt_prepare_zone(gloader.getCurrent(), 0, 0);
         for (int i = 0; i < (loader.getZone().getN_points() + 4); i++) {
           loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i] = new FTVectorRec();
-          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].x = loader.getZone().getCur()[loader.getZone().getCur_idx() + i].x;
-          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].y = loader.getZone().getCur()[loader.getZone().getCur_idx() + i].y;
+          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].x = loader.getZone().getCurPoint_x(i);
+          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].y = loader.getZone().getCurPoint_y(i);
         }
       }
       {

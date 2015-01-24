@@ -81,12 +81,12 @@ public class TTMoveFunc extends TTMoveFuncBase {
     Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMove");
     v = cur.graphics_state.freeVector.x;
     if (v != 0) {
-      zone.getCur()[point].x += FTCalc.FT_MulDiv(distance, v, cur.F_dot_P);
+      zone.setCurPoint_x(point,  zone.getCurPoint_x(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
       zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
     }
     v = cur.graphics_state.freeVector.y;
     if (v != 0) {
-      zone.getCur()[point].y += FTCalc.FT_MulDiv(distance, v, cur.F_dot_P );
+      zone.setCurPoint_y(point, zone.getCurPoint_y(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
       zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());
     }
   }

@@ -34,9 +34,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*                                                                       */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoaderRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTCallRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDefRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -153,7 +150,7 @@ public class TTRunInstructions extends TTExecContextRec {
 
       FTTrace.Trace(3, TAG, " cur.IP: "+IP+"numInstructions: "+numInstructions);
 //FTGlyphLoaderRec._showLoaderZone2("interp_opcode");
-Debug(0, DebugTag.DBG_INTERP, TAG, "cur.IP: "+IP+" numInstructions: "+numInstructions);
+Debug(0, DebugTag.DBG_INTERP, TAG, "cur.IP: " + IP + " numInstructions: " + numInstructions);
 Debug(0, DebugTag.DBG_INTERP, TAG, "\n..."+opcode.toString());
       length = opcode.getOpCodeLength();
       if (length < 0) {
@@ -166,11 +163,11 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "\n..."+opcode.toString());
         return LErrorCodeOverflow();
       }
         /* First, let's check for empty stack and overflow */
-      numArgs = top - (opcode.getPushCount() >> 4);
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("numArgs: %d top: %d stack[numArgs]: %d", numArgs, top, stack[numArgs]));
+      stack_idx = top - (opcode.getPushCount() >> 4);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("stack_idx: %d top: %d stack[stack_idx]: %s", stack_idx, top, TTOpCode.OpCode.getTableTag(stack[stack_idx]).toString()));
         /* `args' is the top of the stack once arguments have been popped. */
         /* One can also interpret it as the index of the last argument.    */
-      if (numArgs < 0) {
+      if (stack_idx < 0) {
         if (pedantic_hinting) {
           error = FTError.ErrorTag.INTERP_TOO_FEW_ARGUMENTS;
           return LError();
@@ -179,9 +176,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("numArgs: %d top: %d stack[numA
         for (i = 0; i < opcode.getPushCount() >> 4; i++) {
           stack[i] = 0;
         }
-        numArgs = 0;
+        stack_idx = 0;
       }
-      new_top = numArgs + (opcode.getPushCount() & 15);
+      new_top = stack_idx + (opcode.getPushCount() & 15);
         /* `new_top' is the new top of the stack, after the instruction's */
         /* execution.  `top' will be set to `new_top' after the `switch'  */
         /* statement.                                                     */

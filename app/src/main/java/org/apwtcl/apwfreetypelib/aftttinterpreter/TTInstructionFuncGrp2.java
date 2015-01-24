@@ -20,7 +20,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
 
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTCallRec;
-import org.apwtcl.apwfreetypelib.afttruetype.TTCodeRange;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDefRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -90,8 +89,8 @@ public class TTInstructionFuncGrp2 extends FTDebug {
    * =====================================================================
    */
   public void DUP() {
-    cur.stack[cur.numArgs + 1] = cur.stack[cur.numArgs + 0];
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.numArgs + 1], cur.stack[cur.numArgs + 0]));
+    cur.stack[cur.stack_idx + 1] = cur.stack[cur.stack_idx + 0];
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0]));
   }
 
   /* =====================================================================
@@ -113,9 +112,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   public void SWAP() {
     int L;
 
-    L = cur.stack[cur.numArgs + 0];
-    cur.stack[cur.numArgs + 0] = cur.stack[cur.numArgs + 1];
-    cur.stack[cur.numArgs + 1] = L;
+    L = cur.stack[cur.stack_idx + 0];
+    cur.stack[cur.stack_idx + 0] = cur.stack[cur.stack_idx + 1];
+    cur.stack[cur.stack_idx + 1] = L;
   }
 
   /* =====================================================================
@@ -125,7 +124,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
    * =====================================================================
    */
   public void DEPTH() {
-    cur.stack[cur.numArgs + 0] = cur.top;
+    cur.stack[cur.stack_idx + 0] = cur.top;
   }
 
   /* =====================================================================
@@ -137,14 +136,14 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   public void CINDEX() {
     int L;
 
-    L = cur.stack[cur.numArgs + 0];
-    if (L <= 0 || L > cur.numArgs) {
+    L = cur.stack[cur.stack_idx + 0];
+    if (L <= 0 || L > cur.stack_idx) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
-      cur.stack[cur.numArgs + 0] = 0;
+      cur.stack[cur.stack_idx + 0] = 0;
     } else {
-      cur.stack[cur.numArgs + 0] = (int)cur.stack[(cur.numArgs - L)];
+      cur.stack[cur.stack_idx + 0] = (int)cur.stack[(cur.stack_idx - L)];
     }
   }
 
@@ -159,15 +158,15 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     int L;
     int K;
 
-    L = cur.stack[cur.numArgs + 0];
-    if (L <= 0 || L > cur.numArgs) {
+    L = cur.stack[cur.stack_idx + 0];
+    if (L <= 0 || L > cur.stack_idx) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
     } else {
-      K = cur.stack[cur.numArgs - L];
-      FTStackMove(cur.numArgs - L, cur.numArgs - L + 1, (L - 1));
-      cur.stack[cur.numArgs - 1] = K;
+      K = cur.stack[cur.stack_idx - L];
+      FTStackMove(cur.stack_idx - L, cur.stack_idx - L + 1, (L - 1));
+      cur.stack[cur.stack_idx - 1] = K;
     }
   }
 
@@ -182,16 +181,16 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     short p2;
     int distance;
 
-    p1 = (short)cur.stack[cur.numArgs + 0];
-    p2 = (short)cur.stack[cur.numArgs + 1];
+    p1 = (short)cur.stack[cur.stack_idx + 0];
+    p2 = (short)cur.stack[cur.stack_idx + 1];
     if (TTUtil.BOUNDS(p1, cur.zp1.getN_points()) || TTUtil.BOUNDS(p2, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
       return;
     }
-    distance = cur.funcProject(cur.zp0.getCur()[cur.zp0.getCur_idx() + p2].x - cur.zp1.getCur()[cur.zp1.getCur_idx() + p1].x,
-        cur.zp0.getCur()[cur.zp0.getCur_idx() + p2].y - cur.zp1.getCur()[cur.zp1.getCur_idx() + p1].y) / 2;
+    distance = cur.funcProject(cur.zp0.getCurPoint_x(p2) - cur.zp1.getCurPoint_x(p1),
+        cur.zp0.getCurPoint_y(p2) - cur.zp1.getCurPoint_y(p1)) / 2;
     cur.funcMove(cur.zp1, p1, distance);
     cur.funcMove(cur.zp0, p2, -distance);
   }
@@ -238,7 +237,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     short point;
     byte mask;
 
-    point = (short)cur.stack[cur.numArgs + 0];
+    point = (short)cur.stack[cur.stack_idx + 0];
     if (TTUtil.BOUNDS(point, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -268,7 +267,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     int defIdx;
 
       /* first of all, check the index */
-    F = cur.stack[cur.numArgs + 1];
+    F = cur.stack[cur.stack_idx + 1];
     if (TTUtil.BOUNDSL(F, cur.maxFunc + 1)) {
       cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       return;
@@ -307,11 +306,11 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;
     }
-    if (cur.stack[cur.numArgs + 0] > 0) {
+    if (cur.stack[cur.stack_idx + 0] > 0) {
       call_rec = cur.callStack[cur.callTop];
       call_rec.setCaller_range(cur.curRange.getVal());
       call_rec.setCaller_IP(cur.IP + 1);
-      call_rec.setCur_count(cur.stack[cur.numArgs + 0]);
+      call_rec.setCur_count(cur.stack[cur.stack_idx + 0]);
       call_rec.setCur_restart(def.getStart());
       call_rec.setCur_end(def.getEnd());
       cur.callTop++;
@@ -334,8 +333,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     int defIdx = 0;
 
       /* first of all, check the index */
-    F = (int)cur.stack[cur.numArgs];
-    Debug(0, DebugTag.DBG_INTERP, TAG, "insCall: "+F+"!"+cur.maxFunc+"!numArgs: "+cur.numArgs);
+    F = (int)cur.stack[cur.stack_idx];
+    Debug(0, DebugTag.DBG_INTERP, TAG, "insCall: "+F+"!"+cur.maxFunc+"!stack_idx: "+cur.stack_idx);
     if (TTUtil.BOUNDSL(F, cur.maxFunc + 1)) {
       cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       return;
@@ -403,8 +402,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "FDEF");
       /* some font programs are broken enough to redefine functions! */
       /* We will then parse the current table.                       */
     limit = cur.numFDefs;
-    n = cur.stack[cur.numArgs];
-Debug(0, DebugTag.DBG_INTERP, TAG, "n: "+n+" numArgs: "+cur.numArgs+" stack[numArgs]: "+cur.stack[cur.numArgs]+" stack[0]: "+cur.stack[0]+"!");
+    n = cur.stack[cur.stack_idx];
+Debug(0, DebugTag.DBG_INTERP, TAG, "n: "+n+" stack_idx: "+cur.stack_idx +" stack[stack_idx]: "+cur.stack[cur.stack_idx]+" stack[0]: "+cur.stack[0]+"!");
     for (rec_idx = 0; rec_idx < limit; rec_idx++) {
       if (cur.FDefs[rec_idx].getOpc() == n) {
         break;
@@ -432,7 +431,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec_idx: "+rec_idx+"!");
     rec.setActive(true);
     rec.setInline_delta(false);
     rec.setSph_fdef_flags(0x0000);
-    for (int j = 0; j < cur.numArgs; j++) {
+    for (int j = 0; j < cur.stack_idx; j++) {
       Debug(0, DebugTag.DBG_INTERP, TAG, "stack: "+cur.stack[j]+"!");
     }
     if (n > cur.maxFunc) {
@@ -448,7 +447,10 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec_idx: "+rec_idx+"!");
           return;
         case ENDF:   /* ENDF */
           rec.setEnd(cur.IP);
-Debug(0, DebugTag.DBG_INTERP, TAG, "rec: "+rec.toDebugString());
+Debug(0, DebugTag.DBG_INTERP, TAG, "rec: " + rec.toDebugString());
+for(int i = rec.getStart(); i < rec.getEnd(); i++) {
+  Debug(0, DebugTag.DBG_INTERP, TAG, "CODE: "+cur.code[i]);
+}
           return;
       }
     }
@@ -498,7 +500,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec: "+rec.toDebugString());
     int distance;
 
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insMDAP: cur.GS.gep0: %d, cur.GS.gep1: %d", cur.graphics_state.gep0, cur.graphics_state.gep1));
-    point = (short)cur.stack[cur.numArgs + 0];
+    point = (short)cur.stack[cur.stack_idx + 0];
     if (TTUtil.BOUNDS(point, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -506,8 +508,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec: "+rec.toDebugString());
       return;
     }
     if ((cur.opcode.getVal() & 1) != 0) {
-      cur_dist = (cur.funcProject(cur.zp0.getCur()[cur.zp0.getCur_idx() + point].x,
-          cur.zp0.getCur()[cur.zp0.getCur_idx() + point].y));
+      cur_dist = (cur.funcProject(cur.zp0.getCurPoint_x(point),
+          cur.zp0.getCurPoint_y(point)));
       distance = (cur.funcRound(cur_dist, cur.tt_metrics.getCompensations()[0]) - cur_dist);
       Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cur_dist: %d, distance: %d comp: %d \n", cur_dist, distance, cur.tt_metrics.getCompensations()[0]));
     } else {

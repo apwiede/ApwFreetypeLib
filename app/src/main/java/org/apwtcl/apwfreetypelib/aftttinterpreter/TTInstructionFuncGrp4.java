@@ -18,8 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 4  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -132,20 +130,20 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void NPUSHB() {
-    int L;
-    int K;
+    int length;
+    int idx;
 
-    L = cur.code[cur.IP + 1].getVal() & 0xFF;
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insNPUSHB: L: %d, cur.IP: %d", L, cur.IP));
-    if (TTUtil.BOUNDS(L, cur.stackSize + 1 - cur.top)) {
+    length = cur.code[cur.IP + 1].getVal() & 0xFF;
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("NPUSHB: L: %d, cur.IP: %d", length, cur.IP));
+    if (TTUtil.BOUNDS(length, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;
     }
-    for (K = 1; K <= L; K++) {
-      cur.stack[cur.numArgs + K - 1] = cur.code[cur.IP + K + 1].getVal() & 0xFF;
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("pushb: %d 0x%02x, numArgs: %d ", K-1, cur.stack[cur.numArgs + K - 1], cur.numArgs)+cur.code[cur.IP + K + 1]);
+    for (idx = 0; idx < length; idx++) {
+      cur.stack[cur.stack_idx + idx] = cur.code[cur.IP + idx + 2].getVal() & 0xFF;
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("pushb: %d 0x%02x, new_top: %d ", idx, cur.stack[cur.stack_idx + idx], cur.new_top)+cur.code[cur.IP + idx]);
+      cur.new_top++;
     }
-    cur.new_top += L;
   }
 
   /* =====================================================================
@@ -155,20 +153,20 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void NPUSHW() {
-    int L;
-    int K;
+    int length;
+    int idx;
 
-    L = cur.code[cur.IP + 1].getVal() & 0xFF;
-    if (TTUtil.BOUNDS(L, cur.stackSize + 1 - cur.top)) {
+    length = cur.code[cur.IP + 1].getVal() & 0xFF;
+    if (TTUtil.BOUNDS(length, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;
     }
     cur.IP += 2;
-    for (K = 0; K < L; K++) {
-      cur.stack[cur.numArgs + K] = GetShortIns(cur);
+    for (idx = 0; idx < length; idx++) {
+      cur.stack[cur.stack_idx + idx] = GetShortIns(cur);
+      cur.new_top++;
     }
     cur.step_ins = false;
-    cur.new_top += L;
   }
 
   /* =====================================================================
@@ -178,14 +176,14 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void WS() {
-    int I = cur.stack[cur.numArgs + 0];
+    int store_idx = cur.stack[cur.stack_idx];
 
-    if (TTUtil.BOUNDSL(I, cur.storeSize)) {
+    if (TTUtil.BOUNDSL(store_idx, cur.storeSize)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_ARRAY_BOUND_ERROR;
       }
     } else {
-      cur.storage[I] = cur.stack[cur.numArgs + 1];
+      cur.storage[store_idx] = cur.stack[cur.stack_idx + 1];
     }
   }
 
@@ -196,16 +194,16 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void RS() {
-    int I = (int)cur.stack[cur.numArgs + 0];
+    int store_idx = cur.stack[cur.stack_idx];
 
-    if (TTUtil.BOUNDSL(I, cur.storeSize)) {
+    if (TTUtil.BOUNDSL(store_idx, cur.storeSize)) {
       if (cur.pedantic_hinting ) {
         cur.error = FTError.ErrorTag.INTERP_ARRAY_BOUND_ERROR;
       } else {
-        cur.stack[cur.numArgs + 0] = 0;
+        cur.stack[cur.stack_idx] = 0;
       }
     } else {
-      cur.stack[cur.numArgs + 0] = cur.storage[I];
+      cur.stack[cur.stack_idx] = cur.storage[store_idx];
     }
   }
 
@@ -216,15 +214,14 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void WCVTP() {
-    int I = cur.stack[cur.numArgs + 0];
+    int cvt_idx = cur.stack[cur.stack_idx + 0];
 
-
-    if (TTUtil.BOUNDSL(I, cur.cvtSize)) {
+    if (TTUtil.BOUNDSL(cvt_idx, cur.cvtSize)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_ARRAY_BOUND_ERROR;
       }
     } else {
-      cur.render_funcs.curr_cvt_func.writeCvt(I, cur.stack[cur.numArgs + 1]);
+      cur.render_funcs.curr_cvt_func.writeCvt(cvt_idx, cur.stack[cur.stack_idx + 1]);
     }
   }
 
@@ -235,17 +232,17 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void RCVT() {
-    int I = (int)cur.stack[cur.numArgs + 0];
+    int cvt_idx = (int)cur.stack[cur.stack_idx + 0];
 
-    if (TTUtil.BOUNDSL(I, cur.cvtSize)) {
+    if (TTUtil.BOUNDSL(cvt_idx, cur.cvtSize)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_ARRAY_BOUND_ERROR;
       } else {
-        cur.stack[cur.numArgs + 0] = 0;
+        cur.stack[cur.stack_idx + 0] = 0;
       }
     } else {
-      int val = cur.render_funcs.curr_cvt_func.readCvt(I) & 0xFFFF;
-      cur.stack[cur.numArgs + 0] = val;
+      int val = cur.render_funcs.curr_cvt_func.readCvt(cvt_idx) & 0xFFFF;
+      cur.stack[cur.stack_idx + 0] = val;
     }
   }
 
@@ -259,25 +256,23 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void GC() {
-    int L;
-    int R;
+    int point_idx;
+    int result;
 
-    L = cur.stack[cur.numArgs + 0];
-    if (TTUtil.BOUNDSL(L, cur.zp2.getN_points())) {
+    point_idx = cur.stack[cur.stack_idx];
+    if (TTUtil.BOUNDSL(point_idx, cur.zp2.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
-      R = 0;
+      result = 0;
     } else {
       if ((cur.opcode.getVal() & 1) != 0) {
-        R = cur.funcDualproj(cur.zp2.getOrg()[cur.zp2.getOrg_idx() + L].x - cur.zp2.getOrg()[cur.zp2.getOrg_idx() + L].x,
-            cur.zp2.getOrg()[cur.zp2.getOrg_idx() + L].y - cur.zp2.getOrg()[cur.zp2.getOrg_idx() + L].y);
+        result = cur.funcDualproj(cur.zp2.getOrgPoint(point_idx).x, cur.zp2.getOrgPoint(point_idx).y);
       } else {
-        R = cur.funcProject(cur.zp2.getCur()[cur.zp2.getCur_idx() + L].x - cur.zp2.getCur()[cur.zp2.getCur_idx() + L].x,
-            cur.zp2.getCur()[cur.zp2.getCur_idx() + L].y - cur.zp2.getCur()[cur.zp2.getCur_idx() + L].y);
+        result = cur.funcProject(cur.zp2.getCurPoint(point_idx).x, cur.zp2.getCurPoint(point_idx).y);
       }
     }
-    cur.stack[cur.numArgs + 0] = R;
+    cur.stack[cur.stack_idx] = result;
   }
 
   /* =====================================================================
@@ -291,23 +286,22 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void SCFS() {
-    int K;
-    int L;
+    int result;
+    int point_idx;
 
-    L = cur.stack[cur.numArgs + 0];
-    if (TTUtil.BOUNDS(L, cur.zp2.getN_points())) {
+    point_idx = cur.stack[cur.stack_idx];
+    if (TTUtil.BOUNDS(point_idx, cur.zp2.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
       return;
     }
-    K =cur.funcProject(cur.zp2.getCur()[cur.zp2.getCur_idx() + L].x - cur.zp2.getCur()[cur.zp2.getCur_idx() + L].x,
-        cur.zp2.getCur()[cur.zp2.getCur_idx() + L].y - cur.zp2.getCur()[cur.zp2.getCur_idx() + L].y);
-    cur.funcMove(cur.zp2, L, (int)(cur.stack[cur.numArgs + 1] - K));
+    result = cur.funcProject(cur.zp2.getCurPoint(point_idx).x, cur.zp2.getCurPoint(point_idx).y);
+    cur.funcMove(cur.zp2, point_idx, (cur.stack[cur.stack_idx + 1] - result));
       /* UNDOCUMENTED!  The MS rasterizer does that with */
       /* twilight points (confirmed by Greg Hitchcock)   */
     if (cur.graphics_state.gep2 == 0) {
-      cur.zp2.getOrg()[cur.zp2.getOrg_idx() + L] = cur.zp2.getCur()[cur.zp2.getCur_idx() + L];
+      cur.zp2.setOrgPoint(point_idx, cur.zp2.getCurPoint(point_idx));
     }
   }
 
@@ -327,47 +321,47 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void MD() {
-    short K;
-    short L;
-    int D;
+    int point2_idx;
+    int point1_idx;
+    int result;
 
-    K = (short)cur.stack[cur.numArgs + 1];
-    L = (short)cur.stack[cur.numArgs + 0];
-    if (TTUtil.BOUNDS(L, cur.zp0.getN_points()) || TTUtil.BOUNDS(K, cur.zp1.getN_points())) {
+    point2_idx = cur.stack[cur.stack_idx + 1];
+    point1_idx = cur.stack[cur.stack_idx + 0];
+    if (TTUtil.BOUNDS(point1_idx, cur.zp0.getN_points()) || TTUtil.BOUNDS(point2_idx, cur.zp1.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
-      D = 0;
+      result = 0;
     } else {
       if ((cur.opcode.getVal() & 1) != 0) {
-        D = cur.funcProject(cur.zp0.getCur()[cur.zp0.getCur_idx() + L].x - cur.zp1.getCur()[cur.zp0.getCur_idx() + K].x,
-            cur.zp0.getCur()[cur.zp0.getCur_idx() + L].y - cur.zp1.getCur()[cur.zp0.getCur_idx() + K].y);
+        result = cur.funcProject(cur.zp0.getCurPoint(point1_idx).x - cur.zp1.getCurPoint(point2_idx).x,
+            cur.zp0.getCurPoint(point1_idx).y - cur.zp1.getCurPoint(point2_idx).y);
       } else {
           /* XXX: UNDOCUMENTED: twilight zone special case */
         if (cur.graphics_state.gep0 == 0 || cur.graphics_state.gep1 == 0) {
-          FTVectorRec vec1 = cur.zp0.getOrg()[cur.zp0.getOrg_idx() + L];
-          FTVectorRec vec2 = cur.zp1.getOrg()[cur.zp1.getOrg_idx() + K];
+          FTVectorRec vec1 = cur.zp0.getOrgPoint(point1_idx);
+          FTVectorRec vec2 = cur.zp1.getOrgPoint(point2_idx);
 
-          D = cur.render_funcs.curr_project_func.dualproject(vec1.x, vec2.y);
+          result = cur.render_funcs.curr_project_func.dualproject(vec1.x, vec2.y);
         } else {
-          FTVectorRec vec1 = cur.zp0.getOrus()[cur.zp0.getOrus_idx() + L];
-          FTVectorRec vec2 = cur.zp1.getOrus()[cur.zp1.getOrus_idx() + K];
+          FTVectorRec vec1 = cur.zp0.getOrusPoint(point1_idx);
+          FTVectorRec vec2 = cur.zp1.getOrusPoint(point2_idx);
 
           if (cur.metrics.getX_scale() == cur.metrics.getY_scale()) {
               /* this should be faster */
-            D = cur.render_funcs.curr_project_func.dualproject(vec1.x - vec2.x, vec1.y - vec2.y);
-            D = TTUtil.FTMulFix(D, cur.metrics.getX_scale());
+            result = cur.render_funcs.curr_project_func.dualproject(vec1.x - vec2.x, vec1.y - vec2.y);
+            result = TTUtil.FTMulFix(result, cur.metrics.getX_scale());
           } else {
             FTVectorRec vec = new FTVectorRec();
 
             vec.x = TTUtil.FTMulFix(vec1.x - vec2.x, cur.metrics.getX_scale());
             vec.y = TTUtil.FTMulFix(vec1.y - vec2.y, cur.metrics.getY_scale());
-            D = cur.render_funcs.curr_project_func.dualproject(vec.x, vec.y);
+            result = cur.render_funcs.curr_project_func.dualproject(vec.x, vec.y);
           }
         }
       }
     }
-    cur.stack[cur.numArgs + 0] = D;
+    cur.stack[cur.stack_idx] = result;
   }
 
   /* =====================================================================
@@ -377,8 +371,8 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void MPPEM() {
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_MPPEM: %d", CurrentPpem(cur)));
-    cur.stack[cur.numArgs + 0] = CurrentPpem(cur);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MPPEM: %d", CurrentPpem(cur)));
+    cur.stack[cur.stack_idx] = CurrentPpem(cur);
   }
 
   // Note: The pointSize should be irrelevant in a given font program;
@@ -391,7 +385,7 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * =====================================================================
    */
   public void MPS() {
-    cur.stack[cur.numArgs + 0] = CurrentPpem(cur);
+    cur.stack[cur.stack_idx] = CurrentPpem(cur);
   }
 
   /* =====================================================================

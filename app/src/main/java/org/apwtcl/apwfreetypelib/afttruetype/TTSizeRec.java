@@ -281,10 +281,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
       }
         /* all twilight points are originally zero */
       for (i = 0; i < twilight.getN_points(); i++) {
-        twilight.getOrg()[i].x = 0;
-        twilight.getOrg()[i].y = 0;
-        twilight.getCur()[i].x = 0;
-        twilight.getCur()[i].y = 0;
+        twilight.resetOrgPoint(i);
+        twilight.resetCurPoint(i);
       }
         /* clear storage area */
       for (i = 0; i < storage_size; i++) {
