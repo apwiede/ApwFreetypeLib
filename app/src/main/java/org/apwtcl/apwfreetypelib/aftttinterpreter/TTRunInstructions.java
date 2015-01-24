@@ -151,9 +151,10 @@ public class TTRunInstructions extends TTExecContextRec {
         doInterpDebug = true;
       }
 
-      FTTrace.Trace(3, TAG, String.format("opcode: 0x%02x", opcode.getVal())+" cur.IP: "+IP+" opcode: "+opcode+" numInstructions: "+numInstructions);
+      FTTrace.Trace(3, TAG, " cur.IP: "+IP+"numInstructions: "+numInstructions);
 //FTGlyphLoaderRec._showLoaderZone2("interp_opcode");
-Debug(0, DebugTag.DBG_INTERP, TAG, "OP: "+opcode+" "+opcode.getOpCodeLength());
+Debug(0, DebugTag.DBG_INTERP, TAG, "cur.IP: "+IP+" numInstructions: "+numInstructions);
+Debug(0, DebugTag.DBG_INTERP, TAG, "\n..."+opcode.toString());
       length = opcode.getOpCodeLength();
       if (length < 0) {
         if (IP + 1 >= codeSize) {
@@ -184,7 +185,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("numArgs: %d top: %d stack[numA
         /* `new_top' is the new top of the stack, after the instruction's */
         /* execution.  `top' will be set to `new_top' after the `switch'  */
         /* statement.                                                     */
-Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: "+new_top+"!"+stackSize+"!");
+Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: new_top: "+new_top+" stackSize: "+stackSize+"!");
       if (new_top > stackSize) {
         error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
         return LError();
@@ -648,7 +649,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: "+new_top+"!"+stackSize+"!");
 
               for (defIdx = 0; defIdx < limit; defIdx++) {
                 def = IDefs[defIdx];
-                if (def.active && opcode.getVal() == def.opc) {
+                if (def.isActive() && opcode.getVal() == def.getOpc()) {
                   TTCallRec callrec;
 
                   if (callTop >= callSize) {
@@ -656,12 +657,12 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: "+new_top+"!"+stackSize+"!");
                     return LError();
                   }
                   callrec = callStack[callTop];
-                  callrec.CallerRange = curRange.getVal();
-                  callrec.CallerIP = IP + 1;
-                  callrec.CurCount = 1;
-                  callrec.CurRestart = def.start;
-                  callrec.CurEnd = def.end;
-                  if (this.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.range), def.start) != FTError.ErrorTag.ERR_OK) {
+                  callrec.setCaller_range(curRange.getVal());
+                  callrec.setCaller_IP(IP + 1);
+                  callrec.setCur_count(1);
+                  callrec.setCur_restart(def.getStart());
+                  callrec.setCur_end(def.getEnd());
+                  if (this.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.getRange()), def.getStart()) != FTError.ErrorTag.ERR_OK) {
                     return LError();
                   }
                   useSuiteLabel = true;

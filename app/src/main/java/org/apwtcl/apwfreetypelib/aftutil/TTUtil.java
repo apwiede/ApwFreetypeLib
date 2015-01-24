@@ -25,7 +25,6 @@ public class TTUtil extends FTDebug {
     id = oid;
   }
 
-
   /* ==================== TagToInt ===================================== */
     public static int TagToInt(String str) {
         return str.charAt(0)<<24|str.charAt(1)<<16|str.charAt(2)<<8|str.charAt(3);

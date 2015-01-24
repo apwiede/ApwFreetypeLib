@@ -181,10 +181,10 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     int distance;
     int minimum_distance;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insMDRP: cur.GS.gep0: %d, cur.GS.gep1: %d", cur.graphics_state.gep0, cur.graphics_state.gep1));
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MDRP: cur.GS.gep0: %d, cur.GS.gep1: %d", cur.graphics_state.gep0, cur.graphics_state.gep1));
     minimum_distance = cur.graphics_state.minimum_distance;
     point = (short)cur.stack[cur.numArgs + 0];
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insMDRP: minimum_distance: %d point: %d rp0: %d",  minimum_distance, point, cur.graphics_state.rp0));
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MDRP: minimum_distance: %d point: %d rp0: %d",  minimum_distance, point, cur.graphics_state.rp0));
     if (TTUtil.BOUNDS(point, cur.zp1.getN_points()) || TTUtil.BOUNDS(cur.graphics_state.rp0, cur.zp0.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
@@ -283,7 +283,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     int L;
     int K;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, "insPUSHW");
+Debug(0, DebugTag.DBG_INTERP, TAG, "PUSHW");
     L = (cur.opcode.getVal() - 0xB8 + 1);
     if (TTUtil.BOUNDS(L, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
@@ -303,18 +303,18 @@ public class TTInstructionFuncGrp9 extends FTDebug {
    * =====================================================================
    */
   public void PUSHB() {
-    int L;
-    int K;
+    int length;
+    int idx;
 
-    L = (cur.opcode.getVal() - 0xB0 + 1);
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insPUSHB numArgs: %d L: %d", cur.numArgs, L));
-    if (TTUtil.BOUNDS(L, cur.stackSize + 1 - cur.top)) {
+    length = (cur.opcode.getVal() - TTOpCode.OpCode.PushB_0.getVal() + 1);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("PUSHB numArgs: %d length: %d", cur.numArgs, length));
+    if (TTUtil.BOUNDS(length, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;
     }
-    for (K = 1; K <= L; K++) {
-      cur.stack[cur.numArgs + K - 1] = (cur.code[cur.IP + K].getVal() & 0xFF);
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("IP: K: %d IP: %d %s", K, cur.IP, cur.code[cur.IP + K]));
+    for (idx = 0; idx< length; idx++) {
+      cur.stack[cur.numArgs + idx] = (cur.code[cur.IP + idx + 1].getVal() & 0xFF);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("idx: %d IP: %d %s", idx, cur.IP, cur.code[cur.IP + idx + 1].toString()));
     }
   }
 

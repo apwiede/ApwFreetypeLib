@@ -23,98 +23,98 @@ package org.apwtcl.apwfreetypelib.afttruetype;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
 public class TTCallRec extends FTDebug {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "TTCallRec";
+  private int id;
+  private static String TAG = "TTCallRec";
 
-    public int CallerRange;
-    public int CallerIP;
-    public int CurCount;
-    public int CurRestart;
-    public int CurEnd;
+  private int caller_range;
+  private int caller_IP;
+  private int cur_count;
+  private int cur_restart;
+  private int cur_end;
 
-    /* ==================== TTCallRec ================================== */
-    public TTCallRec() {
-      oid++;
-      id = oid;
+  /* ==================== TTCallRec ================================== */
+  public TTCallRec() {
+    oid++;
+    id = oid;
       
-      CallerRange = 0;
-      CallerIP = 0;
-      CurCount = 0;
-      CurRestart = 0;
-      CurEnd = 0;
-    }
+    caller_range = 0;
+    caller_IP = 0;
+    cur_count = 0;
+    cur_restart = 0;
+    cur_end = 0;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      str.append("  CallerRange: "+CallerRange+"\n");
-      str.append("  CallerIP: "+CallerIP+"\n");
-      str.append("  CurCount: "+CurCount+"\n");
-      str.append("  CurRestart: "+CurRestart+"\n");
-      str.append("  CurEnd: "+CurEnd+"\n");
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("  caller_range: "+ caller_range +"\n");
+    str.append("  caller_IP: "+ caller_IP +"\n");
+    str.append("  cur_count: "+ cur_count +"\n");
+    str.append("  cur_restart: "+ cur_restart +"\n");
+    str.append("  cur_end: "+ cur_end +"\n");
+    return str.toString();
+  }
  
-    /* ==================== setCallerRange ===================================== */
-    public void setCallerRange(int val) {
-        this.CallerRange = val;
+  /* ==================== setCaller_range ===================================== */
+  public void setCaller_range(int val) {
+        this.caller_range = val;
     }
 
-    /* ==================== setCallerIP ===================================== */
-    public void setCallerIP(int val) {
-        this.CallerIP = val;
+  /* ==================== setCaller_IP ===================================== */
+  public void setCaller_IP(int val) {
+        this.caller_IP = val;
     }
 
-    /* ==================== setCurCount ===================================== */
-    public void setCurCount(int val) {
-        this.CurCount = val;
+  /* ==================== setCur_count ===================================== */
+  public void setCur_count(int val) {
+        this.cur_count = val;
     }
 
-    /* ==================== setCurRestart ===================================== */
-    public void setCurRestart(int val) {
-        this.CurRestart = val;
+  /* ==================== setCur_restart ===================================== */
+  public void setCur_restart(int val) {
+        this.cur_restart = val;
     }
 
-    /* ==================== setCurEnd ===================================== */
-    public void setCurEnd(int val) {
-        this.CurEnd = val;
+  /* ==================== setCur_end ===================================== */
+  public void setCur_end(int val) {
+        this.cur_end = val;
     }
 
-    /* ==================== getCallerRange ===================================== */
-    public int getCallerRange(int val) {
-        return this.CallerRange;
+  /* ==================== getCaller_range ===================================== */
+  public int getCaller_range() {
+        return this.caller_range;
     }
 
-    /* ==================== getCallerIP ===================================== */
-    public int getCallerIP(int val) {
-        return this.CallerIP;
+  /* ==================== getCaller_IP ===================================== */
+  public int getCaller_IP() {
+        return this.caller_IP;
     }
 
-    /* ==================== getCurCount ===================================== */
-    public int getCurCount(int val) {
-        return this.CurCount;
+  /* ==================== getCur_count ===================================== */
+  public int getCur_count() {
+        return this.cur_count;
     }
 
-    /* ==================== getCurRestart ===================================== */
-    public int getCurRestart(int val) {
-        return this.CurRestart;
+  /* ==================== getCur_restart ===================================== */
+  public int getCur_restart() {
+        return this.cur_restart;
     }
 
-    /* ==================== getCurEnd ===================================== */
-    public int getCurEnd(int val) {
-        return this.CurEnd;
+  /* ==================== getCur_end ===================================== */
+  public int getCur_end() {
+        return this.cur_end;
     }
 
 }

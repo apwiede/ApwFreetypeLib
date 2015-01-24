@@ -349,7 +349,7 @@ public class TTOpCode extends FTDebug {
       return push_count;
     }
     public String toString() {
-      return str + ": " + description;
+      return String.format("opcode: 0x%02x %d ", val, val)+str+": \""+description+"\"\n..."+String.format(" length: %d", opcode_length)+String.format(" push_count: 0x%02x", push_count);
     }
   }
 

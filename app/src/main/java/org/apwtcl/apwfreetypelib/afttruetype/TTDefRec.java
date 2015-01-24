@@ -13,7 +13,6 @@
 
 package org.apwtcl.apwfreetypelib.afttruetype;
 
-
   /* ===================================================================== */
   /*    TTDefRec                                                           */
   /*                                                                       */
@@ -23,39 +22,116 @@ package org.apwtcl.apwfreetypelib.afttruetype;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
 public class TTDefRec extends FTDebug {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "TTDefRec";
+  private int id;
+  private static String TAG = "TTDefRec";
 
-    public int range = 0;          /* in which code range is it located?     */
-    public int start = 0;          /* where does it start?                   */
-    public int end = 0;            /* where does it end?                     */
-    public int opc = 0;            /* function #, or instruction code        */
-    public boolean active = false;         /* is it active?                          */
-    public boolean inline_delta = false;   /* is function that defines inline delta? */
-    public int sph_fdef_flags = 0; /* flags to identify special functions    */
+  private int range = 0;          /* in which code range is it located?     */
+  private int start = 0;          /* where does it start?                   */
+  private int end = 0;            /* where does it end?                     */
+  private int opc = 0;            /* function #, or instruction code        */
+  private boolean active = false;         /* is it active?                          */
+  private boolean inline_delta = false;   /* is function that defines inline delta? */
+  private int sph_fdef_flags = 0; /* flags to identify special functions    */
 
-    /* ==================== TTDefRec ================================== */
-    public TTDefRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== TTDefRec ================================== */
+  public TTDefRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return  TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...range: "+range+'\n');
+    str.append("...start: "+start+'\n');
+    str.append("...end: "+end+'\n');
+    str.append("...opc: "+opc+'\n');
+    str.append("...active: "+active+'\n');
+    str.append("...inline_delta: "+inline_delta+'\n');
+    str.append("...sph_fdef_flags: "+sph_fdef_flags+'\n');
+    return str.toString();
+  }
+
+  /* ==================== getRange ================================== */
+  public int getRange() {
+    return range;
+  }
+
+  /* ==================== setRange ================================== */
+  public void setRange(int range) {
+    this.range = range;
+  }
+
+  /* ==================== getStart ================================== */
+  public int getStart() {
+    return start;
+  }
+
+  /* ==================== setStart ================================== */
+  public void setStart(int start) {
+    this.start = start;
+  }
+
+  /* ==================== getEnd ================================== */
+  public int getEnd() {
+    return end;
+  }
+
+  /* ==================== setEnd ================================== */
+  public void setEnd(int end) {
+    this.end = end;
+  }
+
+  /* ==================== getOpc ================================== */
+  public int getOpc() {
+    return opc;
+  }
+
+  /* ==================== setOpc ================================== */
+  public void setOpc(int opc) {
+    this.opc = opc;
+  }
+
+  /* ==================== isActive ================================== */
+  public boolean isActive() {
+    return active;
+  }
+
+  /* ==================== setActive ================================== */
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  /* ==================== isInline_delta ================================== */
+  public boolean isInline_delta() {
+    return inline_delta;
+  }
+
+  /* ==================== setInline_delta ================================== */
+  public void setInline_delta(boolean inline_delta) {
+    this.inline_delta = inline_delta;
+  }
+
+  /* ==================== getSph_fdef_flags ================================== */
+  public int getSph_fdef_flags() {
+    return sph_fdef_flags;
+  }
+
+  /* ==================== setSph_fdef_flags ================================== */
+  public void setSph_fdef_flags(int sph_fdef_flags) {
+    this.sph_fdef_flags = sph_fdef_flags;
+  }
+
 }

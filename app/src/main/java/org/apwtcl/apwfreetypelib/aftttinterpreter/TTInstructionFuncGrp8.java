@@ -307,7 +307,7 @@ public class TTInstructionFuncGrp8 extends FTDebug {
     def = cur.IDefs[defIdx];
     limit = defIdx + cur.numIDefs;
     for (; defIdx < limit; defIdx++) {
-      if (def.opc == cur.stack[cur.numArgs + 0]) {
+      if (def.getOpc() == cur.stack[cur.numArgs + 0]) {
         break;
       }
     }
@@ -324,10 +324,10 @@ public class TTInstructionFuncGrp8 extends FTDebug {
       cur.error = FTError.ErrorTag.INTERP_TOO_MANY_INSTRUCTION_DEFS;
       return;
     }
-    def.opc = (int)cur.stack[cur.numArgs + 0];
-    def.start = (int)(cur.IP + 1);
-    def.range = cur.curRange.getVal();
-    def.active = true;
+    def.setOpc(cur.stack[cur.numArgs + 0]);
+    def.setStart(cur.IP + 1);
+    def.setRange(cur.curRange.getVal());
+    def.setActive(true);
     if (cur.stack[cur.numArgs + 0] > cur.maxIns) {
       cur.maxIns = (byte)cur.stack[cur.numArgs + 0];
     }

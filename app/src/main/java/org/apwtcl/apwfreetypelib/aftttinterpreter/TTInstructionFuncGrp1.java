@@ -351,7 +351,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     }
     cur.IP += cur.stack[cur.numArgs + 0];
     if (cur.IP < 0 ||
-        (cur.callTop > 0 && cur.IP > cur.callStack[cur.callTop - 1].CurEnd)) {
+        (cur.callTop > 0 && cur.IP > cur.callStack[cur.callTop - 1].getCur_end())) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
     }
     cur.step_ins = false;
