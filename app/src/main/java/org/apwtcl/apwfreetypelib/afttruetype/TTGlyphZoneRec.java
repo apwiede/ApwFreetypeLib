@@ -400,7 +400,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   }
 
   /* ==================== getOrg ================================== */
-  public FTVectorRec[] xgetOrg() {
+  public FTVectorRec[] getOrg() {
     return org;
   }
 
@@ -457,7 +457,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   }
 
   /* ==================== getCur ================================== */
-  public FTVectorRec[] xgetCur() {
+  public FTVectorRec[] getCur() {
     return cur;
   }
 
@@ -513,7 +513,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     this.cur_idx = cur_idx;
   }
 
-  /* ==================== getOrus ================================== */
+  /* ==================== xgetOrus ================================== */
   public FTVectorRec[] getOrus() {
     return orus;
   }
@@ -523,8 +523,40 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     return orus[orus_idx + point_idx];
   }
 
+  /* ==================== getOrusPoint_x ================================== */
+  public int getOrusPoint_x(int point_idx) {
+    return orus[orus_idx + point_idx].x;
+  }
+
+  /* ==================== getOrusPoint_y ================================== */
+  public int getOrusPoint_y(int point_idx) {
+    return orus[orus_idx + point_idx].y;
+  }
+
+  /* ==================== setOrusPoint ================================== */
+  public void setOrusPoint(int point_idx, FTVectorRec vec) {
+    orus[orus_idx + point_idx].x = vec.x;
+    orus[orus_idx + point_idx].y = vec.y;
+  }
+
+  /* ==================== setOrusPoint_x ================================== */
+  public void setOrusPoint_x(int point_idx, int value) {
+    orus[orus_idx + point_idx].x = value;
+  }
+
+  /* ==================== setOrusPoint_y ================================== */
+  public void setOrusPoint_y(int point_idx, int value) {
+    orus[orus_idx + point_idx].y = value;
+  }
+
+  /* ==================== resetOrusPoint ================================== */
+  public void resetOrusPoint(int point_idx) {
+    orus[orus_idx + point_idx].x = 0;
+    orus[orus_idx + point_idx].y = 0;
+  }
+
   /* ==================== setOrus ================================== */
-  public void setOrus(FTVectorRec[] orus) {
+  public void xsetOrus(FTVectorRec[] orus) {
     this.orus = orus;
   }
 

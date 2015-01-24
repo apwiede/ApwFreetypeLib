@@ -22,7 +22,6 @@ import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTInterpTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 
 public class TTInterpRun extends FTDebug {
     private static int oid = 0;
@@ -64,7 +63,7 @@ public class TTInterpRun extends FTDebug {
 
     public static FTError.ErrorTag TTRunContext(TTExecContextRec exec, boolean debug) {
       FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("TT_Run_Context %d", TTInterpTags.CodeRange.GLYPH)+" zp0.cur: "+(Object)exec.zp0.xgetCur()+"\n zp1.cur: "+(Object)exec.zp1.xgetCur());
+Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("TT_Run_Context %d", TTInterpTags.CodeRange.GLYPH)+" zp0.cur: "+(Object)exec.zp0.getCur()+"\n zp1.cur: "+(Object)exec.zp1.getCur());
 
       if ((error = exec.TTGotoCodeRange(TTInterpTags.CodeRange.GLYPH, 0)) != FTError.ErrorTag.ERR_OK) {
         return error;
@@ -72,7 +71,7 @@ Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("TT_Run_Context %d", TT
       exec.zp0 = exec.pts;
       exec.zp1 = exec.pts;
       exec.zp2 = exec.pts;
-Debug(0, DebugTag.DBG_INTERP, TAG, "TT_Run_Context2 zp0.cur: "+exec.zp0.xgetCur()+" \nzp1.cur: "+(Object)exec.zp1.xgetCur());
+Debug(0, DebugTag.DBG_INTERP, TAG, "TT_Run_Context2 zp0.cur: "+exec.zp0.getCur()+" \nzp1.cur: "+(Object)exec.zp1.getCur());
 for( int i = 0; i < 6; i++) {
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.org[i].x, cur.zp1.org[i].y));
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.org[i].x, cur.zp0.org[i].y));

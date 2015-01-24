@@ -295,19 +295,19 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     if ((cur.opcode.getVal() & 1) != 0) {
       useX = true;
       mask = Flags.Curve.TOUCH_X;
-      V.orgs = cur.pts.xgetOrg();
+      V.orgs = cur.pts.getOrg();
       V.org_idx = cur.pts.getOrg_idx();
-      V.curs = cur.pts.xgetCur();
+      V.curs = cur.pts.getCur();
       V.cur_idx = cur.pts.getCur_idx();
       V.orus = cur.pts.getOrus();
       V.orus_idx = cur.pts.getOrus_idx();
     } else {
       useX = false;
       mask = Flags.Curve.TOUCH_Y;
-      V.orgs = cur.pts.xgetOrg();
+      V.orgs = cur.pts.getOrg();
 //        V.org_idx = cur.pts.org_idx + 1;
       V.org_idx = cur.pts.getOrg_idx();
-      V.curs = cur.pts.xgetCur();
+      V.curs = cur.pts.getCur();
 //        V.cur_idx = cur.pts.cur_idx + 1;
       V.cur_idx = cur.pts.getCur_idx();
       V.orus = cur.pts.getOrus();
@@ -455,7 +455,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       limit = (short)(cur.zp2.getContours()[contour] - cur.zp2.getFirst_point() + 1);
     }
     for (i = start; i < limit; i++) {
-      if (zp.xgetCur() != cur.zp2.xgetCur() || ref != i) {
+      if (zp.getCur() != cur.zp2.getCur() || ref != i) {
         MoveZp2Point((short)i, dx, dy, true);
       }
     }
@@ -507,7 +507,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     }
       /* XXX: UNDOCUMENTED! SHZ doesn't touch the points */
     for (i = 0; i < limit; i++) {
-      if (zp.xgetCur() != cur.zp2.xgetCur() || ref != i) {
+      if (zp.getCur() != cur.zp2.getCur() || ref != i) {
         MoveZp2Point((short)i, dx, dy, false);
       }
     }

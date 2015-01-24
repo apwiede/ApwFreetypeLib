@@ -13,12 +13,7 @@
 
 package org.apwtcl.apwfreetypelib.afttruetype;
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoaderRec;
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
-import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
   /* ===================================================================== */
@@ -57,12 +52,12 @@ public class TTInterpFuncs3 extends FTDebug {
     /* ==================== _showZp0Zp1OrgCur ================================ */
     public static void _showZp0Zp1OrgCur( String str, TTExecContextRec cur ) {
       Debug(0, DebugTag.DBG_RENDER, TAG, str);
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.org: "+(Object)cur.zp0.xgetOrg());
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.org: "+(Object)cur.zp1.xgetOrg());
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.org: "+(Object)cur.zp2.xgetOrg());
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.cur: "+(Object)cur.zp0.xgetCur());
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.cur: "+(Object)cur.zp1.xgetCur());
-      Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.cur: "+(Object)cur.zp2.xgetCur());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.org: "+(Object)cur.zp0.getOrg());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.org: "+(Object)cur.zp1.getOrg());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.org: "+(Object)cur.zp2.getOrg());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.cur: "+(Object)cur.zp0.getCur());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.cur: "+(Object)cur.zp1.getCur());
+      Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.cur: "+(Object)cur.zp2.getCur());
       Debug(0, DebugTag.DBG_RENDER, TAG, "zp0.orus: "+(Object)cur.zp0.getOrus());
       Debug(0, DebugTag.DBG_RENDER, TAG, "zp1.orus: "+(Object)cur.zp1.getOrus());
       Debug(0, DebugTag.DBG_RENDER, TAG, "zp2.orus: "+(Object)cur.zp2.getOrus());

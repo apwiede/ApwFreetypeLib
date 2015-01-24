@@ -26,7 +26,6 @@ import org.apwtcl.apwfreetypelib.aftbase.FTTags;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.aftsfnt.FTSfntInterfaceClass;
 import org.apwtcl.apwfreetypelib.aftsfnt.TTLoad;
-import org.apwtcl.apwfreetypelib.aftsfnt.TTSfntLoad;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTInterpTags;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTOpCode;
@@ -662,7 +661,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
     origin = FTCalc.FT_PIX_ROUND(origin) - origin;
     Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
     if (origin != 0) {
-      FTGlyphLoaderRec.translate_array(zone.getN_points(), zone.xgetCur(), 0, origin, 0);
+      FTGlyphLoaderRec.translate_array(zone.getN_points(), zone.getCur(), 0, origin, 0);
     }
     for (int i = 0; i < 5; i++) {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
@@ -693,7 +692,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       exec.metrics.setX_scale(1 << 16);
       exec.metrics.setY_scale(1 << 16);
       // FIXME !! eventually problem with Arrays.copyOf!!
-      zone.setOrus(java.util.Arrays.copyOf(zone.xgetCur(), zone.getN_points()));
+      zone.xsetOrus(java.util.Arrays.copyOf(zone.getCur(), zone.getN_points()));
     } else {
       exec.metrics.setX_scale(((TTSizeRec)size).getMetrics().getX_scale());
       exec.metrics.setY_scale(((TTSizeRec)size).getMetrics().getY_scale());
