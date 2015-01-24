@@ -18,8 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 6  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -57,17 +55,32 @@ public class TTInstructionFuncGrp6 extends FTDebug {
   }
 
 
-  /* ==================== ADD ===================================== */
+  /* =====================================================================
+   * ADD[]:        ADD
+   * Opcode range: 0x60
+   * Stack:        f26.6 f26.6 --> f26.6
+   * =====================================================================
+   */
   public void ADD() {
     cur.stack[cur.numArgs + 0] += cur.stack[cur.numArgs + 1];
   }
 
-  /* ==================== SUB ===================================== */
+  /* =====================================================================
+   * SUB[]:        SUBtract
+   * Opcode range: 0x61
+   * Stack:        f26.6 f26.6 --> f26.6
+   * =====================================================================
+   */
   public void SUB() {
     cur.stack[cur.numArgs + 0] -= cur.stack[cur.numArgs + 1];
   }
 
-  /* ==================== DO ===================================== */
+  /* =====================================================================
+   * DIV[]:        DIVide
+   * Opcode range: 0x62
+   * Stack:        f26.6 f26.6 --> f26.6
+   * =====================================================================
+   */
   public void DIV() {
     if (cur.stack[cur.numArgs + 1] == 0) {
       cur.error = FTError.ErrorTag.INTERP_DIVIDE_BY_ZERO;
@@ -76,37 +89,72 @@ public class TTInstructionFuncGrp6 extends FTDebug {
     }
   }
 
-  /* ==================== MUL ===================================== */
+  /* =====================================================================
+   * MUL[]:        MULtiply
+   * Opcode range: 0x63
+   * Stack:        f26.6 f26.6 --> f26.6
+   * =====================================================================
+   */
   public void MUL() {
     cur.stack[cur.numArgs + 0] = FTCalc.FT_MulDiv(cur.stack[cur.numArgs + 0], cur.stack[cur.numArgs + 1], 64);
   }
 
-  /* ==================== ABS ===================================== */
+  /* =====================================================================
+   * ABS[]:        ABSolute value
+   * Opcode range: 0x64
+   * Stack:        f26.6 --> f26.6
+   * =====================================================================
+   */
   public void ABS() {
     cur.stack[cur.numArgs + 0] = (int)(FTCalc.FT_ABS(cur.stack[cur.numArgs + 0]) & 0xFFFF);
   }
 
-  /* ==================== NEG ===================================== */
+  /* =====================================================================
+   * NEG[]:        NEGate
+   * Opcode range: 0x65
+   * Stack: f26.6 --> f26.6
+   * =====================================================================
+   */
   public void NEG() {
     cur.stack[cur.numArgs + 0] = -cur.stack[cur.numArgs + 0];
   }
 
-  /* ==================== FLOOR ===================================== */
+  /* =====================================================================
+   * FLOOR[]:      FLOOR
+   * Opcode range: 0x66
+   * Stack:        f26.6 --> f26.6
+   * =====================================================================
+   */
   public void FLOOR() {
     cur.stack[cur.numArgs + 0] = FTCalc.FT_PIX_FLOOR(cur.stack[cur.numArgs + 0]);
   }
 
-  /* ==================== CEILING ===================================== */
+  /* =====================================================================
+   * CEILING[]:    CEILING
+   * Opcode range: 0x67
+   * Stack:        f26.6 --> f26.6
+   * =====================================================================
+   */
   public void CEILING() {
     cur.stack[cur.numArgs + 0] = FTCalc.FT_PIX_CEIL(cur.stack[cur.numArgs + 0]);
   }
 
-  /* ==================== ROUND ===================================== */
+  /* =====================================================================
+   * ROUND[ab]:    ROUND value
+   * Opcode range: 0x68-0x6B
+   * Stack:        f26.6 --> f26.6
+   * =====================================================================
+   */
   public void ROUND() {
     cur.stack[cur.numArgs + 0] = cur.render_funcs.curr_round_func.round(cur.stack[cur.numArgs + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x68]);
   }
 
-  /* ==================== NROUND ===================================== */
+  /* =====================================================================
+   * NROUND[ab]:   No ROUNDing of value
+   * Opcode range: 0x6C-0x6F
+   * Stack:        f26.6 --> f26.6
+   * =====================================================================
+   */
   public void NROUND() {
     cur.stack[cur.numArgs + 0] = cur.render_funcs.round_none.round(cur.stack[cur.numArgs + 0], cur.tt_metrics.getCompensations()[cur.opcode.getVal() - 0x6C]);
   }

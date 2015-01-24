@@ -18,9 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 5  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
@@ -57,53 +54,91 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     return str.toString();
   }
 
-  /* ==================== LT ===================================== */
+  /* =====================================================================
+   * LT[]:         Less Than
+   * Opcode range: 0x50
+   * Stack:        int32? int32? --> bool
+   * =====================================================================
+   */
   public void LT() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] < cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== TEQ ===================================== */
+  /* =====================================================================
+   * LTEQ[]:       Less Than or EQual
+   * Opcode range: 0x51
+   * Stack:        int32? int32? --> bool
+   * =====================================================================
+   */
   public void LTEQ() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] <= cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== GT ===================================== */
+  /* =====================================================================
+  /* GT[]:         Greater Than
+  /* Opcode range: 0x52
+  /* Stack:        int32? int32? --> bool
+  * =====================================================================
+      */
   public void GT() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] > cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== GTEQ ===================================== */
+  /* =====================================================================
+   * GTEQ[]:       Greater Than or EQual
+   * Opcode range: 0x53
+   * Stack:        int32? int32? --> bool
+   * =====================================================================
+   */
   public void GTEQ() {
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_GTEQ: %d >= %d", cur.stack[cur.numArgs + 0], cur.stack[cur.numArgs + 1]));
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] >= cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== EQ ===================================== */
+  /* =====================================================================
+   * EQ[]:         EQual
+   * Opcode range: 0x54
+   * Stack:        StkElt StkElt --> bool
+   * =====================================================================
+   */
   public void EQ() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] == cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== NEQ ===================================== */
+  /* =====================================================================
+   * NEQ[]:        Not EQual
+   * Opcode range: 0x55
+   * Stack:        StkElt StkElt --> bool
+   * =====================================================================
+   */
   public void NEQ() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] != cur.stack[cur.numArgs + 1]) ? 1 : 0;
   }
 
-  /* ==================== ODD ===================================== */
+  /* =====================================================================
+   * ODD[]:        Is ODD
+   * Opcode range: 0x56
+   * Stack:        f26.6 --> bool
+   * =====================================================================
+   */
   public void ODD() {
     cur.stack[cur.numArgs + 0] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.numArgs + 0], 0) & 127) == 64 ? 1 : 0;
   }
 
-  /* ==================== EVEN ===================================== */
+  /* =====================================================================
+   * EVEN[]:       Is EVEN
+   * Opcode range: 0x57
+   * Stack:        f26.6 --> bool
+   * =====================================================================
+   */
   public void EVEN() {
     cur.stack[cur.numArgs + 0] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.numArgs + 0], 0) & 127) == 0 ? 1 : 0;
   }
 
   /* =====================================================================
-   *
    * IF[]:         IF test
    * Opcode range: 0x58
    * Stack:        StkElt -->
-   *
    * =====================================================================
    */
   public void IF() {
@@ -135,27 +170,40 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     } while (Out == false);
   }
 
-  /* ==================== AND ===================================== */
+  /* =====================================================================
+   * AND[]:        logical AND
+   * Opcode range: 0x5A
+   * Stack:        uint32 uint32 --> uint32
+   * =====================================================================
+   */
   public void AND() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] != 0 && cur.stack[cur.numArgs + 1] != 0) ? 1 : 0;
   }
 
-  /* ==================== OR ===================================== */
+  /* =====================================================================
+   * OR[]:         logical OR
+   * Opcode range: 0x5B
+   * Stack:        uint32 uint32 --> uint32
+   * =====================================================================
+   */
   public void OR() {
     cur.stack[cur.numArgs + 0] = (cur.stack[cur.numArgs + 0] != 0 || cur.stack[cur.numArgs + 1] != 0) ? 1 : 0;
   }
 
-  /* ==================== NOT ===================================== */
+  /* =====================================================================
+   * NOT[]:        logical NOT
+   * Opcode range: 0x5C
+   * Stack:        StkElt --> uint32
+   * =====================================================================
+   */
   public void NOT() {
     cur.stack[cur.numArgs + 0] = cur.stack[cur.numArgs + 0] == 0  ? 1 : 0;
   }
 
   /* =====================================================================
-   *
    * DELTAPn[]:    DELTA exceptions P1, P2, P3
    * Opcode range: 0x5D,0x71,0x72
    * Stack:        uint32 (2 * uint32)... -->
-   *
    * =====================================================================
    */
   public void DELTAP() {
@@ -218,15 +266,24 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     Debug(0, DebugTag.DBG_INTERP, TAG, "DELTAP end 2");
   }
 
-  /* ==================== SDB ===================================== */
+  /* =====================================================================
+   * SDB[]:        Set Delta Base
+   * Opcode range: 0x5E
+   * Stack:        uint32 -->
+   * =====================================================================
+   */
   public void SDB() {
     cur.graphics_state.delta_base = (short)cur.stack[cur.numArgs + 0];
   }
 
-  /* ==================== SDS ===================================== */
+  /* =====================================================================
+   * SDS[]:        Set Delta Shift
+   * Opcode range: 0x5F
+   * Stack:        uint32 -->
+   * =====================================================================
+   */
   public void SDS() {
     cur.graphics_state.delta_shift = (short)cur.stack[cur.numArgs + 0];
   }
-
 
 }

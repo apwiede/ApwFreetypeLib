@@ -18,8 +18,6 @@ package org.apwtcl.apwfreetypelib.afttruetype;
   /*                                                                       */
   /* ===================================================================== */
 
-import android.util.Log;
-
 import org.apwtcl.apwfreetypelib.aftbase.*;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 

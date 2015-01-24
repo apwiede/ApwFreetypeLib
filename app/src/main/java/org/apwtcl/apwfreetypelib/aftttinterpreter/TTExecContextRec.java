@@ -424,7 +424,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTClearCodeRange");
     code = codeRangeTable[range.getVal() - 1].base;
     cvt_code = codeRangeTable[range.getVal() - 1].short_base;
     codeSize = codeRangeTable[range.getVal() - 1].size;
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
     this.IP = IP;
     curRange = range;
     return error;

@@ -336,7 +336,6 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       }
     }
     if (autohint) {
-/* NEEDED !!!
         FTAutoHinterInterfaceClass hinting;
 
         /* try to load embedded bitmaps first if available            */
@@ -344,31 +343,26 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         /* XXX: This is really a temporary hack that should disappear */
         /*      promptly with FreeType 2.1!                           */
         /*                                                            */
-/* NEEDED !!!
-        if ((face.face_flags & Flags.Face.FIXED_SIZES.getVal()) != 0 &&
+        if ((face.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) != 0 &&
             ((load_flags & Flags.Load.NO_BITMAP.getVal()) == 0)) {
-          error = driver.driver_clazz.loadGlyph(slot, face.size,
+          error = driver.driver_clazz.loadGlyph(this, face.getSize(),
                  glyph_index, load_flags | Flags.Load.SBITS_ONLY.getVal());
-          if ((error != FTError.ErrorTag.ERR_OK )&& slot.format == FTTags.GlyphFormat.BITMAP) {
+          if ((error != FTError.ErrorTag.ERR_OK )&& format == FTTags.GlyphFormat.BITMAP) {
             Load_Ok = true;
           }
         }
         if (! Load_Ok) {
-          FTFaceInternalRec internal = face.internal;
+          FTFaceInternalRec internal = face.getInternal();
           int transform_flags = internal.transform_flags;
 
           /* since the auto-hinter calls FT_Load_Glyph by itself, */
           /* make sure that glyphs aren't transformed             */
-/* NEEDED !!!
           internal.transform_flags = 0;
           /* load auto-hinted outline */
-/* NEEDED !!!
           hinting = (FTAutoHinterInterfaceClass)hinter.module_clazz.module_interface;
-          error = hinting.load_glyph.callClassMethod((Object)hinter,
-                  slot, face.size, glyph_index,load_flags);
+          error = hinting.loadGlyph(hinter, this, face.getSize(), glyph_index, load_flags);
           internal.transform_flags = transform_flags;
         }
-  NEEDED */
     } else {
       error = driver.getDriver_clazz().loadGlyph(this, face.getSize(), glyph_index, load_flags);
       if (error != FTError.ErrorTag.ERR_OK) {

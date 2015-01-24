@@ -18,10 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 1  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
-import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -86,11 +82,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SVTCA[a]:     Set (F and P) Vectors to Coordinate Axis
    * Opcode range: 0x00-0x01
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void SVTCA() {
@@ -109,11 +103,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SPVTCA[a]:    Set PVector to Coordinate Axis
    * Opcode range: 0x02-0x03
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void SPVTCA() {
@@ -130,11 +122,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SFVTCA[a]:    Set FVector to Coordinate Axis
    * Opcode range: 0x04-0x05
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void SFVTCA() {
@@ -149,11 +139,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SRP0[]:       Set Reference Point 0
    * Opcode range: 0x10
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SRP0() {
@@ -163,11 +151,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * SRP1[]:       Set Reference Point 1
    * Opcode range: 0x11
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SRP1() {
@@ -176,11 +162,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * SRP2[]:       Set Reference Point 2
    * Opcode range: 0x12
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SRP2() {
@@ -189,11 +173,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * SZP0[]:       Set Zone Pointer 0
    * Opcode range: 0x13
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SZP0() {
@@ -214,11 +196,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SZP1[]:       Set Zone Pointer 1
    * Opcode range: 0x14
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SZP1() {
@@ -239,11 +219,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SZP2[]:       Set Zone Pointer 2
    * Opcode range: 0x15
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SZP2() {
@@ -264,11 +242,9 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SZPS[]:       Set Zone PointerS
    * Opcode range: 0x16
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SZPS() {
@@ -292,7 +268,12 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     cur.graphics_state.gep2 = (short)cur.stack[cur.numArgs + 0];
   }
 
-  /* ==================== SLOOP ===================================== */
+  /* =====================================================================
+   * SLOOP[]:      Set LOOP variable
+   * Opcode range: 0x17
+   * Stack:        int32? -->
+   * =====================================================================
+   */
   public void SLOOP() {
     if (cur.stack[cur.numArgs + 0] < 0) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
@@ -301,18 +282,21 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     }
   }
 
-  /* ==================== RTG ===================================== */
+  /* =====================================================================
+   * RTG[]:        Round To Grid
+   * Opcode range: 0x18
+   * Stack:        -->
+   * =====================================================================
+   */
   public void RTG() {
     cur.graphics_state.round_state = TTInterpTags.RoundState.To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_grid;
   }
 
   /* =====================================================================
-   *
    * RTHG[]:       Round To Half Grid
    * Opcode range: 0x19
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void RTHG() {
@@ -320,17 +304,20 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_half_grid;
   }
 
-  /* ==================== SMD ===================================== */
+  /* =====================================================================
+   * SMD[]:        Set Minimum Distance
+   * Opcode range: 0x1A
+   * Stack:        f26.6 -->
+   * =====================================================================
+   */
   public void SMD() {
     cur.graphics_state.minimum_distance = cur.stack[cur.numArgs + 0];
   }
 
   /* =====================================================================
-   *
    * ELSE[]:       ELSE
    * Opcode range: 0x1B
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void ELSE() {
@@ -352,7 +339,12 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     } while (nIfs != 0);
   }
 
-  /* ==================== JMPR ===================================== */
+  /* =====================================================================
+   * JMPR[]:       JuMP Relative
+   * Opcode range: 0x1C
+   * Stack:        int32 -->
+   * =====================================================================
+   */
   public void JMPR() {
     if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
@@ -365,17 +357,32 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     cur.step_ins = false;
   }
 
-  /* ==================== SCVTCI ===================================== */
+  /* =====================================================================
+   * SCVTCI[]:     Set Control Value Table Cut In
+   * Opcode range: 0x1D
+   * Stack:        f26.6 -->
+   * =====================================================================
+   */
   public void SCVTCI() {
     cur.graphics_state.control_value_cutin = (int)cur.stack[cur.numArgs + 0];
   }
 
-  /* ==================== SSWCI ===================================== */
+  /* =====================================================================
+   * SSWCI[]:      Set Single Width Cut In
+   * Opcode range: 0x1E
+   * Stack:        f26.6 -->
+   * =====================================================================
+   */
   public void SSWCI() {
     cur.graphics_state.single_width_cutin = (int)cur.stack[cur.numArgs + 0];
   }
 
-  /* ==================== SSW ===================================== */
+  /* =====================================================================
+   * SSW[]:        Set Single Width
+   * Opcode range: 0x1F
+   * Stack:        int32? -->
+   * =====================================================================
+   */
   public void SSW() {
     cur.graphics_state.single_width_value = FTCalc.FTMulFix(cur.stack[cur.numArgs + 0], cur.tt_metrics.getScale());
   }

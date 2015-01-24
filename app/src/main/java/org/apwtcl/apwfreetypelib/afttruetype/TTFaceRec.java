@@ -616,9 +616,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "TTFaceRec constructor: "+mySelf()+"!");
    * loadGlyf
    * =====================================================================
    */
-  public FTError.ErrorTag loadGlyf(FTStreamRec stream, int gindex) {
+  public FTError.ErrorTag loadGlyf(FTStreamRec stream) {
     glyf_table = new TTGlyfRec();
-    return glyf_table.Load(stream, this, gindex);
+    return glyf_table.Load(stream, this);
   }
 
   /*

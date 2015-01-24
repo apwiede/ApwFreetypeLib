@@ -18,8 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 9  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -59,11 +57,9 @@ public class TTInstructionFuncGrp9 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * MIRP[abcde]:  Move Indirect Relative Point
    * Opcode range: 0xE0-0xFF
    * Stack:        int32? uint32 -->
-   *
    * =====================================================================
    */
   public void MIRP() {
@@ -174,11 +170,9 @@ public class TTInstructionFuncGrp9 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * MDRP[abcde]:  Move Direct Relative Point
    * Opcode range: 0xC0-0xDF
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void MDRP() {
@@ -280,11 +274,9 @@ public class TTInstructionFuncGrp9 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * PUSHW[abc]:   PUSH Words
    * Opcode range: 0xB8-0xBF
    * Stack:        --> int32...
-   *
    * =====================================================================
    */
   public void PUSHW() {
@@ -305,11 +297,9 @@ public class TTInstructionFuncGrp9 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * PUSHB[abc]:   PUSH Bytes
    * Opcode range: 0xB0-0xB7
    * Stack:        --> uint32...
-   *
    * =====================================================================
    */
   public void PUSHB() {

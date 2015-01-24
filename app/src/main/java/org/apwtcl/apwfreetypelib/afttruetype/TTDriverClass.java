@@ -159,13 +159,6 @@ Debug(0, DebugTag.DBG_INIT, TAG, "tt_face_init");
       if (error == FTError.ErrorTag.ERR_OK) {
         error = ttface.loadLoca(stream);
       }
-// TEMPORARY!!!
-if (error == FTError.ErrorTag.ERR_OK) {
-  int gindex = 0;
-  error = ttface.loadGlyf(stream, gindex);
-}
-
-
       if (error == FTError.ErrorTag.ERR_OK) {
         error = ttface.loadCvt(stream);
       }
@@ -188,6 +181,9 @@ if (error == FTError.ErrorTag.ERR_OK) {
 */
     }
       /* initialize standard glyph loading routines */
+    if (error == FTError.ErrorTag.ERR_OK) {
+      error = ttface.loadGlyf(stream);
+    }
     TTFaceRec.TTInitGlyphLoading(ttface);
     return error;
   }

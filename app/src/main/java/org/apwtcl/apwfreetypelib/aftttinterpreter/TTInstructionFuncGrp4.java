@@ -126,11 +126,9 @@ public class TTInstructionFuncGrp4 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * NPUSHB[]:     PUSH N Bytes
    * Opcode range: 0x40
    * Stack:        --> uint32...
-   *
    * =====================================================================
    */
   public void NPUSHB() {
@@ -151,11 +149,9 @@ public class TTInstructionFuncGrp4 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * NPUSHW[]:     PUSH N Words
    * Opcode range: 0x41
    * Stack:        --> int32...
-   *
    * =====================================================================
    */
   public void NPUSHW() {
@@ -175,7 +171,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     cur.new_top += L;
   }
 
-  /* ==================== WS ===================================== */
+  /* =====================================================================
+   * WS[]:         Write Store
+   * Opcode range: 0x42
+   * Stack:        uint32 uint32 -->
+   * =====================================================================
+   */
   public void WS() {
     int I = cur.stack[cur.numArgs + 0];
 
@@ -188,7 +189,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     }
   }
 
-  /* ==================== RS ===================================== */
+  /* =====================================================================
+   * RS[]:         Read Store
+   * Opcode range: 0x43
+   * Stack:        uint32 --> uint32
+   * =====================================================================
+   */
   public void RS() {
     int I = (int)cur.stack[cur.numArgs + 0];
 
@@ -203,7 +209,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     }
   }
 
-  /* ==================== WCVTP ===================================== */
+  /* =====================================================================
+   * WCVTP[]:      Write CVT in Pixel units
+   * Opcode range: 0x44
+   * Stack:        f26.6 uint32 -->
+   * =====================================================================
+   */
   public void WCVTP() {
     int I = cur.stack[cur.numArgs + 0];
 
@@ -217,7 +228,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     }
   }
 
-  /* ==================== RCVT ===================================== */
+  /* =====================================================================
+   * RCVT[]:       Read CVT
+   * Opcode range: 0x45
+   * Stack:        uint32 --> f26.6
+   * =====================================================================
+   */
   public void RCVT() {
     int I = (int)cur.stack[cur.numArgs + 0];
 
@@ -234,14 +250,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * GC[a]:        Get Coordinate projected onto
    * Opcode range: 0x46-0x47
    * Stack:        uint32 --> f26.6
    *
    * XXX: UNDOCUMENTED: Measures from the original glyph must be taken
    *      along the dual projection vector!
-   *
    * =====================================================================
    */
   public void GC() {
@@ -267,7 +281,6 @@ public class TTInstructionFuncGrp4 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SCFS[]:       Set Coordinate From Stack
    * Opcode range: 0x48
    * Stack:        f26.6 uint32 -->
@@ -275,7 +288,6 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    * Formula:
    *
    *   OA := OA + ( value - OA.p )/( f.p ) * f
-   *
    * =====================================================================
    */
   public void SCFS() {
@@ -300,7 +312,6 @@ public class TTInstructionFuncGrp4 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * MD[a]:        Measure Distance
    * Opcode range: 0x49-0x4A
    * Stack:        uint32 uint32 --> f26.6
@@ -313,7 +324,6 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    *                      1 => measure distance in grid-fitted outline
    *
    * XXX: UNDOCUMENTED: `zp0 - zp1', and not `zp2 - zp1!
-   *
    * =====================================================================
    */
   public void MD() {
@@ -360,7 +370,12 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     cur.stack[cur.numArgs + 0] = D;
   }
 
-  /* ==================== MPPEM ===================================== */
+  /* =====================================================================
+   * MPPEM[]:      Measure Pixel Per EM
+   * Opcode range: 0x4B
+   * Stack:        --> Euint16
+   * =====================================================================
+   */
   public void MPPEM() {
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_MPPEM: %d", CurrentPpem(cur)));
     cur.stack[cur.numArgs + 0] = CurrentPpem(cur);
@@ -368,23 +383,45 @@ public class TTInstructionFuncGrp4 extends FTDebug {
 
   // Note: The pointSize should be irrelevant in a given font program;
   //       we thus decide to return only the ppem.
-  /* ==================== MPS ===================================== */
+
+  /* =====================================================================
+   * MPS[]:        Measure Point Size
+   * Opcode range: 0x4C
+   * Stack:        --> Euint16
+   * =====================================================================
+   */
   public void MPS() {
     cur.stack[cur.numArgs + 0] = CurrentPpem(cur);
   }
 
-  /* ==================== FLIPON ===================================== */
+  /* =====================================================================
+   * FLIPON[]:     Set auto-FLIP to ON
+   * Opcode range: 0x4D
+   * Stack:        -->
+   * =====================================================================
+   */
   public void FLIPON() {
     cur.graphics_state.auto_flip = true;
   }
 
-  /* ==================== FLIPPOFF ===================================== */
+  /* =====================================================================
+   * FLIPOFF[]:    Set auto-FLIP to OFF
+   * Opcode range: 0x4E
+   * Stack: -->
+   * =====================================================================
+   */
   public void FLIPOFF() {
     cur.graphics_state.auto_flip = false;
   }
 
-  /* ==================== DEBUG ===================================== */
-  public void DEBUG() {
+  /* =====================================================================
+   * DEBUG[]:      DEBUG.  Unsupported.
+   * Opcode range: 0x4F
+   * Stack:        uint32 -->
+   * =====================================================================
+   */
+
+   public void DEBUG() {
     cur.error = FTError.ErrorTag.INTERP_DEBUG_OPCODE;
   }
 

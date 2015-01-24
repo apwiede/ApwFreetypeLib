@@ -18,14 +18,10 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 2  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTCallRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTCodeRange;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDefRec;
-import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
@@ -88,63 +84,32 @@ public class TTInstructionFuncGrp2 extends FTDebug {
   }
 
   /* =====================================================================
-   * <Function>
-   *    insGotoCodeRange
-   *
-   * <Description>
-   *    Goes to a certain code range in the instruction stream.
-   *
-   * <Input>
-   *    aRange :: The index of the code range.
-   *
-   *
-   *    aIP    :: The new IP address in the code range.
-   *
-   * <Return>
-   *    SUCCESS or FAILURE.
+   * DUP[]:        DUPlicate the top stack's element
+   * Opcode range: 0x20
+   * Stack:        StkElt --> StkElt StkElt
    * =====================================================================
    */
-  public static boolean GotoCodeRange(TTExecContextRec cur, int aRange, int aIP) {
-    TTCodeRange range;
-
-    if (aRange < 1 || aRange > 3) {
-      cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
-      return false;
-    }
-    range = cur.codeRangeTable[aRange - 1];
-    if (range.base == null) {   /* invalid coderange */
-      cur.error = FTError.ErrorTag.INTERP_INVALID_CODE_RANGE;
-      return false;
-    }
-      /* NOTE: Because the last instruction of a program may be a CALL */
-      /*       which will return to the first byte *after* the code    */
-      /*       range, we test for aIP <= Size, instead of aIP < Size.  */
-    if (aIP > range.size) {
-      cur.error = FTError.ErrorTag.INTERP_CODE_OVERFLOW;
-      return false;
-    }
-Debug(0, DebugTag.DBG_INTERP, TAG, "insGoto: "+aRange+"!"+range.base+"!"+range.short_base+"!");
-    cur.code = range.base;
-    cur.cvt_code = range.short_base;
-    cur.codeSize = range.size;
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insGotoCodeRange: size: %d", cur.codeSize));
-    cur.IP = aIP;
-    cur.curRange = TTInterpTags.CodeRange.getTableTag(aRange);
-    return true;
-  }
-
-  /* ==================== DUP ===================================== */
   public void DUP() {
     cur.stack[cur.numArgs + 1] = cur.stack[cur.numArgs + 0];
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.numArgs + 1], cur.stack[cur.numArgs + 0]));
   }
 
-  /* ==================== CLEAR ===================================== */
+  /* =====================================================================
+   * CLEAR[]:      CLEAR the entire stack
+   * Opcode range: 0x22
+   * Stack:        StkElt... -->
+   * =====================================================================
+   */
   public void CLEAR() {
     cur.new_top = 0;
   }
 
-  /* ==================== SWAP ===================================== */
+  /* =====================================================================
+   * SWAP[]:       SWAP the stack's top two elements
+   * Opcode range: 0x23
+   * Stack:        2 * StkElt --> 2 * StkElt
+   * =====================================================================
+   */
   public void SWAP() {
     int L;
 
@@ -153,12 +118,22 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     cur.stack[cur.numArgs + 1] = L;
   }
 
-  /* ==================== DEPTH ===================================== */
+  /* =====================================================================
+   * DEPTH[]:      return the stack DEPTH
+   * Opcode range: 0x24
+   * Stack:        --> uint32
+   * =====================================================================
+   */
   public void DEPTH() {
     cur.stack[cur.numArgs + 0] = cur.top;
   }
 
-  /* ==================== CINDEX ===================================== */
+  /* =====================================================================
+   * CINDEX[]:     Copy INDEXed element
+   * Opcode range: 0x25
+   * Stack:        int32 --> StkElt
+   * =====================================================================
+   */
   public void CINDEX() {
     int L;
 
@@ -173,12 +148,12 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     }
   }
 
-    /* =====================================================================
-     * MINDEX[]:     Move INDEXed element
-     * Opcode range: 0x26
-     * Stack:        int32? --> StkElt
-     * =====================================================================
-     */
+  /* =====================================================================
+   * MINDEX[]:     Move INDEXed element
+   * Opcode range: 0x26
+   * Stack:        int32? --> StkElt
+   * =====================================================================
+   */
 
   public void MINDEX() {
     int L;
@@ -197,11 +172,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   }
 
   /* =====================================================================
-   *
    * ALIGNPTS[]:   ALIGN PoinTS
    * Opcode range: 0x27
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void ALIGNPTS() {
@@ -225,7 +198,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
 
   /* ======================== UNKNOWN ============================== */
   public void UNKNOWN() {
-    TTDefRec def = cur.IDefs[0];
+    TTDefRec def;
     int limit = cur.numIDefs;
     int def_idx;
 
@@ -247,7 +220,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
         call.CurCount = 1;
         call.CurRestart = def.start;
         call.CurEnd = def.end;
-        GotoCodeRange(cur, def.range, def.start);
+        cur.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.range), def.start);
         cur.step_ins = false;
         return;
       }
@@ -256,11 +229,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   }
 
   /* =====================================================================
-   *
    * UTP[a]:       UnTouch Point
    * Opcode range: 0x29
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void UTP() {
@@ -285,11 +256,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   }
 
   /* =====================================================================
-   *
    * LOOPCALL[]:   LOOP and CALL function
    * Opcode range: 0x2A
    * Stack:        uint32? Eint16? -->
-   *
    * =====================================================================
    */
   public void LOOPCALL() {
@@ -346,18 +315,16 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
       cur.callStack[cur.callTop].CurRestart = def.start;
       cur.callStack[cur.callTop].CurEnd = def.end;
       cur.callTop++;
-      GotoCodeRange(cur, def.range, def.start);
+      cur.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.range), def.start);
       cur.step_ins = false;
     }
     return;
   }
 
   /* =====================================================================
-   *
    * CALL[]:       CALL function
    * Opcode range: 0x2B
    * Stack:        uint32? -->
-   *
    * =====================================================================
    */
   public void CALL() {
@@ -415,17 +382,15 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     cur.callStack[cur.callTop].CurEnd = def.end;
     cur.callTop++;
     Debug(0, DebugTag.DBG_INTERP, TAG, "insGotoCodeRange: "+def.range+"!"+def.start+"!");
-    GotoCodeRange(cur, def.range, def.start);
+    cur.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.range), def.start);
     cur.step_ins = false;
     return;
   }
 
   /* =====================================================================
-   *
    * FDEF[]:       Function DEFinition
    * Opcode range: 0x2C
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void FDEF() {
@@ -496,11 +461,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   }
 
   /* =====================================================================
-   *
    * ENDF[]:       END Function definition
    * Opcode range: 0x2D
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void ENDF() {
@@ -519,7 +482,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
       cur.IP = pRec.CurRestart;
     } else {
         /* Loop through the current function */
-      GotoCodeRange(cur, pRec.CallerRange, pRec.CallerIP);
+      cur.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(pRec.CallerRange), pRec.CallerIP);
     }
       /* Exit the current call frame.                      */
       /* NOTE: If the last instruction of a program is a   */
@@ -530,11 +493,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
   }
 
   /* =====================================================================
-   *
    * MDAP[a]:      Move Direct Absolute Point
    * Opcode range: 0x2E-0x2F
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void MDAP() {

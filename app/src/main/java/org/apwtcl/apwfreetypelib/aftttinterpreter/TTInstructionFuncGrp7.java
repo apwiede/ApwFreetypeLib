@@ -18,10 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 7  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
-import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -59,7 +55,12 @@ public class TTInstructionFuncGrp7 extends FTDebug {
     return str.toString();
   }
 
-  /* ==================== WCVTF ===================================== */
+  /* =====================================================================
+   * WCVTF[]:      Write CVT in Funits
+   * Opcode range: 0x70
+   * Stack:        uint32 uint32 -->
+   * =====================================================================
+   */
   public void WCVTF() {
     int I = (int)cur.stack[cur.numArgs + 0];
 
@@ -73,11 +74,9 @@ public class TTInstructionFuncGrp7 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * DELTACn[]:    DELTA exceptions C1, C2, C3
    * Opcode range: 0x73,0x74,0x75
    * Stack:        uint32 (2 * uint32)... -->
-   *
    * =====================================================================
    */
   public void DELTAC() {
@@ -131,21 +130,36 @@ public class TTInstructionFuncGrp7 extends FTDebug {
     cur.new_top = cur.numArgs;
   }
 
-  /* ==================== SROUND ===================================== */
+  /* =====================================================================
+   * SROUND[]:     Super ROUND
+   * Opcode range: 0x76
+   * Stack:        Eint8 -->
+   * =====================================================================
+   */
   public void SROUND() {
     cur.render_funcs.round_super.SetSuperRound(0x4000, cur.stack[cur.numArgs + 0]);
     cur.graphics_state.round_state = TTInterpTags.RoundState.Super;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super;
   }
 
-  /* ==================== S45ROUND ===================================== */
+  /* =====================================================================
+   * S45ROUND[]:   Super ROUND 45 degrees
+   * Opcode range: 0x77
+   * Stack:        uint32 -->
+   * =====================================================================
+   */
   public void S45ROUND() {
     cur.render_funcs.round_super.SetSuperRound(0x2D41, cur.stack[cur.numArgs + 0]);
     cur.graphics_state.round_state = TTInterpTags.RoundState.Super_45;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super45;
   }
 
-  /* ==================== JROT ===================================== */
+  /* =====================================================================
+   * JROT[]:       Jump Relative On True
+   * Opcode range: 0x78
+   * Stack:        StkElt int32 -->
+   * =====================================================================
+   */
   public void JROT() {
     if (cur.stack[cur.numArgs + 1] != 0) {
       if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
@@ -160,7 +174,12 @@ public class TTInstructionFuncGrp7 extends FTDebug {
     }
   }
 
-  /* ==================== JROF ===================================== */
+  /* =====================================================================
+   * JROF[]:       Jump Relative On False
+   * Opcode range: 0x79
+   * Stack:        StkElt int32 -->
+   * =====================================================================
+   */
   public void JROF() {
     if (cur.stack[cur.numArgs + 1] == 0) {
       if (cur.stack[cur.numArgs + 0] == 0 && cur.numArgs == 0) {
@@ -175,19 +194,34 @@ public class TTInstructionFuncGrp7 extends FTDebug {
     }
   }
 
-  /* ==================== ROFF ===================================== */
+  /* =====================================================================
+   * ROFF[]:       Round OFF
+   * Opcode range: 0x7A
+   * Stack:        -->
+   * =====================================================================
+   */
   public void ROFF() {
     cur.graphics_state.round_state = TTInterpTags.RoundState.Off;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_none;
   }
 
-  /* ==================== RUTG ===================================== */
+  /* =====================================================================
+   * RUTG[]:       Round Up To Grid
+   * Opcode range: 0x7C
+   * Stack:        -->
+   * =====================================================================
+   */
   public void RUTG() {
     cur.graphics_state.round_state = TTInterpTags.RoundState.Up_To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_up_to_grid;
   }
 
-  /* ==================== RDTG ===================================== */
+  /* =====================================================================
+   * RDTG[]:       Round Down To Grid
+   * Opcode range: 0x7D
+   * Stack:        -->
+   * =====================================================================
+   */
   public void RDTG() {
     cur.graphics_state.round_state = TTInterpTags.RoundState.Down_To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_down_to_grid;

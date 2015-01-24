@@ -384,7 +384,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init_bytecode");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     TTFaceRec ttface = (TTFaceRec)face;
     int i;
-
     int n_twilight;
     TTMaxProfileRec maxp = ttface.getMax_profile();
     bytecode_ready = true;
@@ -434,8 +433,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init_bytecode");
       /* set `ttface.interpreter' according to the debug hook present */
     {
 //        FTLibraryRec library = ttface.driver.library;
-
-      String class_name = "org.apwtcl.apwfreetype.fttruetype.TTInterpRun";
 //        ttface.interpreter = (TTInterpRun) library.debug_hooks[FT_DEBUG_HOOK_TRUETYPE];
     }
       /* Fine, now run the font program! */
@@ -506,7 +503,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_run_fpgm");
     exec.TTClearCodeRange(TTInterpTags.CodeRange.CVT);
     exec.TTClearCodeRange(TTInterpTags.CodeRange.GLYPH);
     if (ttface.getFpgm_table().getFontProgramSize() > 0) {
-      error = exec.TTGotoCodeRange(TTInterpTags.CodeRange.FONT, 0);
+      error = exec.TTGotoCodeRange(TTInterpTags.CodeRange.FONT, 0 /* IP */);
       if (error == FTError.ErrorTag.ERR_OK) {
         FTTrace.Trace(7, TAG, "Executing `fpgm' table.");
         error = ttface.Interpreter(exec);

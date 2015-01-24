@@ -73,7 +73,7 @@ public class TTGlyfRec extends FTDebug {
   }
 
   /* ==================== Load ================================== */
-  public FTError.ErrorTag Load(FTStreamRec stream, TTFaceRec ttface, int gindex) {
+  public FTError.ErrorTag Load(FTStreamRec stream, TTFaceRec ttface) {
     Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "Load: glyf offset: "+String.format("0x%08x", stream.pos()));
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     Integer length = new Integer(0);

@@ -153,7 +153,7 @@ public class TTRunInstructions extends TTExecContextRec {
 
       FTTrace.Trace(3, TAG, String.format("opcode: 0x%02x", opcode.getVal())+" cur.IP: "+IP+" opcode: "+opcode+" numInstructions: "+numInstructions);
 //FTGlyphLoaderRec._showLoaderZone2("interp_opcode");
-Debug(-1, DebugTag.DBG_INTERP, TAG, "OP: "+opcode+" "+opcode.getOpCodeLength());
+Debug(0, DebugTag.DBG_INTERP, TAG, "OP: "+opcode+" "+opcode.getOpCodeLength());
       length = opcode.getOpCodeLength();
       if (length < 0) {
         if (IP + 1 >= codeSize) {
@@ -204,7 +204,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: "+new_top+"!"+stackSize+"!");
             break;
           case SFvTCA_y:  /* SFvTCA y */
           case SFvTCA_x:  /* SFvTCA x */
-            func_grp1.SPVTCA();
+            func_grp1.SFVTCA();
             break;
 /*
           {
@@ -661,7 +661,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: "+new_top+"!"+stackSize+"!");
                   callrec.CurCount = 1;
                   callrec.CurRestart = def.start;
                   callrec.CurEnd = def.end;
-                  if (TTInstructionFuncGrp2.GotoCodeRange(this, def.range, def.start)) {
+                  if (this.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.range), def.start) != FTError.ErrorTag.ERR_OK) {
                     return LError();
                   }
                   useSuiteLabel = true;

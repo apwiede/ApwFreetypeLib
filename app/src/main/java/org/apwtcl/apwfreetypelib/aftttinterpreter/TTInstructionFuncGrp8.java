@@ -18,9 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    instructions functions group 8  for interpreter                    */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDefRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
@@ -62,11 +59,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * FLIPPT[]:     FLIP PoinT
    * Opcode range: 0x80
    * Stack:        uint32... -->
-   *
    * =====================================================================
    */
   public void FLIPPT() {
@@ -99,11 +94,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * FLIPRGON[]:   FLIP RanGe ON
    * Opcode range: 0x81
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void FLIPRGON() {
@@ -125,11 +118,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * FLIPRGOFF:    FLIP RanGe OFF
    * Opcode range: 0x82
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void FLIPRGOFF() {
@@ -151,11 +142,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SCANCTRL[]:   SCAN ConTRoL
    * Opcode range: 0x85
    * Stack:        uint32? -->
-   *
    * =====================================================================
    */
   public void SCANCTRL() {
@@ -193,11 +182,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SDPVTL[a]:    Set Dual PVector to Line
    * Opcode range: 0x86-0x87
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void SDPVTL() {
@@ -265,11 +252,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * GETINFO[]:    GET INFOrmation
    * Opcode range: 0x88
    * Stack:        uint32 --> uint32
-   *
    * =====================================================================
    */
   public void GETINFO() {
@@ -307,11 +292,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * IDEF[]:       Instruction DEFinition
    * Opcode range: 0x89
    * Stack:        Eint8 -->
-   *
    * =====================================================================
    */
   public void IDEF() {
@@ -381,14 +364,24 @@ public class TTInstructionFuncGrp8 extends FTDebug {
     cur.stack[cur.numArgs + 0] = B;
   }
 
-  /* ==================== MAX ===================================== */
+  /* =====================================================================
+   * MAX[]:        MAXimum
+   * Opcode range: 0x68
+   * Stack:        int32? int32? --> int32
+   * =====================================================================
+   */
   public void MAX() {
     if (cur.stack[cur.numArgs + 1] > cur.stack[cur.numArgs + 0]) {
       cur.stack[cur.numArgs + 0] = cur.stack[cur.numArgs + 1];
     }
   }
 
-  /* ==================== MIN ===================================== */
+  /* =====================================================================
+   * MIN[]:        MINimum
+   * Opcode range: 0x69
+   * Stack:        int32? int32? --> int32
+   * =====================================================================
+   */
   public void MIN() {
     if (cur.stack[cur.numArgs + 1] < cur.stack[cur.numArgs + 0]) {
       cur.stack[cur.numArgs + 0] = cur.stack[cur.numArgs + 1];
@@ -396,11 +389,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SCANTYPE[]:   SCAN TYPE
    * Opcode range: 0x8D
    * Stack:        uint32? -->
-   *
    * =====================================================================
    */
   public void SCANTYPE() {
@@ -410,11 +401,9 @@ public class TTInstructionFuncGrp8 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * INSTCTRL[]:   INSTruction ConTRoL
    * Opcode range: 0x8e
    * Stack:        int32 int32 -->
-   *
    * =====================================================================
    */
   public void INSTCTRL() {

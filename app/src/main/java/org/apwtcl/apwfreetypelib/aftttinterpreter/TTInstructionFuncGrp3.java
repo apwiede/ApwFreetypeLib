@@ -274,11 +274,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * IUP[a]:       Interpolate Untouched Points
    * Opcode range: 0x30-0x31
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void IUP() {
@@ -364,11 +362,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SHP[a]:       SHift Point by the last point
    * Opcode range: 0x32-0x33
    * Stack:        uint32... -->
-   *
    * =====================================================================
    */
   public void SHP() {
@@ -413,7 +409,6 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SHC[a]:       SHift Contour
    * Opcode range: 0x34-35
    * Stack:        uint32 -->
@@ -421,7 +416,6 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * UNDOCUMENTED: According to Greg Hitchcock, there is one (virtual)
    *               contour in the twilight zone, namely contour number
    *               zero which includes all points of it.
-   *
    * =====================================================================
    */
   public void SHC() {
@@ -473,11 +467,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SHZ[a]:       SHift Zone
    * Opcode range: 0x36-37
    * Stack:        uint32 -->
-   *
    * =====================================================================
    */
   public void SHZ() {
@@ -527,11 +519,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SHPIX[]:      SHift points by a PIXel amount
    * Opcode range: 0x38
    * Stack:        f26.6 uint32... -->
-   *
    * =====================================================================
    */
   public void SHPIX() {
@@ -567,7 +557,6 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * IP[]:         Interpolate Point
    * Opcode range: 0x39
    * Stack:        uint32... -->
@@ -703,11 +692,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * MSIRP[a]:     Move Stack Indirect Relative Position
    * Opcode range: 0x3A-0x3B
    * Stack:        f26.6 uint32 -->
-   *
    * =====================================================================
    */
   public void MSIRP() {
@@ -739,11 +726,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * ALIGNRP[]:    ALIGN Relative Point
    * Opcode range: 0x3C
    * Stack:        uint32 uint32... -->
-   *
    * =====================================================================
    */
   public void ALIGNRP() {
@@ -778,18 +763,22 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     cur.new_top = cur.numArgs;
   }
 
-  /* ==================== RTDG ===================================== */
+  /* =====================================================================
+   * RTDG[]:       Round To Double Grid
+   * Opcode range: 0x3D
+   * Stack:        -->
+   *
+   * =====================================================================
+   */
   public void RTDG() {
     cur.graphics_state.round_state = TTInterpTags.RoundState.To_Double_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_double_grid;
   }
 
   /* =====================================================================
-   *
    * MIAP[a]:      Move Indirect Absolute Point
    * Opcode range: 0x3E-0x3F
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void MIAP() {

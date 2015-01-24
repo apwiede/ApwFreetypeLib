@@ -62,7 +62,10 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     return str.toString();
   }
 
-  /* ==================== insSxVTL ===================================== */
+  /* ==================== SxVTL =====================================
+   * Set xVector to Line ?
+   * ================================================================
+   */
   private boolean SxVTL(int aIdx1, int aIdx2, TTOpCode.OpCode aOpc, FTReference<FTVectorRec> vec_ref) {
     int A;
     int B;
@@ -103,11 +106,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SPVTL[a]:     Set PVector To Line
    * Opcode range: 0x06-0x07
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void SPvTL() {
@@ -123,11 +124,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SFVTL[a]:     Set FVector To Line
    * Opcode range: 0x08-0x09
    * Stack:        uint32 uint32 -->
-   *
    * =====================================================================
    */
   public void SFVTL() {
@@ -141,11 +140,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SPVFS[]:      Set PVector From Stack
    * Opcode range: 0x0A
    * Stack:        f2.14 f2.14 -->
-   *
    * =====================================================================
    */
   public void SPVFS() {
@@ -167,11 +164,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SFVFS[]:      Set FVector From Stack
    * Opcode range: 0x0B
    * Stack:        f2.14 f2.14 -->
-   *
    * =====================================================================
    */
   public void SFVFS() {
@@ -193,11 +188,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * GPV[]:        Get Projection Vector
    * Opcode range: 0x0C
    * Stack:        ef2.14 --> ef2.14
-   *
    * =====================================================================
    */
   public void GPV() {
@@ -209,7 +202,6 @@ public class TTInstructionFuncGrp0 extends FTDebug {
    * GFV[]:        Get Freedom Vector
    * Opcode range: 0x0D
    * Stack:        ef2.14 --> ef2.14
-   *
    * =====================================================================
    */
   public void GFV() {
@@ -218,11 +210,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
   }
 
   /* =====================================================================
-   *
    * SFVTPV[]:     Set FVector To PVector
    * Opcode range: 0x0E
    * Stack:        -->
-   *
    * =====================================================================
    */
   public void SFVTPV() {
@@ -232,11 +222,9 @@ public class TTInstructionFuncGrp0 extends FTDebug {
 
 
   /* =====================================================================
-   *
    * ISECT[]:      moves point to InterSECTion
    * Opcode range: 0x0F
    * Stack:        5 * uint32 -->
-   *
    * =====================================================================
    */
   public void ISECT() {
