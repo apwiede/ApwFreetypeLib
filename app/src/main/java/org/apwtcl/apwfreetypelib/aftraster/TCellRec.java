@@ -14,23 +14,29 @@
 package org.apwtcl.apwfreetypelib.aftraster;
 
   /* ===================================================================== */
-  /*    grayTBand                                                          */
+  /*    TCell                                                          */
   /*                                                                       */
   /* ===================================================================== */
 
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
-public class grayTBand extends FTDebug {
+public class TCellRec extends FTDebug {
     private static int oid = 0;
 
     private int id;
-    private static String TAG = "grayTBand";
+    private static String TAG = "TCell";
+    public static TCellRec[] tcells = new TCellRec[2048];
+    public static int tcells_idx = 0;
 
-    public short min = 0;   /* band's minimum */
-    public short max = 0;   /* band's maximum */
+    public int x;     /* same with grayTWorker.ex    */
+    public int cover; /* same with grayTWorker.cover */
+    public int area;
+    public int nextIdx;
+    public TCellRec next;
+    public int self_idx;
 
-    /* ==================== grayTBand ================================== */
-    public grayTBand() {
+    /* ==================== TCell ================================== */
+    public TCellRec() {
       oid++;
       id = oid;
     }

@@ -2,7 +2,7 @@
  *  This Java implementation is derived from FreeType code
  *  Portions of this software are copyright (C) 2014 The FreeType
  *  Project (www.freetype.org).  All rights reserved.
- * 
+ *
  *  Copyright (C) of the Java implementation 2014
  *  Arnulf Wiedemann: arnulf (at) wiedemann-pri (dot) de
  *
@@ -14,64 +14,63 @@
 package org.apwtcl.apwfreetypelib.aftraster;
 
   /* ===================================================================== */
-  /*    FTRasterRec                                                          */
+  /*    grayTBandRec                                                       */
   /*                                                                       */
   /* ===================================================================== */
 
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
-public class FTRasterRec extends FTDebug {
+public class grayTBandRec extends FTDebug {
   private static int oid = 0;
 
   private int id;
-  private static String TAG = "FTRasterRec";
+  private static String TAG = "grayTBandRec";
 
-  protected byte[] buffer = null;
-  protected int buffer_size = 0;
+  private int min = 0;   /* band's minimum */
+  private int max = 0;   /* band's maximum */
 
-  /* ==================== FTRasterRec ================================== */
-  public FTRasterRec() {
+  /* ==================== grayTBand ================================== */
+  public grayTBandRec() {
     oid++;
     id = oid;
   }
     
   /* ==================== mySelf ================================== */
   public String mySelf() {
-    String str = TAG+"!"+id+"!";
-    return str;
-  }
+      return TAG+"!"+id+"!";
+    }
         
   /* ==================== toString ===================================== */
   public String toString() {
-    StringBuffer str = new StringBuffer(mySelf()+"!");
-    return str.toString();
-  }
+      return mySelf()+"!";
+    }
 
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    str.append("...buffer_size: "+buffer_size+'\n');
+    str.append("...min: "+min+'\n');
+    str.append("...max: "+max+'\n');
     return str.toString();
   }
 
-  /* ==================== getBuffer ================================== */
-  public byte[] getBuffer() {
-    return buffer;
+  /* ==================== getMin ================================== */
+  public int getMin() {
+    return min;
   }
 
-  /* ==================== setBuffer ================================== */
-  public void setBuffer(byte[] buffer) {
-    this.buffer = buffer;
+  /* ==================== setMin ================================== */
+  public void setMin(int min) {
+    this.min = min;
   }
 
-  /* ==================== getBuffer_size ================================== */
-  public int getBuffer_size() {
-    return buffer_size;
+  /* ==================== getMax ================================== */
+  public int getMax() {
+    return max;
   }
 
-  /* ==================== setBuffer_size ================================== */
-  public void setBuffer_size(int buffer_size) {
-    this.buffer_size = buffer_size;
+  /* ==================== setMax ================================== */
+  public void setMax(int max) {
+    this.max = max;
   }
 
 }

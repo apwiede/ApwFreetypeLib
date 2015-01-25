@@ -15,7 +15,7 @@ package org.apwtcl.apwfreetypelib.aftraster;
 
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
-public class TProfile extends FTDebug {
+public class TProfileRec extends FTDebug {
     private static int oid = 0;
 
     private int id;
@@ -36,7 +36,7 @@ public class TProfile extends FTDebug {
                                   /* during drop-out control                  */
 
     /* ==================== ftdemo.TProfile ================================== */
-    public TProfile() {
+    public TProfileRec() {
       oid++;
       id = oid;
     }

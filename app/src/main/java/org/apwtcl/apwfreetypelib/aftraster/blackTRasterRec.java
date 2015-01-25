@@ -2,7 +2,7 @@
  *  This Java implementation is derived from FreeType code
  *  Portions of this software are copyright (C) 2014 The FreeType
  *  Project (www.freetype.org).  All rights reserved.
- * 
+ *
  *  Copyright (C) of the Java implementation 2014
  *  Arnulf Wiedemann: arnulf (at) wiedemann-pri (dot) de
  *
@@ -14,64 +14,73 @@
 package org.apwtcl.apwfreetypelib.aftraster;
 
   /* ===================================================================== */
-  /*    FTRasterRec                                                          */
+  /*    blackTRasterRec                                                    */
   /*                                                                       */
   /* ===================================================================== */
 
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-
-public class FTRasterRec extends FTDebug {
+public class blackTRasterRec extends FTRasterRec {
   private static int oid = 0;
 
   private int id;
-  private static String TAG = "FTRasterRec";
+  private static String TAG = "blackTRasterRec";
 
-  protected byte[] buffer = null;
-  protected int buffer_size = 0;
+  private blackTWorkerRec worker = null;
+  private byte[] grays = null;
+  private int gray_width = 0;
 
-  /* ==================== FTRasterRec ================================== */
-  public FTRasterRec() {
+  /* ==================== blackTRasterRec ================================== */
+  public blackTRasterRec() {
     oid++;
     id = oid;
+
+    grays = new byte[5];
   }
     
   /* ==================== mySelf ================================== */
   public String mySelf() {
-    String str = TAG+"!"+id+"!";
-    return str;
-  }
+      return TAG+"!"+id+"!";
+    }
         
   /* ==================== toString ===================================== */
   public String toString() {
-    StringBuffer str = new StringBuffer(mySelf()+"!");
-    return str.toString();
-  }
+      return mySelf()+"!";
+    }
 
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    str.append("...buffer_size: "+buffer_size+'\n');
+    str.append("...gray_width: "+gray_width+'\n');
     return str.toString();
   }
 
-  /* ==================== getBuffer ================================== */
-  public byte[] getBuffer() {
-    return buffer;
+  /* ==================== getWorker ================================== */
+  public blackTWorkerRec getWorker() {
+    return worker;
   }
 
-  /* ==================== setBuffer ================================== */
-  public void setBuffer(byte[] buffer) {
-    this.buffer = buffer;
+  /* ==================== setWorker ================================== */
+  public void setWorker(blackTWorkerRec worker) {
+    this.worker = worker;
   }
 
-  /* ==================== getBuffer_size ================================== */
-  public int getBuffer_size() {
-    return buffer_size;
+  /* ==================== getGrays ================================== */
+  public byte[] getGrays() {
+    return grays;
   }
 
-  /* ==================== setBuffer_size ================================== */
-  public void setBuffer_size(int buffer_size) {
-    this.buffer_size = buffer_size;
+  /* ==================== setGrays ================================== */
+  public void setGrays(byte[] grays) {
+    this.grays = grays;
+  }
+
+  /* ==================== getGray_width ================================== */
+  public int getGray_width() {
+    return gray_width;
+  }
+
+  /* ==================== setGray_width ================================== */
+  public void setGray_width(int gray_width) {
+    this.gray_width = gray_width;
   }
 
 }

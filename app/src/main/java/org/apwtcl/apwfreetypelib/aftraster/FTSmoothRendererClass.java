@@ -95,7 +95,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     int y_top = 0;
     int height_org;
     int width_org;
-    FTRasterParams params = new FTRasterParams();
+    FTRasterParamsRec params = new FTRasterParamsRec();
     boolean have_translated_origin = false;
     boolean have_outline_shifted = false;
     boolean have_buffer = false;
@@ -165,9 +165,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     have_buffer = true;
     slot.getInternal().setFlags(FTTags.GlyphFormat.getTableTag(slot.getInternal().getFlags().getVal() | FTTags.GlyphFormat.OWN_BITMAP.getVal()));
       /* set up parameters */
-    params.target = bitmap;
-    params.source = slot.getOutline();
-    params.flags = FTRasterParams.FT_RASTER_FLAG_AA;
+    params.setTarget(bitmap);
+    params.setSource(slot.getOutline());
+    params.setFlags(FTRasterParamsRec.FT_RASTER_FLAG_AA);
       /* render outline into bitmap */
     error = render.rasterRender(render.getRaster(), params);
     if (error != FTError.ErrorTag.ERR_OK) {
@@ -303,9 +303,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
   private FTError.ErrorTag gray_raster_new(FTReference<FTRasterRec> raster_ref) {
 Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    grayTRaster raster = null;
+    grayTRasterRec raster = null;
     raster_ref.Set(null);
-    raster = new grayTRaster();
+    raster = new grayTRasterRec();
     if (raster != null) {
       raster_ref.Set(raster);
     }
@@ -319,21 +319,21 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
    */
   private FTError.ErrorTag gray_raster_reset(FTRasterRec raster_param, byte[] pool_base, int pool_size) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    grayTRaster raster = (grayTRaster)raster_param;
+    grayTRasterRec raster = (grayTRasterRec)raster_param;
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_reset");
     if (raster != null) {
       if (pool_base != null) {
-        grayTWorker worker =  new grayTWorker();
+        grayTWorkerRec worker =  new grayTWorkerRec();
         raster.buffer = pool_base;
         raster.buffer_size = pool_size;
 //          raster.band_size = (int)raster.buffer_size / sizeof(TCell) * 8;
-        raster.band_size = (int)raster.buffer_size / 20;  // FIXME!!!
-        raster.worker = worker;
+        raster.setBand_size(raster.buffer_size / 20);  // FIXME!!!
+        raster.setWorker(worker);
       } else {
         raster.buffer = null;
         raster.buffer_size = 0;
-        raster.worker = null;
+        raster.setWorker(null);
       }
     }
     return error;
@@ -344,12 +344,12 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_reset");
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_raster_render(FTRasterRec raster_param, FTRasterParams params) {
+  private FTError.ErrorTag gray_raster_render(FTRasterRec raster_param, FTRasterParamsRec params) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_render");
-    grayTRaster raster = (grayTRaster)raster_param;
-    FTOutlineRec outline = (FTOutlineRec)params.source;
-    FTBitmapRec target_map = params.target;
-    grayTWorker worker;
+    grayTRasterRec raster = (grayTRasterRec)raster_param;
+    FTOutlineRec outline = (FTOutlineRec)params.getSource();
+    FTBitmapRec target_map = params.getTarget();
+    grayTWorkerRec worker;
 
     if (raster == null || raster.buffer == null || raster.buffer_size == 0) {
       return FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
@@ -367,9 +367,9 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_render");
     if (outline.getN_points() != outline.getContours()[outline.getN_contours() - 1] + 1) {
       return FTError.ErrorTag.RENDER_INVALID_OUTLINE;
     }
-    worker = raster.worker;
+    worker = raster.getWorker();
       /* if direct mode is not set, we must have a target bitmap */
-    if ((params.flags & FTRasterParams.FT_RASTER_FLAG_DIRECT) == 0) {
+    if ((params.getFlags() & FTRasterParamsRec.FT_RASTER_FLAG_DIRECT) == 0) {
       if (target_map == null) {
         return FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
       }
@@ -382,43 +382,38 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_render");
       }
     }
       /* this version does not support monochrome rendering */
-    if ((params.flags & FTRasterParams.FT_RASTER_FLAG_AA) == 0) {
+    if ((params.getFlags() & FTRasterParamsRec.FT_RASTER_FLAG_AA) == 0) {
       return FTError.ErrorTag.RENDER_INVALID_MODE;
     }
       /* compute clipping box */
-    if ((params.flags & FTRasterParams.FT_RASTER_FLAG_DIRECT) == 0) {
+    if ((params.getFlags() & FTRasterParamsRec.FT_RASTER_FLAG_DIRECT) == 0) {
         /* compute clip box from target pixmap */
-      worker.clip_box.setxMin(0);
-      worker.clip_box.setyMin(0);
-      worker.clip_box.setxMax(target_map.getWidth());
-      worker.clip_box.setyMax(target_map.getRows());
+      worker.getClip_box().setxMin(0);
+      worker.getClip_box().setyMin(0);
+      worker.getClip_box().setxMax(target_map.getWidth());
+      worker.getClip_box().setyMax(target_map.getRows());
     } else {
-      if ((params.flags & FTRasterParams.FT_RASTER_FLAG_CLIP) != 0) {
-        worker.clip_box = params.clip_box;
+      if ((params.getFlags() & FTRasterParamsRec.FT_RASTER_FLAG_CLIP) != 0) {
+        worker.setClip_box(params.getClip_box());
       } else {
-        worker.clip_box.setxMin(-32768);
-        worker.clip_box.setyMin(-32768);
-        worker.clip_box.setxMax(32767);
-        worker.clip_box.setyMax(32767);
+        worker.getClip_box().setxMin(-32768);
+        worker.getClip_box().setyMin(-32768);
+        worker.getClip_box().setxMax(32767);
+        worker.getClip_box().setyMax(32767);
       }
     }
     gray_init_cells(worker, raster.buffer, raster.buffer_size);
-    worker.outline = outline;
-    worker.num_cells = 0;
-    worker.invalid = true;
-    worker.band_size = raster.band_size;
-    worker.num_gray_spans = 0;
-    if ((params.flags & FTRasterParams.FT_RASTER_FLAG_DIRECT) != 0) {
-/* NEEDED !!!
-      worker.render_span = params.gray_spans;
-  NEEDED !!! */
-      worker.render_span_data = params.user;
+    worker.setOutline(outline);
+    worker.setNum_cells(0);
+    worker.setInvalid(true);
+    worker.setBand_size(raster.getBand_size());
+    worker.setNum_gray_spans(0);
+    if ((params.getFlags() & FTRasterParamsRec.FT_RASTER_FLAG_DIRECT) != 0) {
+//FIXME!!      worker.render_span(params.gray_spans);
+      worker.setRender_span_data(params.getUser_data());
     } else {
-      worker.target = target_map;
-/* NEEDED !!!
-      worker.render_span = FTGrayRasterClassFuncs.gray_render_span;
-      NEEDED !!! */
-      worker.render_span_data = worker;
+      worker.setTarget(target_map);
+      worker.setRender_span_data(worker);
     }
     return gray_convert_glyph(worker);
   }
@@ -440,11 +435,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_done");
    *
    * =====================================================================
    */
-  private void gray_render_span(int y, int count, FTSpan[] spans, grayTWorker worker) {
+  private void gray_render_span(int y, int count, FTSpanRec[] spans, grayTWorkerRec worker) {
     int spansIdx = 0;
     int pIdx;
     int qIdx;
-    FTBitmapRec map = worker.target;
+    FTBitmapRec map = worker.getTarget();
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count: %d", y, count));
 
     /* first of all, compute the scanline offset */
@@ -453,25 +448,25 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count:
       pIdx += ((map.getRows() - 1) * map.getPitch());
     }
     for (; count > 0; count--, spansIdx++) {
-      byte coverage = spans[spansIdx].coverage;
+      byte coverage = spans[spansIdx].getCoverage();
 
       if (coverage != 0) {
           /* For small-spans it is faster to do it by ourselves than
            * calling `memset'.  This is mainly due to the cost of the
            * function call.
            */
-        if (spans[spansIdx].len >= 8) {
-          int lgth = spans[spansIdx].len;
+        if (spans[spansIdx].getLen() >= 8) {
+          int lgth = spans[spansIdx].getLen();
           int i;
-          for (i = spans[spansIdx].x; i < spans[spansIdx].x + lgth; i++) {
+          for (i = spans[spansIdx].getX(); i < spans[spansIdx].getX() + lgth; i++) {
             map.getBuffer()[i] = (byte)coverage;
           }
 //            FT_MEM_SET(p + spans[spansIdx].x, (char)coverage, spans[spansIdx].len);
         } else {
 //            char*  q = p + spans.x;
-          qIdx = pIdx + spans[spansIdx].x;
+          qIdx = pIdx + spans[spansIdx].getX();
 
-          switch (spans[spansIdx].len) {
+          switch (spans[spansIdx].getLen()) {
             case 7: map.getBuffer()[qIdx++] = (byte)coverage;
             case 6: map.getBuffer()[qIdx++] = (byte)coverage;
             case 5: map.getBuffer()[qIdx++] = (byte)coverage;
@@ -492,18 +487,18 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count:
    *
    * =====================================================================
    */
-  private void gray_init_cells(grayTWorker worker, byte[] buffer, int byte_size) {
+  private void gray_init_cells(grayTWorkerRec worker, byte[] buffer, int byte_size) {
     Debug(0, DebugTag.DBG_RENDER, TAG, "+++ gray_init_cells");
 
-    worker.buffer = buffer;
-    worker.buffer_size = byte_size;
-    worker.ycells = new TCell[(int)byte_size / 10];
-    worker.cells = null;
-    worker.max_cells = 0;
-    worker.num_cells = 0;
-    worker.area = 0;
-    worker.cover = 0;
-    worker.invalid = true;
+    worker.setBuffer(buffer);
+    worker.setBuffer_size(byte_size);
+    worker.setYcells(new TCellRec[byte_size / 10]);
+    worker.setCells(null);
+    worker.setMax_cells(0);
+    worker.setNum_cells(0);
+    worker.setArea(0);
+    worker.setCover(0);
+    worker.setInvalid(true);
   }
 
   /* =====================================================================
@@ -511,14 +506,14 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count:
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_convert_glyph_inner(grayTWorker worker) {
+  private FTError.ErrorTag gray_convert_glyph_inner(grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
     func_interface = new FTGrayOutlineFuncsClass();
     FTReference<FTOutlineRec> outline_ref = new FTReference<FTOutlineRec>();
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
 //      if (ft_setjmp(ras.jump_buffer) == 0) {
-    error = worker.outline.FTOutlineDecompose((FTOutlineFuncs)func_interface, worker);
+    error = worker.getOutline().FTOutlineDecompose((FTOutlineFuncs)func_interface, worker);
     func_interface.gray_record_cell(worker);
 //      } else {
 //        error = FT_THROW( Memory_Overflow );
@@ -531,7 +526,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
    *
    * =====================================================================
    */
-  private void gray_hline(grayTWorker worker, int x, int y, int area, int acount) {
+  private void gray_hline(grayTWorkerRec worker, int x, int y, int area, int acount) {
     Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_hline: x: %d, y: %d, area: 0x%08x, acount: %d", x, y, area, acount));
     int coverage = 0;
     int spanIdx = 0;
@@ -546,7 +541,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
     if (coverage < 0) {
       coverage = -coverage;
     }
-    if ((worker.outline.getFlags() & Flags.Outline.EVEN_ODD_FILL.getVal()) != 0) {
+    if ((worker.getOutline().getFlags() & Flags.Outline.EVEN_ODD_FILL.getVal()) != 0) {
       coverage &= 511;
       if (coverage > 256) {
         coverage = 512 - coverage;
@@ -561,8 +556,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
         coverage = 255;
       }
     }
-    y += worker.min_ey;
-    x += worker.min_ex;
+    y += worker.getMin_ey();
+    x += worker.getMin_ex();
       /* FT_Span.x is a 16-bit short, so limit our coordinates appropriately */
     if (x >= 32767) {
       x = 32767;
@@ -574,49 +569,49 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
     Debug(0, DebugTag.DBG_RENDER, TAG, String.format("x: %d, y: %d, coverage: %x", x, y, coverage));
     if (coverage != 0) {
       int count;
-      FTSpan span = null;
+      FTSpanRec span = null;
 
         /* see whether we can add this span to the current list */
-      count = worker.num_gray_spans;
+      count = worker.getNum_gray_spans();
       spanIdx = count - 1;
       if (count > 0) {
-        span = worker.gray_spans[count - 1];
+        span = worker.getGray_span(count - 1);
       } else {
       }
-      if (count > 0 && worker.span_y == y && (int)span.x + span.len == (int)x &&
-          (span.coverage & 0xFF) == coverage) {
-        span.len = (short)(span.len + acount);
-        worker.gray_spans[count - 1] = span;
+      if (count > 0 && worker.getSpan_y() == y && span.getX() + span.getLen() == (int)x &&
+          (span.getCoverage() & 0xFF) == coverage) {
+        span.setLen(span.getLen() + acount);
+        worker.setGray_span(count - 1, span);
         return;
       }
-      if (worker.span_y != y || count >= FTSpan.FT_MAX_GRAY_SPANS) {
+      if (worker.getSpan_y() != y || count >= FTSpanRec.FT_MAX_GRAY_SPANS) {
         if (count > 0) {
-          worker.renderSpan(worker.span_y, count, worker.gray_spans,
-              (grayTWorker)worker.render_span_data);
+          worker.renderSpan(worker.getSpan_y(), count, worker.getGray_spans(),
+              (grayTWorkerRec)worker.getRender_span_data());
         }
         if (count > 0) {
           int  n;
           StringBuffer str = new StringBuffer();
 
-          str.append(String.format("y = %3d ", worker.span_y));
+          str.append(String.format("y = %3d ", worker.getSpan_y()));
           for (n = 0; n < count; n++) {
             str.append(String.format("  [%d..%d]:0x%02x ",
-                worker.gray_spans[n].x, worker.gray_spans[n].x + worker.gray_spans[n].len - 1, worker.gray_spans[n].coverage));
+                worker.getGray_span(n).getX(), worker.getGray_span(n).getX() + worker.getGray_span(n).getLen() - 1, worker.getGray_span(n).getCoverage()));
           }
           FTTrace.Trace(7, TAG, str.toString());
         }
-        worker.num_gray_spans = 0;
-        worker.span_y = (int)y;
+        worker.setNum_gray_spans(0);
+        worker.setSpan_y(y);
         count = 0;
         spanIdx = 0;
       } else {
         spanIdx++;
       }
         /* add a gray span to the current list */
-      worker.gray_spans[spanIdx].x = (short)x;
-      worker.gray_spans[spanIdx].len = (short)acount;
-      worker.gray_spans[spanIdx].coverage = (byte)coverage;
-      worker.num_gray_spans++;
+      worker.getGray_span(spanIdx).setX(x);
+      worker.getGray_span(spanIdx).setLen(acount);
+      worker.getGray_span(spanIdx).setCoverage((byte)coverage);
+      worker.setNum_gray_spans(worker.getNum_gray_spans() + 1);
     }
     Debug(0, DebugTag.DBG_RENDER, TAG, "gray_hline END 2");
   }
@@ -626,17 +621,17 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
    *
    * =====================================================================
    */
-  public void gray_sweep(grayTWorker worker, FTBitmapRec target) {
+  public void gray_sweep(grayTWorkerRec worker, FTBitmapRec target) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_sweep");
     int  yindex;
 
-    if (worker.num_cells == 0) {
+    if (worker.getNum_cells() == 0) {
       return;
     }
-    worker.num_gray_spans = 0;
-    FTTrace.Trace(7, TAG, "gray_sweep: start "+worker.ycount);
-    for (yindex = 0; yindex < worker.ycount; yindex++) {
-      TCell cell  = worker.ycells[yindex];
+    worker.setNum_gray_spans(0);
+    FTTrace.Trace(7, TAG, "gray_sweep: start "+worker.getYcount());
+    for (yindex = 0; yindex < worker.getYcount(); yindex++) {
+      TCellRec cell = worker.getYcell(yindex);
       int cover = 0;
       int x = 0;
 
@@ -656,24 +651,24 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_sweep");
         x = cell.x + 1;
       }
       if (cover != 0) {
-        gray_hline(worker, x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), worker.count_ex - x);
+        gray_hline(worker, x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), worker.getCount_ex() - x);
       }
     }
-    if (worker.num_gray_spans > 0) {
-      worker.renderSpan(worker.span_y, worker.num_gray_spans,
-          worker.gray_spans, (grayTWorker)worker.render_span_data);
+    if (worker.getNum_gray_spans() > 0) {
+      worker.renderSpan(worker.getSpan_y(), worker.getNum_gray_spans(),
+          worker.getGray_spans(), (grayTWorkerRec)worker.getRender_span_data());
     }
-    if (worker.num_gray_spans > 0) {
-      FTSpan span;
+    if (worker.getNum_gray_spans() > 0) {
+      FTSpanRec span;
       int spanIdx = 0;
       int n;
       StringBuffer str = new StringBuffer("");
 
-      str.append(String.format("y = %3d ", worker.span_y));
-      for (n = 0; n < worker.num_gray_spans; n++, spanIdx++) {
-        span = worker.gray_spans[spanIdx];
+      str.append(String.format("y = %3d ", worker.getSpan_y()));
+      for (n = 0; n < worker.getNum_gray_spans(); n++, spanIdx++) {
+        span = worker.getGray_span(spanIdx);
         str.append(String.format("  [%d..%d]:0x%02x ",
-            span.x, span.x + span.len - 1, span.coverage & 0xFF));
+            span.getX(), span.getX() + span.getLen() - 1, span.getCoverage() & 0xFF));
       }
       FTTrace.Trace(7, TAG, str.toString());
     }
@@ -685,10 +680,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_sweep");
    *
    * =====================================================================
    */
-  public FTError.ErrorTag gray_convert_glyph(grayTWorker worker) {
+  public FTError.ErrorTag gray_convert_glyph(grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    grayTBand[] bands = new grayTBand[40];
+    grayTBandRec[] bands = new grayTBandRec[40];
     int bandIdx = 0;
     int n;
     int i;
@@ -700,49 +695,49 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
     boolean reduceBands = false;
 
     for (i = 0; i < 40; i++) {
-      bands[i] = new grayTBand();
+      bands[i] = new grayTBandRec();
     }
 
       /* Set up state in the raster object */
     func_interface.gray_compute_cbox(worker);
       /* clip to target bitmap, exit if nothing to do */
-    clip = worker.clip_box;
-    if (worker.max_ex <= clip.getxMin() || worker.min_ex >= clip.getxMax() ||
-        worker.max_ey <= clip.getyMin() || worker.min_ey >= clip.getyMax()) {
+    clip = worker.getClip_box();
+    if (worker.getMax_ex() <= clip.getxMin() || worker.getMin_ex() >= clip.getxMax() ||
+        worker.getMax_ey() <= clip.getyMin() || worker.getMin_ey() >= clip.getyMax()) {
       return error;
     }
-    if (worker.min_ex < clip.getxMin()) {
-      worker.min_ex = clip.getxMin();
+    if (worker.getMin_ex() < clip.getxMin()) {
+      worker.setMin_ex(clip.getxMin());
     }
-    if (worker.min_ey < clip.getyMin()) {
-      worker.min_ey = clip.getyMin();
+    if (worker.getMin_ey() < clip.getyMin()) {
+      worker.setMin_ey(clip.getyMin());
     }
-    if (worker.max_ex > clip.getxMax()) {
-      worker.max_ex = clip.getxMax();
+    if (worker.getMax_ex() > clip.getxMax()) {
+      worker.setMax_ex(clip.getxMax());
     }
-    if (worker.max_ey > clip.getyMax()) {
-      worker.max_ey = clip.getyMax();
+    if (worker.getMax_ey() > clip.getyMax()) {
+      worker.setMax_ey(clip.getyMax());
     }
-    worker.count_ex = worker.max_ex - worker.min_ex;
-    worker.count_ey = worker.max_ey - worker.min_ey;
+    worker.setCount_ex(worker.getMax_ex() - worker.getMin_ex());
+    worker.setCount_ey(worker.getMax_ey() - worker.getMin_ey());
       /* set up vertical bands */
-    num_bands = (int)((worker.max_ey - worker.min_ey) / worker.band_size);
+    num_bands = (worker.getMax_ey() - worker.getMin_ey() / worker.getBand_size());
     if (num_bands == 0) {
       num_bands = 1;
     }
     if (num_bands >= 39) {
       num_bands = 39;
     }
-    worker.band_shoot = 0;
-    min = worker.min_ey;
-    max_y = worker.max_ey;
+    worker.setBand_shoot(0);
+    min = worker.getMin_ey();
+    max_y = worker.getMax_ey();
     for (n = 0; n < num_bands; n++, min = max) {
-      max = min + worker.band_size;
+      max = min + worker.getBand_size();
       if (n == num_bands - 1 || max > max_y) {
         max = max_y;
       }
-      bands[0].min = (short)min;
-      bands[0].max = (short)max;
+      bands[0].setMin(min);
+      bands[0].setMax(max);
       bandIdx = 0;
       while (bandIdx >= 0) {
         int bottom;
@@ -756,8 +751,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
           int cellsIdx = 0;
 
 //            worker.ycells = (TCell[])worker.buffer;
-          worker.ycount = bands[bandIdx].max - bands[bandIdx].min;
-          worker.ycells = new TCell[(int)worker.ycount];
+          worker.setYcount(bands[bandIdx].getMax() - bands[bandIdx].getMin());
+          worker.setYcells(new TCellRec[worker.getYcount()]);
           cell_start = 0;
           cell_end = 1024;
 //            cell_start = TCellSize * worker.ycount;
@@ -770,34 +765,34 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
           cells_max = cell_end;
           cellsIdx = cell_start;
           cellsIdx = 0;
-          worker.cells = new TCell[(int)cells_max];
+          worker.setCells(new TCellRec[cells_max]);
           for (int j = 0; j < cells_max; j++) {
-            worker.cells[j] = new TCell();
+            worker.setCell(j, new TCellRec());
           }
           if (cellsIdx >= cells_max) {
             reduceBands = true;
           }
           if (!reduceBands) {
-            worker.max_cells = (int)(cells_max - cellsIdx);
-            if (worker.max_cells < 2) {
+            worker.setMax_cells(cells_max - cellsIdx);
+            if (worker.getMax_cells() < 2) {
               reduceBands = true;
             }
           }
           if (!reduceBands) {
-            for (yindex = 0; yindex < worker.ycount; yindex++) {
-              worker.ycells[yindex] = null;
+            for (yindex = 0; yindex < worker.getYcount(); yindex++) {
+              worker.setYcell(yindex, null);
             }
           }
         }
         if (!reduceBands) {
-          worker.num_cells = 0;
-          worker.invalid = true;
-          worker.min_ey = bands[bandIdx].min;
-          worker.max_ey = bands[bandIdx].max;
-          worker.count_ey = bands[bandIdx].max - bands[bandIdx].min;
+          worker.setNum_cells(0);
+          worker.setInvalid(true);
+          worker.setMin_ey(bands[bandIdx].getMin());
+          worker.setMax_ey(bands[bandIdx].getMax());
+          worker.setCount_ey(bands[bandIdx].getMax() - bands[bandIdx].getMin());
           error = gray_convert_glyph_inner(worker);
           if (error == FTError.ErrorTag.ERR_OK) {
-            gray_sweep(worker, worker.target);
+            gray_sweep(worker, worker.getTarget());
             bandIdx--;
             continue;
           } else {
@@ -808,8 +803,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
         }
         reduceBands = false;
           /* render pool overflow; we will reduce the render band by half */
-        bottom = bands[bandIdx].min;
-        top = bands[bandIdx].max;
+        bottom = bands[bandIdx].getMin();
+        top = bands[bandIdx].getMax();
         middle = bottom + ((top - bottom) >> 1);
           /* This is too complex for a single scanline; there must */
           /* be some problems.                                     */
@@ -817,18 +812,18 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
           FTTrace.Trace(7, TAG, "gray_convert_glyph: rotten glyph");
           return FTError.ErrorTag.GLYPH_ROTTEN_GLYPH;
         }
-        if (bottom-top >= worker.band_size) {
-          worker.band_shoot++;
+        if (bottom-top >= worker.getBand_size()) {
+          worker.setBand_shoot(worker.getBand_shoot() + 1);
         }
-        bands[bandIdx + 1].min = (short)bottom;
-        bands[bandIdx + 1].max = (short)middle;
-        bands[bandIdx + 0].min = (short)middle;
-        bands[bandIdx + 0].max = (short)top;
+        bands[bandIdx + 1].setMin(bottom);
+        bands[bandIdx + 1].setMax(middle);
+        bands[bandIdx + 0].setMin(middle);
+        bands[bandIdx + 0].setMax(top);
         bandIdx++;
       }
     }
-    if (worker.band_shoot > 8 && worker.band_size > 16) {
-      worker.band_size = worker.band_size / 2;
+    if (worker.getBand_shoot() > 8 && worker.getBand_size() > 16) {
+      worker.setBand_size(worker.getBand_size() / 2);
     }
     return error;
   }
@@ -905,7 +900,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
 
   /* ==================== rasterRender ===================================== */
   @Override
-  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParams params) {
+  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
     return gray_raster_render(raster, params);
   }
 
@@ -916,7 +911,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
   }
 
   /* ==================== grayRenderSpan ===================================== */
-  public void grayRenderSpan(int y, int count, FTSpan[] spans, grayTWorker worker) {
+  public void grayRenderSpan(int y, int count, FTSpanRec[] spans, grayTWorkerRec worker) {
     gray_render_span(y, count, spans, worker);
   }
 

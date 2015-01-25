@@ -42,7 +42,7 @@ package org.apwtcl.apwfreetypelib.aftbase;
 
 import android.util.Log;
 
-import org.apwtcl.apwfreetypelib.aftraster.FTRasterParams;
+import org.apwtcl.apwfreetypelib.aftraster.FTRasterParamsRec;
 import org.apwtcl.apwfreetypelib.aftraster.FTRasterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -153,7 +153,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTRendererClassRec constructor called!
   }
 
   /* ==================== rasterRender ===================================== */
-  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParams params) {
+  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Log.e(TAG, "rasterRender not yet implemented");

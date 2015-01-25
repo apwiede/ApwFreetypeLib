@@ -14,7 +14,7 @@
 package org.apwtcl.apwfreetypelib.aftraster;
 
   /* ===================================================================== */
-  /*    FTRasterParams                                                          */
+  /*    FTRasterParamsRec                                                  */
   /*                                                                       */
   /* <Description>                                                         */
   /*    A structure to hold the arguments used by a raster's render        */
@@ -108,50 +108,99 @@ import org.apwtcl.apwfreetypelib.aftbase.FTBitmapRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
-public class FTRasterParams extends FTDebug {
-    private static int oid = 0;
+public class FTRasterParamsRec extends FTDebug {
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTRasterParams";
+  private int id;
+  private static String TAG = "FTRasterParamsRec";
 
-    public final static int FT_RASTER_FLAG_DEFAULT = 0x0;
-    public final static int FT_RASTER_FLAG_AA      =  0x1;
-    public final static int FT_RASTER_FLAG_DIRECT  =  0x2;
-    public final static int FT_RASTER_FLAG_CLIP    =  0x4;
+  public final static int FT_RASTER_FLAG_DEFAULT = 0x0;
+  public final static int FT_RASTER_FLAG_AA      =  0x1;
+  public final static int FT_RASTER_FLAG_DIRECT  =  0x2;
+  public final static int FT_RASTER_FLAG_CLIP    =  0x4;
 
-    public FTBitmapRec target = null;
-    public Object source = null;
-    public int flags;
-    // FT_SpanFunc             black_spans;  /* doesn't work! */
-    // FT_Raster_BitTest_Func  bit_test;     /* doesn't work! */
-    // FT_Raster_BitSet_Func   bit_set;      /* doesn't work! */
-    public Object user = null;
-    public FTBBoxRec clip_box = null;
+  private FTBitmapRec target = null;
+  private Object source = null;
+  private int flags;
+  private Object user_data = null;
+  private FTBBoxRec clip_box = null;
 
-    /* ==================== FTRasterParams ================================== */
-    public FTRasterParams() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTRasterParamsRec ================================== */
+  public FTRasterParamsRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...flags: "+flags+'\n');
+    return str.toString();
+  }
 
+  /* ==================== graySpans ================================== */
   public FTError.ErrorTag graySpans() {
     return FTError.ErrorTag.ERR_OK;
+  }
+
+  /* ==================== getTarget ================================== */
+  public FTBitmapRec getTarget() {
+    return target;
+  }
+
+  /* ==================== setTarget ================================== */
+  public void setTarget(FTBitmapRec target) {
+    this.target = target;
+  }
+
+  /* ==================== getSource ================================== */
+  public Object getSource() {
+    return source;
+  }
+
+  /* ==================== setSource ================================== */
+  public void setSource(Object source) {
+    this.source = source;
+  }
+
+  /* ==================== getFlags ================================== */
+  public int getFlags() {
+    return flags;
+  }
+
+  /* ==================== setFlags ================================== */
+  public void setFlags(int flags) {
+    this.flags = flags;
+  }
+
+  /* ==================== getUser_data ================================== */
+  public Object getUser_data() {
+    return user_data;
+  }
+
+  /* ==================== setUser_data ================================== */
+  public void setUser(Object user_data) {
+    this.user_data = user_data;
+  }
+
+  /* ==================== getClip_box ================================== */
+  public FTBBoxRec getClip_box() {
+    return clip_box;
+  }
+
+  /* ==================== setClip_box ================================== */
+  public void setClip_box(FTBBoxRec clip_box) {
+    this.clip_box = clip_box;
   }
 
 }

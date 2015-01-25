@@ -14,7 +14,7 @@
 package org.apwtcl.apwfreetypelib.aftraster;
 
   /* ===================================================================== */
-  /*    FTSpan                                                             */
+  /*    FTSpanRec                                                          */
   /*                                                                       */
   /* <Description>                                                         */
   /*    A structure used to model a single span of gray (or black) pixels  */
@@ -41,38 +41,71 @@ package org.apwtcl.apwfreetypelib.aftraster;
 
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
-public class FTSpan extends FTDebug {
-    private static int oid = 0;
+public class FTSpanRec extends FTDebug {
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTSpan";
+  private int id;
+  private static String TAG = "FTSpanRec";
 
-    public static int FT_MAX_GRAY_SPANS = 32;
+  public static int FT_MAX_GRAY_SPANS = 32;
 
-    public short x;
-    public short len;
-    public byte coverage;
+  private int x;
+  private int len;
+  private byte coverage;
 
-    /* ==================== FTSpan ================================== */
-    public FTSpan() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTSpanRec ================================== */
+  public FTSpanRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...x: "+x+'\n');
+    str.append("...len: "+len+'\n');
+    str.append("...coverage: "+coverage+'\n');
+    return str.toString();
+  }
+
+  /* ==================== getX ================================== */
+  public int getX() {
+    return x;
+  }
+
+  /* ==================== setX ================================== */
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  /* ==================== getLen ================================== */
+  public int getLen() {
+    return len;
+  }
+
+  /* ==================== setLen ================================== */
+  public void setLen(int len) {
+    this.len = len;
+  }
+
+  /* ==================== getCoverage ================================== */
+  public byte getCoverage() {
+    return coverage;
+  }
+
+  /* ==================== setCoverage ================================== */
+  public void setCoverage(byte coverage) {
+    this.coverage = coverage;
+  }
+
 }

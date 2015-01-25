@@ -65,7 +65,7 @@ public class FTGrayOutlineFuncsClass extends FTOutlineFuncs {
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_move_to(FTVectorRec to, grayTWorker worker) {
+  private FTError.ErrorTag gray_move_to(FTVectorRec to, grayTWorkerRec worker) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     int x;
     int y;
@@ -77,8 +77,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: 
     x = RasterUtil.UPSCALE(to.x);
     y = RasterUtil.UPSCALE(to.y);
     gray_start_cell(worker, RasterUtil.TRUNC(x), RasterUtil.TRUNC(y));
-    worker.x = x;
-    worker.y = y;
+    worker.setX(x);
+    worker.setY(y);
     return error;
   }
 
@@ -87,7 +87,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: 
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_line_to(FTVectorRec to, grayTWorker worker) {
+  private FTError.ErrorTag gray_line_to(FTVectorRec to, grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.x, to.y));
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
@@ -102,7 +102,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_line_to: to.x: %d, to.y: 
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_conic_to(FTVectorRec control, FTVectorRec to, grayTWorker worker) {
+  private FTError.ErrorTag gray_conic_to(FTVectorRec control, FTVectorRec to, grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_conic_to");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
@@ -116,7 +116,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_conic_to");
    *
    * =====================================================================
    */
-  private FTError.ErrorTag gray_cubic_to(FTVectorRec control1, FTVectorRec control2, FTVectorRec to, grayTWorker worker) {
+  private FTError.ErrorTag gray_cubic_to(FTVectorRec control1, FTVectorRec control2, FTVectorRec to, grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_cubic_to");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
@@ -130,28 +130,28 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_cubic_to");
    *
    * =====================================================================
    */
-  private TCell gray_find_cell(grayTWorker worker) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_find_cell: ras.ex: %d, ras.ey: %d, ras.count_ex: %d, ras.num_cells: %d", worker.ex, worker.ey, worker.count_ex, worker.num_cells));
+  private TCellRec gray_find_cell(grayTWorkerRec worker) {
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_find_cell: ras.ex: %d, ras.ey: %d, ras.count_ex: %d, ras.num_cells: %d", worker.getEx(), worker.getEy(), worker.getCount_ex(), worker.getNum_cells()));
     int pcellIdx;
     int cellIdx;
-    TCell cell = null;
-    TCell pcell = null;
-    int x = worker.ex;
+    TCellRec cell = null;
+    TCellRec pcell = null;
+    int x = worker.getEx();
     boolean useYcells = true;
     boolean isYcell = true;
 
-    if (x > worker.count_ex) {
-      x = worker.count_ex;
+    if (x > worker.getCount_ex()) {
+      x = worker.getCount_ex();
     }
-    for(int j = 0; j < worker.ycount; j++) {
-      int a = worker.ycells[j] == null ? -1 : worker.ycells[j].area;
-      int c = worker.ycells[j] == null ? -1 : worker.ycells[j].cover;
+    for(int j = 0; j < worker.getYcount(); j++) {
+      int a = worker.getYcell(j) == null ? -1 : worker.getYcell(j).area;
+      int c = worker.getYcell(j) == null ? -1 : worker.getYcell(j).cover;
       StringBuffer str = new StringBuffer("");
       str.append(String.format("ycells j: %2d, idx: %2d, x: %4d, a: %6x, c: %6x", j,
-          worker.ycells[j] == null ? -1 : worker.ycells[j].self_idx,
-          worker.ycells[j] == null ? -1 : worker.ycells[j].x,
+          worker.getYcell(j) == null ? -1 : worker.getYcell(j).self_idx,
+          worker.getYcell(j) == null ? -1 : worker.getYcell(j).x,
           a & 0xFFFFFF, c & 0xFFFFFF));
-      cell = worker.ycells[j];
+      cell = worker.getYcell(j);
       while( cell != null) {
         cell = cell.next;
         if (cell != null) {
@@ -162,11 +162,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_find_cell: ras.ex: %d, ra
 Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
     }
 
-    pcellIdx = (int)worker.ey;
+    pcellIdx = worker.getEy();
     cellIdx = -1;
     for (;;) {
       if (cellIdx == -1) {
-        cell = worker.ycells[pcellIdx];
+        cell = worker.getYcell(pcellIdx);
       } else {
         cell = cell.next;
       }
@@ -182,29 +182,30 @@ Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
       useYcells = false;
       cellIdx = cell.self_idx;
     }
-    if (worker.num_cells >= worker.max_cells) {
+    if (worker.getNum_cells() >= worker.getMax_cells()) {
 //FIXME!!        ft_longjmp( worker.jump_buffer, 1 );
-      Log.e(TAG, "out of worker.cells: " + worker.num_cells + "!" + worker.max_cells);
+      Log.e(TAG, "out of worker.cells: " + worker.getNum_cells() + "!" + worker.getMax_cells());
     }
-    cell = worker.cells[worker.num_cells++];
-    cell.self_idx = worker.num_cells - 1;
+    cell = worker.getCell(worker.getNum_cells());
+    worker.setNum_cells(worker.getNum_cells() + 1);
+    cell.self_idx = worker.getNum_cells() - 1;
     cell.x = x;
     cell.area = 0;
     cell.cover = 0;
     if (useYcells) {
-      cell.next = worker.ycells[pcellIdx];
+      cell.next = worker.getYcell(pcellIdx);
 //System.out.println(String.format("pcellIdx: %d",  pcellIdx));
-      worker.ycells[pcellIdx] = cell;
+      worker.setYcell(pcellIdx, cell);
     } else {
       if (isYcell) {
-        cell.next = worker.ycells[pcellIdx].next;
+        cell.next = worker.getYcell(pcellIdx).next;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
-        worker.ycells[pcellIdx].next = cell;
+        worker.getYcell(pcellIdx).next = cell;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("isYcell: cell idx: %d cell next idx: %d ", cell.self_idx, cell.next == null ? -1 : cell.next.self_idx));
       } else {
-        cell.next = worker.cells[cellIdx].next;
+        cell.next = worker.getCell(cellIdx).next;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
-        worker.cells[cellIdx].next = cell;
+        worker.getCell(cellIdx).next = cell;
       }
     }
     return cell;
@@ -215,15 +216,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cellIdx. %d pcellIdx: %d",  ce
    *
    * =====================================================================
    */
-  public void gray_record_cell(grayTWorker worker) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell: ras.invalid: %b, ras.area: %x, ras.cover: %x\n", worker.invalid, worker.area, worker.cover));
+  public void gray_record_cell(grayTWorkerRec worker) {
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell: ras.invalid: %b, ras.area: %x, ras.cover: %x\n", worker.isInvalid(), worker.getArea(), worker.getCover()));
 
-    if (!worker.invalid && (worker.area | worker.cover) != 0) {
-      TCell cell = gray_find_cell(worker);
+    if (!worker.isInvalid() && (worker.getArea() | worker.getCover()) != 0) {
+      TCellRec cell = gray_find_cell(worker);
 
-      cell.area  += worker.area;
-      cell.cover += worker.cover;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.area, cell.cover, worker.area, worker.cover));
+      cell.area  += worker.getArea();
+      cell.cover += worker.getCover();
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.area, cell.cover, worker.getArea(), worker.getCover()));
     }
   }
 
@@ -242,31 +243,31 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell2: cell.area: 
    *
    * =====================================================================
    */
-  private void gray_set_cell(grayTWorker worker, int ex, int ey) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_set_cell: ex: %d, ey: %d, invalid: %b, ras.ex: %d, ras.ey: %d", ex, ey, worker.invalid, worker.ex, worker.ey));
+  private void gray_set_cell(grayTWorkerRec worker, int ex, int ey) {
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_set_cell: ex: %d, ey: %d, invalid: %b, ras.ex: %d, ras.ey: %d", ex, ey, worker.isInvalid(), worker.getEx(), worker.getEy()));
       /* All cells that are on the left of the clipping region go to the */
       /* min_ex - 1 horizontal position.                                 */
-    ey -= worker.min_ey;
-    if (ex > worker.max_ex) {
-      ex = worker.max_ex;
+    ey -= worker.getMin_ey();
+    if (ex > worker.getMax_ex()) {
+      ex = worker.getMax_ex();
     }
-    ex -= worker.min_ex;
+    ex -= worker.getMin_ex();
     if (ex < 0) {
       ex = -1;
     }
       /* are we moving to a different cell ? */
-    if (ex != worker.ex || ey != worker.ey) {
+    if (ex != worker.getEx() || ey != worker.getEy()) {
         /* record the current one if it is valid */
-      if (!worker.invalid) {
+      if (!worker.isInvalid()) {
         gray_record_cell(worker);
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_set_cell after call gray_record_cell"));
       }
-      worker.area  = 0;
-      worker.cover = 0;
+      worker.setArea(0);
+      worker.setCover(0);
     }
-    worker.ex = ex;
-    worker.ey = ey;
-    worker.invalid = (ey >= worker.count_ey || ex >= worker.count_ex);
+    worker.setEx(ex);
+    worker.setEy(ey);
+    worker.setInvalid((ey >= worker.getCount_ey()) || ex >= worker.getCount_ex());
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_set_cell end"));
   }
 
@@ -275,21 +276,21 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_set_cell end"));
    *
    * =====================================================================
    */
-  private void gray_start_cell(grayTWorker worker, int ex, int ey) {
+  private void gray_start_cell(grayTWorkerRec worker, int ex, int ey) {
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_start_cell: ex: %d, ey: %d", ex, ey));
 
-    if (ex > worker.max_ex) {
-      ex = worker.max_ex;
+    if (ex > worker.getMax_ex()) {
+      ex = worker.getMax_ex();
     }
-    if (ex < worker.min_ex) {
-      ex = worker.min_ex - 1;
+    if (ex < worker.getMin_ex()) {
+      ex = worker.getMin_ex() - 1;
     }
-    worker.area = 0;
-    worker.cover = 0;
-    worker.ex = ex - worker.min_ex;
-    worker.ey = ey - worker.min_ey;
-    worker.last_ey = RasterUtil.SUBPIXELS(ey);
-    worker.invalid = false;
+    worker.setArea(0);
+    worker.setCover(0);
+    worker.setEx(ex - worker.getMin_ex());
+    worker.setEy(ey - worker.getMin_ey());
+    worker.setLast_ey(RasterUtil.SUBPIXELS(ey));
+    worker.setInvalid(false);
     gray_set_cell(worker, ex, ey);
   }
 
@@ -299,7 +300,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_start_cell: ex: %d, ey: %
    *
    * =====================================================================
    */
-  private void gray_render_scanline(grayTWorker worker, int ey, int x1, int y1, int x2, int y2) {
+  private void gray_render_scanline(grayTWorkerRec worker, int ey, int x1, int y1, int x2, int y2) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_scanline");
     int ex1;
     int ex2;
@@ -327,8 +328,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("call gray_set_cell ex2: %d, ey
       /*                                                        */
     if (ex1 == ex2) {
       delta = y2 - y1;
-      worker.area  += ((fx1 + fx2) * delta);
-      worker.cover += delta;
+      worker.setArea(worker.getArea() + ((fx1 + fx2) * delta));
+      worker.setCover(worker.getCover() + delta);
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("return ex1 == ex2: %d", ex2));
       return;
     }
@@ -350,8 +351,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("return ex1 == ex2: %d", ex2));
       delta--;
       mod += dx;
     }
-    worker.area += ((fx1 + first) * delta);
-    worker.cover += delta;
+    worker.setArea(worker.getArea() + ((fx1 + first) * delta));
+    worker.setCover(worker.getCover() + delta);
     ex1 += incr;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("call gray_set_cell2 ex1: %d, ey: %d", ex1, ey));
     gray_set_cell(worker, ex1, ey);
@@ -377,8 +378,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ex1: %d ex2: %d incr: %d", ex1
           mod -= dx;
           delta++;
         }
-        worker.area += (RasterUtil.ONE_PIXEL() * delta);
-        worker.cover += delta;
+        worker.setArea(worker.getArea() + (RasterUtil.ONE_PIXEL() * delta));
+        worker.setCover(worker.getCover() + delta);
         y1 += delta;
         ex1 += incr;
         gray_set_cell(worker, ex1, ey);
@@ -386,8 +387,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ex1: %d ex2: %d incr: %d", ex1
     }
     delta = y2 - y1;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("return end delta: %d", delta));
-    worker.area  += ((fx2 + RasterUtil.ONE_PIXEL() - first) * delta);
-    worker.cover += delta;
+    worker.setArea(worker.getArea()  + ((fx2 + RasterUtil.ONE_PIXEL() - first) * delta));
+    worker.setCover(worker.getCover() + delta);
   }
 
   /* =====================================================================
@@ -395,7 +396,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("return end delta: %d", delta))
    *
    * =====================================================================
    */
-  private void gray_render_line(grayTWorker worker, int to_x, int to_y) {
+  private void gray_render_line(grayTWorkerRec worker, int to_x, int to_y) {
     int ey1;
     int ey2;
     int fy1;
@@ -413,12 +414,12 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("return end delta: %d", delta))
     int incr;
 
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_line: to_x: %d, to_y: %d", to_x, to_y));
-    ey1 = RasterUtil.TRUNC(worker.last_ey);
+    ey1 = RasterUtil.TRUNC(worker.getLast_ey());
     ey2 = RasterUtil.TRUNC(to_y);     /* if (ey2 >= ras.max_ey) ey2 = ras.max_ey-1; */
-    fy1 = (worker.y - worker.last_ey);
+    fy1 = (worker.getY() - worker.getLast_ey());
     fy2 = (to_y - RasterUtil.SUBPIXELS(ey2));
-    dx = to_x - worker.x;
-    dy = to_y - worker.y;
+    dx = to_x - worker.getX();
+    dy = to_y - worker.getY();
       /* XXX: we should do something about the trivial case where dx == 0, */
       /*      as it happens very often!                                    */
 
@@ -433,28 +434,28 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_line: to_x: %d, to
         min = ey2;
         max = ey1;
       }
-      if (min >= worker.max_ey || max < worker.min_ey) {
-        worker.x = to_x;
-        worker.y = to_y;
-        worker.last_ey = RasterUtil.SUBPIXELS(ey2);
+      if (min >= worker.getMax_ey() || max < worker.getMin_ey()) {
+        worker.setX(to_x);
+        worker.setY(to_y);
+        worker.setLast_ey(RasterUtil.SUBPIXELS(ey2));
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line return 1");
         return;
       }
     }
       /* everything is on a single scanline */
     if (ey1 == ey2) {
-      gray_render_scanline(worker, ey1, worker.x, fy1, to_x, fy2);
-      worker.x = to_x;
-      worker.y = to_y;
-      worker.last_ey = RasterUtil.SUBPIXELS(ey2);
+      gray_render_scanline(worker, ey1, worker.getX(), fy1, to_x, fy2);
+      worker.setX(to_x);
+      worker.setY(to_y);
+      worker.setLast_ey(RasterUtil.SUBPIXELS(ey2));
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line return 2");
       return;
     }
       /* vertical line - avoid calling gray_render_scanline */
     incr = 1;
     if (dx == 0) {
-      int ex = RasterUtil.TRUNC(worker.x);
-      int two_fx = ((worker.x - RasterUtil.SUBPIXELS(ex)) << 1);
+      int ex = RasterUtil.TRUNC(worker.getX());
+      int two_fx = ((worker.getX() - RasterUtil.SUBPIXELS(ex)) << 1);
       int area;
 
       first = RasterUtil.ONE_PIXEL();
@@ -463,25 +464,25 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line return 2");
         incr  = -1;
       }
       delta = (int)(first - fy1);
-      worker.area  += two_fx * delta;
-      worker.cover += delta;
+      worker.setArea(worker.getArea()  + two_fx * delta);
+      worker.setCover(worker.getCover() + delta);
       ey1 += incr;
       gray_set_cell(worker, ex, ey1);
       delta = (first + first - RasterUtil.ONE_PIXEL());
       area = two_fx * delta;
       while (ey1 != ey2) {
-        worker.area += area;
-        worker.cover += delta;
+        worker.setArea(worker.getArea() + area);
+        worker.setCover(worker.getCover() + delta);
         ey1 += incr;
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line call gray_set_cell while");
         gray_set_cell(worker, ex, ey1);
       }
       delta = (fy2 - RasterUtil.ONE_PIXEL() + first);
-      worker.area += two_fx * delta;
-      worker.cover += delta;
-      worker.x = to_x;
-      worker.y = to_y;
-      worker.last_ey = RasterUtil.SUBPIXELS(ey2);
+      worker.setArea(worker.getArea() + two_fx * delta);
+      worker.setCover(worker.getCover() + delta);
+      worker.setX(to_x);
+      worker.setY(to_y);
+      worker.setLast_ey(RasterUtil.SUBPIXELS(ey2));
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line return 3");
       return;
     }
@@ -501,25 +502,25 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line return 3");
       delta--;
       mod += dy;
     }
-    x = worker.x + delta;
+    x = worker.getX() + delta;
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line call gray_render_scanline 1");
-    gray_render_scanline(worker, ey1, worker.x, fy1, x, first);
+    gray_render_scanline(worker, ey1, worker.getX(), fy1, x, first);
     ey1 += incr;
     gray_set_cell(worker, RasterUtil.TRUNC(x), ey1);
     if (ey1 != ey2) {
       p = RasterUtil.ONE_PIXEL() * dx;
-      lift  = (int)(p / dy);
-      rem   = (int)(p % dy);
+      lift  = (p / dy);
+      rem   = (p % dy);
       if (rem < 0) {
         lift--;
-        rem += (int)dy;
+        rem += dy;
       }
-      mod -= (int)dy;
+      mod -= dy;
       while (ey1 != ey2) {
         delta = lift;
         mod += rem;
         if (mod >= 0) {
-          mod -= (int)dy;
+          mod -= dy;
           delta++;
         }
         x2 = x + delta;
@@ -532,9 +533,9 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line call gray_render_scanline 2
     }
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line call gray_render_scanline 3");
     gray_render_scanline(worker, ey1, x, RasterUtil.ONE_PIXEL() - first, to_x, fy2);
-    worker.x = to_x;
-    worker.y = to_y;
-    worker.last_ey = RasterUtil.SUBPIXELS(ey2);
+    worker.setX(to_x);
+    worker.setY(to_y);
+    worker.setLast_ey(RasterUtil.SUBPIXELS(ey2));
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_line end");
   }
 
@@ -567,7 +568,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_conic");
    *
    * =====================================================================
    */
-  private void gray_render_conic(FTVectorRec control, FTVectorRec to, grayTWorker worker) {
+  private void gray_render_conic(FTVectorRec control, FTVectorRec to, grayTWorkerRec worker) {
     int dx;
     int dy;
     int min;
@@ -582,14 +583,14 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_conic");
     boolean doDraw = false;
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_conic");
-    levels = worker.lev_stack;
-    arc = worker.bez_stack;
+    levels = worker.getLev_stack();
+    arc = worker.getBez_stack();
     arc[arcIdx + 0].x = RasterUtil.UPSCALE(to.x);
     arc[arcIdx + 0].y = RasterUtil.UPSCALE(to.y);
     arc[arcIdx + 1].x = RasterUtil.UPSCALE(control.x);
     arc[arcIdx + 1].y = RasterUtil.UPSCALE(control.y);
-    arc[arcIdx + 2].x = worker.x;
-    arc[arcIdx + 2].y = worker.y;
+    arc[arcIdx + 2].x = worker.getX();
+    arc[arcIdx + 2].y = worker.getY();
     top = 0;
     dx = FTCalc.FT_ABS(arc[arcIdx + 2].x + arc[arcIdx + 0].x - 2 * arc[arcIdx + 1].x);
     dy = FTCalc.FT_ABS(arc[arcIdx + 2].y + arc[arcIdx + 0].y - 2 * arc[arcIdx + 1].y);
@@ -616,7 +617,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_conic");
       if (y > max) {
         max = y;
       }
-      if (RasterUtil.TRUNC(min) >= worker.max_ey || RasterUtil.TRUNC(max) < worker.min_ey) {
+      if (RasterUtil.TRUNC(min) >= worker.getMax_ey() || RasterUtil.TRUNC(max) < worker.getMin_ey()) {
         doDraw = true;
       }
     }
@@ -692,7 +693,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_cubic");
    *
    * =====================================================================
    */
-  private void gray_render_cubic(FTVectorRec control1, FTVectorRec control2, FTVectorRec to, grayTWorker worker) {
+  private void gray_render_cubic(FTVectorRec control1, FTVectorRec control2, FTVectorRec to, grayTWorkerRec worker) {
     FTVectorRec[] arc;
     FTReference<FTVectorRec[]> arc_ref = new FTReference<FTVectorRec[]>();
     int arcIdx = 0;
@@ -702,15 +703,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_cubic");
     boolean noSplit = false;
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_cubic");
-    arc = worker.bez_stack;
+    arc = worker.getBez_stack();
     arc[arcIdx + 0].x = RasterUtil.UPSCALE(to.x);
     arc[arcIdx + 0].y = RasterUtil.UPSCALE(to.y);
     arc[arcIdx + 1].x = RasterUtil.UPSCALE(control2.x);
     arc[arcIdx + 1].y = RasterUtil.UPSCALE(control2.y);
     arc[arcIdx + 2].x = RasterUtil.UPSCALE(control1.x);
     arc[arcIdx + 2].y = RasterUtil.UPSCALE(control1.y);
-    arc[arcIdx + 3].x = worker.x;
-    arc[arcIdx + 3].y = worker.y;
+    arc[arcIdx + 3].x = worker.getX();
+    arc[arcIdx + 3].y = worker.getY();
       /* Short-cut the arc that crosses the current band. */
     min = max = arc[arcIdx + 0].y;
     y = arc[arcIdx + 1].y;
@@ -734,10 +735,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_cubic");
     if (y > max) {
       max = y;
     }
-    if (RasterUtil.TRUNC(min) >= worker.max_ey || RasterUtil.TRUNC(max) < worker.min_ey) {
+    if (RasterUtil.TRUNC(min) >= worker.getMax_ey() || RasterUtil.TRUNC(max) < worker.getMin_ey()) {
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_render_line"));
       gray_render_line(worker, arc[arcIdx + 0].x, arc[arcIdx + 0].y);
-      if (arc == worker.bez_stack) {
+      if (arc == worker.getBez_stack()) {
         return;
       }
       arcIdx -= 3;
@@ -845,11 +846,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_re
       }
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic 2 call gray_render_line"));
       gray_render_line(worker, arc[arcIdx + 0].x, arc[arcIdx + 0].y);
-      if (arc == worker.bez_stack) {
+      if (arc == worker.getBez_stack()) {
         return;
       }
       arcIdx -= 3;
-      worker.bez_stack = arc;
+      worker.setBez_stack(arc);
     }
   }
 
@@ -858,75 +859,79 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic 2 call gray_
    *
    * =====================================================================
    */
-  public void gray_compute_cbox(grayTWorker worker) {
-    FTOutlineRec outline = worker.outline;
+  public void gray_compute_cbox(grayTWorkerRec worker) {
+    FTOutlineRec outline = worker.getOutline();
     FTVectorRec vec;
     int vecIdx = 0;
     int limit = outline.getN_points();
 
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox"));
     if (outline.getN_points() <= 0) {
-      worker.min_ex = worker.max_ex = 0;
-      worker.min_ey = worker.max_ey = 0;
+      worker.setMin_ex(0);
+      worker.setMax_ex(0);
+      worker.setMin_ey(0);
+      worker.setMax_ey(0);
       return;
     }
-    worker.min_ex = worker.max_ex = outline.getPoints()[vecIdx].x;
-    worker.min_ey = worker.max_ey = outline.getPoints()[vecIdx].y;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox01: %d %d %d %d", worker.min_ex, worker.min_ey, worker.max_ex, worker.max_ey));
+    worker.setMin_ex(outline.getPoints()[vecIdx].x);
+    worker.setMax_ex(outline.getPoints()[vecIdx].x);
+    worker.setMin_ey(outline.getPoints()[vecIdx].y);
+    worker.setMax_ey(outline.getPoints()[vecIdx].y);
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox01: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
     vecIdx++;
     for ( ; vecIdx < limit; vecIdx++) {
       vec = outline.getPoints()[vecIdx];
       int x = vec.x;
       int y = vec.y;
 
-      if (x < worker.min_ex) {
-        worker.min_ex = x;
+      if (x < worker.getMin_ex()) {
+        worker.setMin_ex(x);
       }
-      if (x > worker.max_ex) {
-        worker.max_ex = x;
+      if (x > worker.getMax_ex()) {
+        worker.setMax_ex(x);
       }
-      if (y < worker.min_ey) {
-        worker.min_ey = y;
+      if (y < worker.getMin_ey()) {
+        worker.setMin_ey(y);
       }
-      if (y > worker.max_ey) {
-        worker.max_ey = y;
+      if (y > worker.getMax_ey()) {
+        worker.setMax_ey(y);
       }
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox11: %d %d", x, y));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox12: %d %d %d %d", worker.min_ex, worker.min_ey, worker.max_ex, worker.max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox12: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
     }
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox2: %d %d %d %d", worker.min_ex, worker.min_ey, worker.max_ex, worker.max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox2: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
       /* truncate the bounding box to integer pixels */
-    worker.min_ex = worker.min_ex >> 6;
-    worker.min_ey = worker.min_ey >> 6;
-    worker.max_ex = (worker.max_ex + 63) >> 6;
-    worker.max_ey = (worker.max_ey + 63) >> 6;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_comput_cbox end: %d %d %d %d", worker.min_ex, worker.min_ey, worker.max_ex, worker.max_ey));
-    worker.outline = outline;
+    worker.setMin_ex(worker.getMin_ex() >> 6);
+    worker.setMin_ey(worker.getMin_ey() >> 6);
+    worker.setMax_ex((worker.getMax_ex() + 63) >> 6);
+    worker.setMax_ey((worker.getMax_ey() + 63) >> 6);
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_comput_cbox end: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
+    worker.setOutline(outline);
   }
 
 
   /* ==================== moveTo ===================================== */
   @Override
   public FTError.ErrorTag moveTo(FTVectorRec point, Object user) {
-    return gray_move_to(point, (grayTWorker)user);
+    return gray_move_to(point, (grayTWorkerRec)user);
   }
 
   /* ==================== lineTo ===================================== */
   @Override
   public FTError.ErrorTag lineTo(FTVectorRec point, Object user) {
-    return gray_line_to(point, (grayTWorker)user);
+    return gray_line_to(point, (grayTWorkerRec)user);
   }
 
   /* ==================== conicTo ===================================== */
   @Override
   public FTError.ErrorTag conicTo(FTVectorRec control, FTVectorRec point, Object user) {
-    return gray_conic_to(control, point, (grayTWorker)user);
+    return gray_conic_to(control, point, (grayTWorkerRec)user);
   }
 
   /* ==================== cubicTo ===================================== */
   @Override
   public FTError.ErrorTag cubicTo(FTVectorRec control1, FTVectorRec control2, FTVectorRec point, Object user) {
-    return gray_cubic_to(control1, control2, point, (grayTWorker)user);
+    return gray_cubic_to(control1, control2, point, (grayTWorkerRec)user);
   }
 
 }

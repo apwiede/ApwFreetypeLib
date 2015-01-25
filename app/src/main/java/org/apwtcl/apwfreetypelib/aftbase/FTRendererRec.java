@@ -20,9 +20,8 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /* ===================================================================== */
 
 import android.util.Log;
-import android.util.SparseArray;
 
-import org.apwtcl.apwfreetypelib.aftraster.FTRasterParams;
+import org.apwtcl.apwfreetypelib.aftraster.FTRasterParamsRec;
 import org.apwtcl.apwfreetypelib.aftraster.FTRasterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
@@ -66,7 +65,7 @@ public class FTRendererRec extends FTModuleRec {
   }
 
   /* ==================== rasterRender ===================================== */
-  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParams params) {
+  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Log.e(TAG, "rasterRest not yet fully implemented");

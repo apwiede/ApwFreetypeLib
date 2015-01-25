@@ -69,7 +69,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTRaster1RendererClass constructor cal
    *
    * =====================================================================
    */
-  private FTError.ErrorTag ft_black_init(blackTRaster raster) {
+  private FTError.ErrorTag ft_black_init(blackTRasterRec raster) {
 Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_init");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     // nothing to do yet
@@ -84,10 +84,10 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_init");
   public FTError.ErrorTag ft_black_new(FTReference<FTRasterRec> raster_ref) {
 Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_new");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    blackTRaster raster = null;
+    blackTRasterRec raster = null;
 
     raster_ref.Set(null);
-    raster = new blackTRaster();
+    raster = new blackTRasterRec();
     if (raster != null) {
       ft_black_init(raster);
       raster_ref.Set(raster);
@@ -102,18 +102,18 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_new");
    */
   public FTError.ErrorTag ft_black_reset(FTRasterRec raster_param, byte[] pool_base, int pool_size) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    blackTRaster raster = (blackTRaster)raster_param;
+    blackTRasterRec raster = (blackTRasterRec)raster_param;
 
     if (raster != null) {
       if (pool_base != null) {
-        blackTWorker worker =  new blackTWorker();
+        blackTWorkerRec worker =  new blackTWorkerRec();
         raster.buffer = pool_base;
         raster.buffer_size = pool_size;
-        raster.worker = worker;
+        raster.setWorker(worker);
       } else {
         raster.buffer = null;
         raster.buffer_size = 0;
-        raster.worker = null;
+        raster.setWorker(null);
       }
     }
     return error;
@@ -136,7 +136,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_new");
    *
    * =====================================================================
    */
-  public FTError.ErrorTag ft_black_render(FTRasterRec raster, FTRasterParams params) {
+  public FTError.ErrorTag ft_black_render(FTRasterRec raster, FTRasterParamsRec params) {
     Log.e(TAG, "ft_black_render not yet implemented");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
@@ -179,7 +179,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
     Integer height;
     Integer pitch;
     FTBitmapRec bitmap;
-    FTRasterParams params = new FTRasterParams();
+    FTRasterParamsRec params = new FTRasterParamsRec();
     FTReference<FTBBoxRec> cbox_ref = new FTReference<FTBBoxRec>();
 
       /* check glyph image format */
@@ -244,11 +244,11 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
       /* translate outline to render it into the bitmap */
     outline.OutlineTranslate(-cbox.getxMin(), -cbox.getyMin());
       /* set up parameters */
-    params.target = bitmap;
-    params.source = outline;
-    params.flags  = 0;
+    params.setTarget(bitmap);
+    params.setSource(outline);
+    params.setFlags(0);
     if (bitmap.getPixel_mode() == FTTags.PixelMode.GRAY) {
-      params.flags |= FTRasterParams.FT_RASTER_FLAG_AA;
+      params.setFlags(params.getFlags() | FTRasterParamsRec.FT_RASTER_FLAG_AA);
     }
       /* render outline into the bitmap */
     error = render.rasterRender(render.getRaster(), params);
@@ -355,7 +355,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
 
   /* ==================== rasterRender ===================================== */
   @Override
-  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParams params) {
+  public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
     return ft_black_render(raster, params);
   }
 
