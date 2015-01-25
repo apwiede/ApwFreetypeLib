@@ -47,7 +47,7 @@ import org.apwtcl.apwfreetypelib.aftraster.FTRasterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.FTMatrixRec;
-import org.apwtcl.apwfreetypelib.aftutil.FTParameter;
+import org.apwtcl.apwfreetypelib.aftutil.FTParameterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
@@ -111,7 +111,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTRendererClassRec constructor called!
   }
 
   /* ==================== setMode ===================================== */
-  public FTError.ErrorTag setMode(FTRendererRec renderer, FTParameter.ParamTag tag, Object data) {
+  public FTError.ErrorTag setMode(FTRendererRec renderer, FTParameterRec.ParamTag tag, Object data) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Log.e(TAG, "SetMode not yet implemented");

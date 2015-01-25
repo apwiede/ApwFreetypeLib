@@ -71,17 +71,17 @@ public class TTInstructionFuncGrp4 extends FTDebug {
    */
   protected static int CurrentRatio(TTExecContextRec cur) {
     if (cur.tt_metrics.getRatio() == 0) {
-      if (cur.graphics_state.projVector.y == 0) {
+      if (cur.graphics_state.projVector.getY() == 0) {
         cur.tt_metrics.setRatio(cur.tt_metrics.getX_ratio());
       } else {
-        if (cur.graphics_state.projVector.x == 0) {
+        if (cur.graphics_state.projVector.getX() == 0) {
           cur.tt_metrics.setRatio(cur.tt_metrics.getY_ratio());
         } else {
           int x;
           int y;
 
-          x = TTUtil.TTMulFix14(cur.tt_metrics.getX_ratio(), cur.graphics_state.projVector.x << 2);
-          y = TTUtil.TTMulFix14(cur.tt_metrics.getY_ratio(), cur.graphics_state.projVector.y << 2);
+          x = TTUtil.TTMulFix14(cur.tt_metrics.getX_ratio(), cur.graphics_state.projVector.getX() << 2);
+          y = TTUtil.TTMulFix14(cur.tt_metrics.getY_ratio(), cur.graphics_state.projVector.getY() << 2);
           cur.tt_metrics.setRatio(FTCalc.FTHypot(x, y));
         }
       }
@@ -267,9 +267,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("pushb: %d 0x%02x, new_top: %d 
       result = 0;
     } else {
       if ((cur.opcode.getVal() & 1) != 0) {
-        result = cur.funcDualproj(cur.zp2.getOrgPoint(point_idx).x, cur.zp2.getOrgPoint(point_idx).y);
+        result = cur.funcDualproj(cur.zp2.getOrgPoint_x(point_idx), cur.zp2.getOrgPoint_y(point_idx));
       } else {
-        result = cur.funcProject(cur.zp2.getCurPoint(point_idx).x, cur.zp2.getCurPoint(point_idx).y);
+        result = cur.funcProject(cur.zp2.getCurPoint_x(point_idx), cur.zp2.getCurPoint_y(point_idx));
       }
     }
     cur.stack[cur.stack_idx] = result;
@@ -296,7 +296,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("pushb: %d 0x%02x, new_top: %d 
       }
       return;
     }
-    result = cur.funcProject(cur.zp2.getCurPoint(point_idx).x, cur.zp2.getCurPoint(point_idx).y);
+    result = cur.funcProject(cur.zp2.getCurPoint_x(point_idx), cur.zp2.getCurPoint_y(point_idx));
     cur.funcMove(cur.zp2, point_idx, (cur.stack[cur.stack_idx + 1] - result));
       /* UNDOCUMENTED!  The MS rasterizer does that with */
       /* twilight points (confirmed by Greg Hitchcock)   */
@@ -334,29 +334,29 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("pushb: %d 0x%02x, new_top: %d 
       result = 0;
     } else {
       if ((cur.opcode.getVal() & 1) != 0) {
-        result = cur.funcProject(cur.zp0.getCurPoint(point1_idx).x - cur.zp1.getCurPoint(point2_idx).x,
-            cur.zp0.getCurPoint(point1_idx).y - cur.zp1.getCurPoint(point2_idx).y);
+        result = cur.funcProject(cur.zp0.getCurPoint_x(point1_idx) - cur.zp1.getCurPoint_x(point2_idx),
+            cur.zp0.getCurPoint_y(point1_idx) - cur.zp1.getCurPoint_y(point2_idx));
       } else {
           /* XXX: UNDOCUMENTED: twilight zone special case */
         if (cur.graphics_state.gep0 == 0 || cur.graphics_state.gep1 == 0) {
           FTVectorRec vec1 = cur.zp0.getOrgPoint(point1_idx);
           FTVectorRec vec2 = cur.zp1.getOrgPoint(point2_idx);
 
-          result = cur.render_funcs.curr_project_func.dualproject(vec1.x, vec2.y);
+          result = cur.render_funcs.curr_project_func.dualproject(vec1.getX(), vec2.getY());
         } else {
           FTVectorRec vec1 = cur.zp0.getOrusPoint(point1_idx);
           FTVectorRec vec2 = cur.zp1.getOrusPoint(point2_idx);
 
           if (cur.metrics.getX_scale() == cur.metrics.getY_scale()) {
               /* this should be faster */
-            result = cur.render_funcs.curr_project_func.dualproject(vec1.x - vec2.x, vec1.y - vec2.y);
+            result = cur.render_funcs.curr_project_func.dualproject(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY());
             result = TTUtil.FTMulFix(result, cur.metrics.getX_scale());
           } else {
             FTVectorRec vec = new FTVectorRec();
 
-            vec.x = TTUtil.FTMulFix(vec1.x - vec2.x, cur.metrics.getX_scale());
-            vec.y = TTUtil.FTMulFix(vec1.y - vec2.y, cur.metrics.getY_scale());
-            result = cur.render_funcs.curr_project_func.dualproject(vec.x, vec.y);
+            vec.setX(TTUtil.FTMulFix(vec1.getX() - vec2.getX(), cur.metrics.getX_scale()));
+            vec.setY(TTUtil.FTMulFix(vec1.getY() - vec2.getY(), cur.metrics.getY_scale()));
+            result = cur.render_funcs.curr_project_func.dualproject(vec.getX(), vec.getY());
           }
         }
       }

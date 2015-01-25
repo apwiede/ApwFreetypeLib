@@ -43,14 +43,14 @@ public class TTDefaultGraphicsStateClass extends TTGraphicsStateRec {
     rp1 = 0;
     rp2 = 0;
     dualVector = new FTVectorRec();
-    dualVector.x = 0x4000;
-    dualVector.y = 0;
+    dualVector.setX(0x4000);
+    dualVector.setY(0);
     projVector = new FTVectorRec();
-    projVector.x = 0x4000;
-    projVector.y = 0;
+    projVector.setX(0x4000);
+    projVector.setY(0);
     freeVector = new FTVectorRec();
-    freeVector.x = 0x4000;
-    freeVector.y = 0;
+    freeVector.setX(0x4000);
+    freeVector.setY(0);
 
     loop = 1;
     minimum_distance = 64;

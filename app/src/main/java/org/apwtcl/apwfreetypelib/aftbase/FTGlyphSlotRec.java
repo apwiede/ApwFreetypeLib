@@ -84,7 +84,7 @@ public class FTGlyphSlotRec extends FTDebug {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
     str.append("..linearHoriAdvance: "+linearHoriAdvance+'\n');
     str.append("..linearVertAdvance: "+linearVertAdvance+'\n');
-    str.append("..advance: "+advance.x+" "+advance.y+'\n');
+    str.append("..advance: "+advance.getX()+" "+advance.getY()+'\n');
     str.append("..format: "+format+'\n');
     str.append("..bitmap_left: "+bitmap_left+'\n');
     str.append("..bitmap_top: "+bitmap_top+'\n');
@@ -317,8 +317,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0) &&
         ((face.getFace_flags() & Flags.Face.TRICKY.getVal()) == 0) &&
         (((load_flags & Flags.Load.IGNORE_TRANSFORM.getVal()) != 0) ||
-            (face.getInternal().getTransform_matrix().yx == 0 && face.getInternal().getTransform_matrix().xx != 0) ||
-            (face.getInternal().getTransform_matrix().xx == 0 && face.getInternal().getTransform_matrix().yx != 0))) {
+            (face.getInternal().getTransform_matrix().getYx() == 0 && face.getInternal().getTransform_matrix().getXx() != 0) ||
+            (face.getInternal().getTransform_matrix().getXx() == 0 && face.getInternal().getTransform_matrix().getYx() != 0))) {
       if (((load_flags & Flags.Load.FORCE_AUTOHINT.getVal()) != 0) ||
           ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_HAS_HINTER.getVal()) == 0)) {
         autohint = true;
@@ -380,11 +380,11 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     }
     /* compute the advance */
     if ((load_flags & Flags.Load.VERTICAL_LAYOUT.getVal()) != 0) {
-      advance.x = 0;
-      advance.y = metrics.getVertAdvance();
+      advance.setX(0);
+      advance.setY(metrics.getVertAdvance());
     } else {
-      advance.x = metrics.getHoriAdvance();
-      advance.y = 0;
+      advance.setX(metrics.getHoriAdvance());
+      advance.setY(0);
     }
     /* compute the linear advance in 16.16 pixels */
     if (((load_flags & Flags.Load.LINEAR_DESIGN.getVal()) == 0) && ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0)) {
@@ -419,7 +419,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
               outline.OutlineTransform(internal.getTransform_matrix());
             }
             if ((internal.getTransform_flags() & 2) != 0) {
-              outline.OutlineTranslate(internal.getTransform_delta().x, internal.getTransform_delta().y);
+              outline.OutlineTranslate(internal.getTransform_delta().getX(), internal.getTransform_delta().getY());
             }
           }
         }
@@ -428,8 +428,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         internal.setTransform_matrix(matrix_ref.Get());
       }
     }
-    FTTrace.Trace(7, TAG, String.format("  x advance: %d", advance.x));
-    FTTrace.Trace(7, TAG, String.format("  y advance: %d", advance.y));
+    FTTrace.Trace(7, TAG, String.format("  x advance: %d", advance.getX()));
+    FTTrace.Trace(7, TAG, String.format("  y advance: %d", advance.getY()));
     FTTrace.Trace(7, TAG, String.format("  linear x advance: %d", linearHoriAdvance));
     FTTrace.Trace(7, TAG, String.format("  linear y advance: %d", linearVertAdvance));
     /* do we need to render the image now? */

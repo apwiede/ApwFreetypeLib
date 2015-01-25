@@ -36,36 +36,80 @@ package org.apwtcl.apwfreetypelib.aftutil;
   /* ===================================================================== */
 
 public class FTMatrixRec extends Object {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTMatrixRec";
+  private int id;
+  private static String TAG = "FTMatrixRec";
 
-    public int xx = 0;
-    public int xy = 0;
-    public int yx = 0;
-    public int yy = 0;
+  private int xx = 0;
+  private int xy = 0;
+  private int yx = 0;
+  private int yy = 0;
 
-    /* ==================== FTMatricRec ================================== */
-    public FTMatrixRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTMatricRec ================================== */
+  public FTMatrixRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...xx: "+xx+'\n');
+    str.append("...xy: "+xy+'\n');
+    str.append("...yx: "+yx+'\n');
+    str.append("...yy: "+yy+'\n');
+    return str.toString();
+  }
+
+  /* ==================== getXx ================================== */
+  public int getXx() {
+    return xx;
+  }
+
+  /* ==================== setXx ================================== */
+  public void setXx(int xx) {
+    this.xx = xx;
+  }
+
+  /* ==================== getXy ================================== */
+  public int getXy() {
+    return xy;
+  }
+
+  /* ==================== setXy ================================== */
+  public void setXy(int xy) {
+    this.xy = xy;
+  }
+
+  /* ==================== getYx ================================== */
+  public int getYx() {
+    return yx;
+  }
+
+  /* ==================== setYx ================================== */
+  public void setYx(int yx) {
+    this.yx = yx;
+  }
+
+  /* ==================== getYy ================================== */
+  public int getYy() {
+    return yy;
+  }
+
+  /* ==================== setYy ================================== */
+  public void setYy(int yy) {
+    this.yy = yy;
+  }
+
 }

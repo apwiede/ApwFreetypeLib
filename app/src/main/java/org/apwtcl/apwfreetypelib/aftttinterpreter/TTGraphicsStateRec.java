@@ -81,9 +81,9 @@ public class TTGraphicsStateRec extends FTDebug {
     str.append("...rp0: "+rp0+'\n');
     str.append("...rp1: "+rp1+'\n');
     str.append("...rp2: "+rp2+'\n');
-    str.append("...dualVector: x: "+dualVector.x+" y: "+dualVector.y+'\n');
-    str.append("...projVector: x: "+projVector.x+" y: "+projVector.y+'\n');
-    str.append("...freeVector: x: "+freeVector.x+" y: "+freeVector.y+'\n');
+    str.append("...dualVector: x: "+dualVector.getX()+" y: "+dualVector.getY()+'\n');
+    str.append("...projVector: x: "+projVector.getX()+" y: "+projVector.getY()+'\n');
+    str.append("...freeVector: x: "+freeVector.getX()+" y: "+freeVector.getY()+'\n');
     str.append("...loop: "+loop+'\n');
     str.append("...minimum_distance: "+minimum_distance+'\n');
     str.append("...round_state: "+round_state+'\n');

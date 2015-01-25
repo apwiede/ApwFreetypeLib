@@ -208,8 +208,8 @@ public class TTInstructionFuncGrp8 extends FTDebug {
       FTVectorRec v1 = cur.zp1.getOrgPoint(p2);
       FTVectorRec v2 = cur.zp2.getOrgPoint(p1);
 
-      A = v1.x - v2.x;
-      B = v1.y - v2.y;
+      A = v1.getX() - v2.getX();
+      B = v1.getY() - v2.getY();
         /* If v1 == v2, SDPVTL behaves the same as */
         /* SVTCA[X], respectively.                 */
         /*                                         */
@@ -232,8 +232,8 @@ public class TTInstructionFuncGrp8 extends FTDebug {
       FTVectorRec v1 = cur.zp1.getCurPoint(p2);
       FTVectorRec v2 = cur.zp2.getCurPoint(p1);
 
-      A = v1.x - v2.x;
-      B = v1.y - v2.y;
+      A = v1.getX() - v2.getX();
+      B = v1.getY() - v2.getY();
       if (A == 0 && B == 0) {
         A = 0x4000;
         aOpc = TTOpCode.OpCode.SVTCA_y;

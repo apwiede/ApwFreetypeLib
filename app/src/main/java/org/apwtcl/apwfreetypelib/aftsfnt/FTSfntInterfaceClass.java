@@ -33,41 +33,39 @@ import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
 public class FTSfntInterfaceClass extends FTModuleInterface {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private final static String TAG = "FTSfntInterfaceClass";
+  private int id;
+  private final static String TAG = "FTSfntInterfaceClass";
 
-    /* ==================== FTSfntInterfaceClass =========================== */
-    public FTSfntInterfaceClass() {
-      oid++;
-      id = oid;
-      
+  /* ==================== FTSfntInterfaceClass =========================== */
+  public FTSfntInterfaceClass() {
+    oid++;
+    id = oid;
+  }
 
-    }
-
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    return str.toString();
+  }
 
   /* =====================================================================
    * sfnt_init_face
    * =====================================================================
    */
   public FTError.ErrorTag sfnt_init_face(FTStreamRec stream, TTFaceRec ttface, int face_index,
-                                         int num_params, FTParameter[] params) {
+                                         int num_params, FTParameterRec[] params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTLibraryRec library = ttface.getDriver().library;
     FTSfntInterfaceClass sfnt;
@@ -117,7 +115,7 @@ public class FTSfntInterfaceClass extends FTModuleInterface {
    * sfnt_load_face
    * =====================================================================
    */
-  public static FTError.ErrorTag sfnt_load_face(FTStreamRec stream, TTFaceRec ttface, int face_index, int num_params, FTParameter[] params) {
+  public static FTError.ErrorTag sfnt_load_face(FTStreamRec stream, TTFaceRec ttface, int face_index, int num_params, FTParameterRec[] params) {
     FTError.ErrorTag  error = FTError.ErrorTag.ERR_OK;
     boolean has_outline = false;
     boolean is_apple_sbit = false;
@@ -131,10 +129,10 @@ public class FTSfntInterfaceClass extends FTModuleInterface {
       int i;
 
       for (i = 0; i < num_params; i++) {
-        if (params[i].tag == FTParameter.ParamTag.FT_PARAM_TAG_IGNORE_PREFERRED_FAMILY) {
+        if (params[i].getTag() == FTParameterRec.ParamTag.FT_PARAM_TAG_IGNORE_PREFERRED_FAMILY) {
           ignore_preferred_family = true;
         } else {
-          if (params[i].tag == FTParameter.ParamTag.FT_PARAM_TAG_IGNORE_PREFERRED_SUBFAMILY) {
+          if (params[i].getTag() == FTParameterRec.ParamTag.FT_PARAM_TAG_IGNORE_PREFERRED_SUBFAMILY) {
             ignore_preferred_subfamily = true;
           }
         }
@@ -585,12 +583,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "root(ttface): "+root.toDebugString());
 
 
   /* ==================== initFace ===================================== */
-  public FTError.ErrorTag initFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params, FTParameter[] params) {
+  public FTError.ErrorTag initFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params, FTParameterRec[] params) {
     return sfnt_init_face(stream, (TTFaceRec)face, face_index, num_params, params);
   }
 
   /* ==================== loadFace ===================================== */
-  public FTError.ErrorTag loadFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params, FTParameter[] params) {
+  public FTError.ErrorTag loadFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params, FTParameterRec[] params) {
     return sfnt_load_face(stream, (TTFaceRec)face, face_index, num_params, params);
   }
 

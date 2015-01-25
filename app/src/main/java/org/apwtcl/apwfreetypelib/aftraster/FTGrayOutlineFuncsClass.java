@@ -69,13 +69,13 @@ public class FTGrayOutlineFuncsClass extends FTOutlineFuncs {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     int x;
     int y;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: %d", to.x, to.y));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
 
       /* record current cell, if any */
     gray_record_cell(worker);
       /* start to a new position */
-    x = RasterUtil.UPSCALE(to.x);
-    y = RasterUtil.UPSCALE(to.y);
+    x = RasterUtil.UPSCALE(to.getX());
+    y = RasterUtil.UPSCALE(to.getY());
     gray_start_cell(worker, RasterUtil.TRUNC(x), RasterUtil.TRUNC(y));
     worker.setX(x);
     worker.setY(y);
@@ -88,11 +88,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: 
    * =====================================================================
    */
   private FTError.ErrorTag gray_line_to(FTVectorRec to, grayTWorkerRec worker) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.x, to.y));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to call gray_render_line");
-    gray_render_line(worker, RasterUtil.UPSCALE(to.x), RasterUtil.UPSCALE(to.y));
+    gray_render_line(worker, RasterUtil.UPSCALE(to.getX()), RasterUtil.UPSCALE(to.getY()));
     Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to after call gray_render_line");
     return error;
   }
@@ -550,16 +550,20 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_conic");
     int a;
     int b;
 
-    base[arcIdx + 4].x = base[arcIdx + 2].x;
-    b = base[arcIdx + 1].x;
-    a = base[arcIdx + 3].x = (base[arcIdx + 2].x + b) / 2;
-    b = base[arcIdx + 1].x = (base[arcIdx + 0].x + b) / 2;
-    base[arcIdx + 2].x = (a + b) / 2;
-    base[arcIdx + 4].y = base[arcIdx + 2].y;
-    b = base[arcIdx + 1].y;
-    a = base[arcIdx + 3].y = (base[arcIdx + 2].y + b) / 2;
-    b = base[arcIdx + 1].y = (base[arcIdx + 0].y + b) / 2;
-    base[arcIdx + 2].y = (a + b) / 2;
+    base[arcIdx + 4].setX(base[arcIdx + 2].getX());
+    b = base[arcIdx + 1].getX();
+    base[arcIdx + 3].setX((base[arcIdx + 2].getX() + b) / 2);
+    a = base[arcIdx + 3].getX();
+    base[arcIdx + 1].setX((base[arcIdx + 0].getX() + b) / 2);
+    b = base[arcIdx + 1].getX();
+    base[arcIdx + 2].setX((a + b) / 2);
+    base[arcIdx + 4].setY(base[arcIdx + 2].getY());
+    b = base[arcIdx + 1].getY();
+    base[arcIdx + 3].setY((base[arcIdx + 2].getY() + b) / 2);
+    a = base[arcIdx + 3].getY();
+    base[arcIdx + 1].setY((base[arcIdx + 0].getY() + b) / 2);
+    b = base[arcIdx + 1].getY();
+    base[arcIdx + 2].setY((a + b) / 2);
     base_ref.Set(base);
   }
 
@@ -585,15 +589,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_conic");
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_conic");
     levels = worker.getLev_stack();
     arc = worker.getBez_stack();
-    arc[arcIdx + 0].x = RasterUtil.UPSCALE(to.x);
-    arc[arcIdx + 0].y = RasterUtil.UPSCALE(to.y);
-    arc[arcIdx + 1].x = RasterUtil.UPSCALE(control.x);
-    arc[arcIdx + 1].y = RasterUtil.UPSCALE(control.y);
-    arc[arcIdx + 2].x = worker.getX();
-    arc[arcIdx + 2].y = worker.getY();
+    arc[arcIdx + 0].setX(RasterUtil.UPSCALE(to.getX()));
+    arc[arcIdx + 0].setY(RasterUtil.UPSCALE(to.getY()));
+    arc[arcIdx + 1].setX(RasterUtil.UPSCALE(control.getX()));
+    arc[arcIdx + 1].setY(RasterUtil.UPSCALE(control.getY()));
+    arc[arcIdx + 2].setX(worker.getX());
+    arc[arcIdx + 2].setY(worker.getY());
     top = 0;
-    dx = FTCalc.FT_ABS(arc[arcIdx + 2].x + arc[arcIdx + 0].x - 2 * arc[arcIdx + 1].x);
-    dy = FTCalc.FT_ABS(arc[arcIdx + 2].y + arc[arcIdx + 0].y - 2 * arc[arcIdx + 1].y);
+    dx = FTCalc.FT_ABS(arc[arcIdx + 2].getX() + arc[arcIdx].getX() - 2 * arc[arcIdx + 1].getX());
+    dy = FTCalc.FT_ABS(arc[arcIdx + 2].getY() + arc[arcIdx].getY() - 2 * arc[arcIdx + 1].getY());
     if (dx < dy) {
       dx = dy;
     }
@@ -602,15 +606,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_conic");
     }
     if (!doDraw) {
         /* short-cut the arc that crosses the current band */
-      min = max = arc[arcIdx + 0].y;
-      y = arc[arcIdx + 1].y;
+      min = max = arc[arcIdx + 0].getY();
+      y = arc[arcIdx + 1].getY();
       if (y < min) {
         min = y;
       }
       if (y > max) {
         max = y;
       }
-      y = arc[arcIdx + 2].y;
+      y = arc[arcIdx + 2].getY();
       if (y < min) {
         min = y;
       }
@@ -646,7 +650,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_conic !doDraw cont
       doDraw = false;
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_conic call gray_render_line top: %d", top));
 
-      gray_render_line(worker, arc[arcIdx + 0].x, arc[arcIdx + 0].y);
+      gray_render_line(worker, arc[arcIdx + 0].getX(), arc[arcIdx + 0].getY());
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_conic call after gray_render_line top: %d", top));
       top--;
       arcIdx -= 2;
@@ -667,24 +671,32 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_cubic");
     int c;
     int d;
 
-    base[arcIdx + 6].x = base[arcIdx + 3].x;
-    c = base[arcIdx + 1].x;
-    d = base[arcIdx + 2].x;
-    base[arcIdx + 1].x = a = (base[arcIdx + 0].x + c) / 2;
-    base[arcIdx + 5].x = b = (base[arcIdx + 3].x + d) / 2;
+    base[arcIdx + 6].setX(base[arcIdx + 3].getX());
+    c = base[arcIdx + 1].getX();
+    d = base[arcIdx + 2].getX();
+    a = (base[arcIdx + 0].getX() + c) / 2;
+    base[arcIdx + 1].setX(a);
+    b = (base[arcIdx + 3].getX() + d) / 2;
+    base[arcIdx + 5].setX(b);
     c = (c + d) / 2;
-    base[arcIdx + 2].x = a = (a + c) / 2;
-    base[arcIdx + 4].x = b = (b + c) / 2;
-    base[arcIdx + 3].x = (a + b) / 2;
-    base[arcIdx + 6].y = base[arcIdx + 3].y;
-    c = base[arcIdx + 1].y;
-    d = base[arcIdx + 2].y;
-    base[arcIdx + 1].y = a = (base[arcIdx + 0].y + c) / 2;
-    base[arcIdx + 5].y = b = (base[arcIdx + 3].y + d) / 2;
+    a = (a + c) / 2;
+    base[arcIdx + 2].setX(a);
+    b = (b + c) / 2;
+    base[arcIdx + 4].setX(b);
+    base[arcIdx + 3].setX((a + b) / 2);
+    base[arcIdx + 6].setY(base[arcIdx + 3].getY());
+    c = base[arcIdx + 1].getY();
+    d = base[arcIdx + 2].getY();
+    a = (base[arcIdx + 0].getY() + c) / 2;
+    base[arcIdx + 1].setY(a);
+    b = (base[arcIdx + 3].getY() + d) / 2;
+    base[arcIdx + 5].setY(b);
     c = (c + d) / 2;
-    base[arcIdx + 2].y = a = (a + c) / 2;
-    base[arcIdx + 4].y = b = (b + c) / 2;
-    base[arcIdx + 3].y = (a + b) / 2;
+    a = (a + c) / 2;
+    base[arcIdx + 2].setY(a);
+    b = (b + c) / 2;
+    base[arcIdx + 4].setY(b);
+    base[arcIdx + 3].setY((a + b) / 2);
     base_ref.Set(base);
   }
 
@@ -704,31 +716,31 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_cubic");
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_cubic");
     arc = worker.getBez_stack();
-    arc[arcIdx + 0].x = RasterUtil.UPSCALE(to.x);
-    arc[arcIdx + 0].y = RasterUtil.UPSCALE(to.y);
-    arc[arcIdx + 1].x = RasterUtil.UPSCALE(control2.x);
-    arc[arcIdx + 1].y = RasterUtil.UPSCALE(control2.y);
-    arc[arcIdx + 2].x = RasterUtil.UPSCALE(control1.x);
-    arc[arcIdx + 2].y = RasterUtil.UPSCALE(control1.y);
-    arc[arcIdx + 3].x = worker.getX();
-    arc[arcIdx + 3].y = worker.getY();
+    arc[arcIdx + 0].setX(RasterUtil.UPSCALE(to.getX()));
+    arc[arcIdx + 0].setY(RasterUtil.UPSCALE(to.getY()));
+    arc[arcIdx + 1].setX(RasterUtil.UPSCALE(control2.getX()));
+    arc[arcIdx + 1].setY(RasterUtil.UPSCALE(control2.getY()));
+    arc[arcIdx + 2].setX(RasterUtil.UPSCALE(control1.getX()));
+    arc[arcIdx + 2].setY(RasterUtil.UPSCALE(control1.getY()));
+    arc[arcIdx + 3].setX(worker.getX());
+    arc[arcIdx + 3].setY(worker.getY());
       /* Short-cut the arc that crosses the current band. */
-    min = max = arc[arcIdx + 0].y;
-    y = arc[arcIdx + 1].y;
+    min = max = arc[arcIdx + 0].getY();
+    y = arc[arcIdx + 1].getY();
     if (y < min) {
       min = y;
     }
     if (y > max) {
       max = y;
     }
-    y = arc[arcIdx + 2].y;
+    y = arc[arcIdx + 2].getY();
     if (y < min) {
       min = y;
     }
     if (y > max) {
       max = y;
     }
-    y = arc[arcIdx + 3].y;
+    y = arc[arcIdx + 3].getY();
     if (y < min) {
       min = y;
     }
@@ -737,7 +749,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_render_cubic");
     }
     if (RasterUtil.TRUNC(min) >= worker.getMax_ey() || RasterUtil.TRUNC(max) < worker.getMin_ey()) {
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_render_line"));
-      gray_render_line(worker, arc[arcIdx + 0].x, arc[arcIdx + 0].y);
+      gray_render_line(worker, arc[arcIdx].getX(), arc[arcIdx].getY());
       if (arc == worker.getBez_stack()) {
         return;
       }
@@ -764,8 +776,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_re
         int s_limit;
 
           /* dx and dy are x and y components of the P0-P3 chord vector. */
-        dx = arc[arcIdx + 3].x - arc[arcIdx + 0].x;
-        dy = arc[arcIdx + 3].y - arc[arcIdx + 0].y;
+        dx = arc[arcIdx + 3].getX() - arc[arcIdx].getX();
+        dy = arc[arcIdx + 3].getY() - arc[arcIdx].getY();
           /* L is an (under)estimate of the Euclidean distance P0-P3.       */
           /*                                                                */
           /* If dx >= dy, then r = sqrt(dx^2 + dy^2) can be overestimated   */
@@ -802,8 +814,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_re
           /* Max deviation may be as much as (s/L) * 3/4 (if Hain's v = 1). */
         s_limit = L * (RasterUtil.ONE_PIXEL() / 6);
           /* s is L * the perpendicular distance from P1 to the line P0-P3. */
-        dx1 = arc[arcIdx + 1].x - arc[arcIdx + 0].x;
-        dy1 = arc[arcIdx + 1].y - arc[arcIdx + 0].y;
+        dx1 = arc[arcIdx + 1].getX() - arc[arcIdx].getX();
+        dy1 = arc[arcIdx + 1].getY() - arc[arcIdx].getY();
         s = FTCalc.FT_ABS(dy * dx1 - dx * dy1);
         if (s > s_limit) {
           arc_ref.Set(arc);
@@ -813,8 +825,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_re
           continue;
         }
           /* s is L * the perpendicular distance from P2 to the line P0-P3. */
-        dx2 = arc[arcIdx + 2].x - arc[arcIdx + 0].x;
-        dy2 = arc[arcIdx + 2].y - arc[arcIdx + 0].y;
+        dx2 = arc[arcIdx + 2].getX() - arc[arcIdx].getX();
+        dy2 = arc[arcIdx + 2].getY() - arc[arcIdx].getY();
         s = FTCalc.FT_ABS(dy * dx2 - dx * dy2);
         if (s > s_limit) {
           arc_ref.Set(arc);
@@ -845,7 +857,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic call gray_re
         continue;
       }
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_cubic 2 call gray_render_line"));
-      gray_render_line(worker, arc[arcIdx + 0].x, arc[arcIdx + 0].y);
+      gray_render_line(worker, arc[arcIdx + 0].getX(), arc[arcIdx + 0].getY());
       if (arc == worker.getBez_stack()) {
         return;
       }
@@ -873,16 +885,16 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox"));
       worker.setMax_ey(0);
       return;
     }
-    worker.setMin_ex(outline.getPoints()[vecIdx].x);
-    worker.setMax_ex(outline.getPoints()[vecIdx].x);
-    worker.setMin_ey(outline.getPoints()[vecIdx].y);
-    worker.setMax_ey(outline.getPoints()[vecIdx].y);
+    worker.setMin_ex(outline.getPoints()[vecIdx].getX());
+    worker.setMax_ex(outline.getPoints()[vecIdx].getX());
+    worker.setMin_ey(outline.getPoints()[vecIdx].getY());
+    worker.setMax_ey(outline.getPoints()[vecIdx].getY());
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox01: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
     vecIdx++;
     for ( ; vecIdx < limit; vecIdx++) {
       vec = outline.getPoints()[vecIdx];
-      int x = vec.x;
-      int y = vec.y;
+      int x = vec.getX();
+      int y = vec.getY();
 
       if (x < worker.getMin_ex()) {
         worker.setMin_ex(x);

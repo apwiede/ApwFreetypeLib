@@ -220,8 +220,8 @@ public class FTCalc extends FTDebug {
     /* ==================== FTHypot ===================================== */
     public static int FTHypot(int x, int y) {
       FTVectorRec v = new FTVectorRec();
-      v.x = x;
-      v.y = y;
+      v.setX(x);
+      v.setY(y);
       return FTTrigonometric.FTVectorLength(v);
     }
 

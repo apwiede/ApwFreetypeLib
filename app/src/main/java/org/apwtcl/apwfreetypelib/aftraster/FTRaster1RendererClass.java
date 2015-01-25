@@ -201,7 +201,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
     outline = slot.getOutline();
       /* translate the outline to the new origin if needed */
     if (origin != null) {
-      outline.OutlineTranslate(origin.x, origin.y);
+      outline.OutlineTranslate(origin.getX(), origin.getY());
     }
       /* compute the control box, and grid fit it */
     cbox_ref.Set(cbox);

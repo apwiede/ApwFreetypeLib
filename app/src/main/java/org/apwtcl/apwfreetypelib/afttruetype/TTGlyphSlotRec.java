@@ -117,14 +117,14 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "load_truetype_glyph");
           /* the `flags' field in the `head' table -- at least major     */
           /* applications like Acroread indicate that.                   */
 //          showLoaderZone("TTLoadGlyph");
-        Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d", loader.getPp1().x));
+        Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d", loader.getPp1().getX()));
         int i;
         for (i = 0; i < loader.getGloader().getCurrent().getN_points() + 4; i++) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP1: i: %d ipoints_idx: %d x: %d y: %d\n", i, loader.getGloader().getCurrent().getPoints_idx(), loader.getGloader().getCurrent().getPoint(i).x,
-              loader.getGloader().getCurrent().getPoint(i).y));
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP1: i: %d ipoints_idx: %d x: %d y: %d\n", i, loader.getGloader().getCurrent().getPoints_idx(), loader.getGloader().getCurrent().getPoint(i).getX(),
+              loader.getGloader().getCurrent().getPoint(i).getY()));
         }
-        if (loader.getPp1().x != 0) {
-          outline.OutlineTranslate(-loader.getPp1().x, 0);
+        if (loader.getPp1().getX() != 0) {
+          outline.OutlineTranslate(-loader.getPp1().getX(), 0);
         }
       }
 

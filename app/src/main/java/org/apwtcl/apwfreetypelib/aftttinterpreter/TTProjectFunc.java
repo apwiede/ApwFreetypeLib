@@ -68,7 +68,7 @@ public class TTProjectFunc extends TTProjectFuncBase {
   @Override
   public int project(int dx, int dy) {
     Debug(0, DebugTag.DBG_INTERP, TAG, "Project");
-    return TTDotFix14(dx, dy, TTRenderFunc.cur.graphics_state.projVector.x, TTRenderFunc.cur.graphics_state.projVector.y);
+    return TTDotFix14(dx, dy, TTRenderFunc.cur.graphics_state.projVector.getX(), TTRenderFunc.cur.graphics_state.projVector.getY());
   }
 
   /* ==================== dualproject ===================================== */

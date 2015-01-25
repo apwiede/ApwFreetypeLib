@@ -11,7 +11,6 @@ import org.apwtcl.apwfreetypelib.aftbase.FTApwFreeType;
 import org.apwtcl.apwfreetypelib.aftbase.FTBitmapRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTFaceRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTFaceRequester;
-import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoaderRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTLibraryRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTSizeRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTStrokerRec;
@@ -21,12 +20,7 @@ import org.apwtcl.apwfreetypelib.aftcache.FTCCMapCacheClass;
 import org.apwtcl.apwfreetypelib.aftcache.FTCGCacheClassRec;
 import org.apwtcl.apwfreetypelib.aftcache.FTCManagerRec;
 import org.apwtcl.apwfreetypelib.aftcache.FTCScalerRec;
-import org.apwtcl.apwfreetypelib.aftdemo.FTDemoFaceRequester;
-import org.apwtcl.apwfreetypelib.aftdemo.TFont;
-import org.apwtcl.apwfreetypelib.afttruetype.TTFaceRec;
 import org.apwtcl.apwfreetypelib.aftutil.*;
-
-import java.io.IOException;
 
 public class demo1 extends FTDebug {
 
@@ -41,7 +35,7 @@ public class demo1 extends FTDebug {
     int max_sizes = 0;
 
     try {
-      FTOpenArgs open_args = new FTOpenArgs();
+      FTOpenArgsRec open_args = new FTOpenArgsRec();
       open_args.setPathname(font_file_name);
 
       TFont font_args = new TFont();

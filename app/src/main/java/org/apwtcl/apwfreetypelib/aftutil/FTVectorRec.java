@@ -26,34 +26,56 @@ package org.apwtcl.apwfreetypelib.aftutil;
   /* ===================================================================== */
 
 public class FTVectorRec extends Object {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTVectorRec";
+  private int id;
+  private static String TAG = "FTVectorRec";
 
-    public int x = 0;
-    public int y = 0;
+  private int x = 0;
+  private int y = 0;
 
-    /* ==================== FTVectorRec ================================== */
-    public FTVectorRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTVectorRec ================================== */
+  public FTVectorRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...x: "+x+'\n');
+    str.append("...y: "+y+'\n');
+    return str.toString();
+  }
+
+  /* ==================== getX ================================== */
+  public int getX() {
+    return x;
+  }
+
+  /* ==================== setX ================================== */
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  /* ==================== getY ================================== */
+  public int getY() {
+    return y;
+  }
+
+  /* ==================== setY ================================== */
+  public void setY(int y) {
+    this.y = y;
+  }
+
 }

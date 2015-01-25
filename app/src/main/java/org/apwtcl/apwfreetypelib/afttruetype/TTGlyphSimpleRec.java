@@ -220,7 +220,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
       }
       x += delta;
       x_coordinates[vec_idx] = delta;
-      points[vec_idx].x = x;
+      points[vec_idx].setX(x);
       tags[tag_idx] = (byte)(tag & ~(TTTags.GlyphFlags.X_SHORT.getVal() | TTTags.GlyphFlags.X_SAME.getVal()));
       tag_idx++;
     }
@@ -255,7 +255,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
       }
       y += delta;
       y_coordinates[vec_idx] = delta;
-      points[vec_idx].y = y;
+      points[vec_idx].setY(y);
       tags[tag_idx] = (byte)(tag & ~(TTTags.GlyphFlags.Y_SHORT.getVal() | TTTags.GlyphFlags.Y_SAME.getVal()));
       tag_idx++;
     }

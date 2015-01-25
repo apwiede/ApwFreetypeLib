@@ -112,7 +112,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     }
       /* translate the outline to the new origin if needed */
     if (origin != null) {
-      slot.getOutline().OutlineTranslate(origin.x, origin.y);
+      slot.getOutline().OutlineTranslate(origin.getX(), origin.getY());
       have_translated_origin = true;
     }
       /* compute the control box, and grid fit it */
@@ -175,7 +175,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
         slot.getOutline().OutlineTranslate(x_shift, y_shift);
       }
       if (have_translated_origin) {
-        slot.getOutline().OutlineTranslate(-origin.x, -origin.y);
+        slot.getOutline().OutlineTranslate(-origin.getX(), -origin.getY());
       }
       if (have_buffer) {
 //          FT_FREE( bitmap.buffer );
@@ -245,7 +245,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
       slot.getOutline().OutlineTranslate(x_shift, y_shift);
     }
     if (have_translated_origin) {
-      slot.getOutline().OutlineTranslate(-origin.x, -origin.y);
+      slot.getOutline().OutlineTranslate(-origin.getX(), -origin.getY());
     }
     if (have_buffer) {
 //        FT_FREE( bitmap.buffer );
@@ -872,7 +872,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
 
   /* ==================== setMode ===================================== */
   @Override
-  public FTError.ErrorTag setMode(FTRendererRec renderer, FTParameter.ParamTag tag, Object data) {
+  public FTError.ErrorTag setMode(FTRendererRec renderer, FTParameterRec.ParamTag tag, Object data) {
     Log.e(TAG, "setMode not yet implemented");
     return FTError.ErrorTag.ERR_OK;
 //    return ft_smooth_set_mode();

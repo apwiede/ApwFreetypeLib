@@ -75,12 +75,12 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== getOrgPoint_x ================================== */
   public int getOrgPoint_x(int point_idx) {
-    return org[org_idx + point_idx].x;
+    return org[org_idx + point_idx].getX();
   }
 
   /* ==================== getOrgPoint_y ================================== */
   public int getOrgPoint_y(int point_idx) {
-    return org[org_idx + point_idx].y;
+    return org[org_idx + point_idx].getY();
   }
 
   /* ==================== setOrg ================================== */
@@ -90,24 +90,24 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== setOrgPoint ================================== */
   public void setOrgPoint(int point_idx, FTVectorRec vec) {
-    org[org_idx + point_idx].x = vec.x;
-    org[org_idx + point_idx].y = vec.y;
+    org[org_idx + point_idx].setX(vec.getX());
+    org[org_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setOrgPoint_x ================================== */
   public void setOrgPoint_x(int point_idx, int value) {
-    org[org_idx + point_idx].x = value;
+    org[org_idx + point_idx].setX(value);
   }
 
   /* ==================== setOrgPoint_y ================================== */
   public void setOrgPoint_y(int point_idx, int value) {
-    org[org_idx + point_idx].y = value;
+    org[org_idx + point_idx].setY(value);
   }
 
   /* ==================== resetOrgPoint ================================== */
   public void resetOrgPoint(int point_idx) {
-    org[org_idx + point_idx].x = 0;
-    org[org_idx + point_idx].y = 0;
+    org[org_idx + point_idx].setX(0);
+    org[org_idx + point_idx].setY(0);
   }
 
   /* ==================== getOrg_idx ================================== */
@@ -132,12 +132,12 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== getCurPoint_x ================================== */
   public int getCurPoint_x(int point_idx) {
-    return cur[cur_idx + point_idx].x;
+    return cur[cur_idx + point_idx].getX();
   }
 
   /* ==================== getCurPoint_y ================================== */
   public int getCurPoint_y(int point_idx) {
-    return cur[cur_idx + point_idx].y;
+    return cur[cur_idx + point_idx].getY();
   }
 
   /* ==================== setCur ================================== */
@@ -147,24 +147,24 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== setCurPoint ================================== */
   public void setCurPoint(int point_idx, FTVectorRec vec) {
-    cur[cur_idx + point_idx].x = vec.x;
-    cur[cur_idx + point_idx].y = vec.y;
+    cur[cur_idx + point_idx].setX(vec.getX());
+    cur[cur_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setCurPoint_x ================================== */
   public void setCurPoint_x(int point_idx, int value) {
-    cur[cur_idx + point_idx].x = value;
+    cur[cur_idx + point_idx].setX(value);
   }
 
   /* ==================== setCurPoint_y ================================== */
   public void setCurPoint_y(int point_idx, int value) {
-    cur[cur_idx + point_idx].y = value;
+    cur[cur_idx + point_idx].setY(value);
   }
 
   /* ==================== resetCurPoint ================================== */
   public void resetCurPoint(int point_idx) {
-    cur[cur_idx + point_idx].x = 0;
-    cur[cur_idx + point_idx].y = 0;
+    cur[cur_idx + point_idx].setX(0);
+    cur[cur_idx + point_idx].setY(0);
   }
 
   /* ==================== getCur_idx ================================== */
@@ -189,12 +189,12 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== getOrusPoint_x ================================== */
   public int getOrusPoint_x(int point_idx) {
-    return orus[orus_idx + point_idx].x;
+    return orus[orus_idx + point_idx].getX();
   }
 
   /* ==================== getOrusPoint_y ================================== */
   public int getOrusPoint_y(int point_idx) {
-    return orus[orus_idx + point_idx].y;
+    return orus[orus_idx + point_idx].getY();
   }
 
   /* ==================== setOrus ================================== */
@@ -204,24 +204,24 @@ public class TTIUPWorkerRec extends FTDebug {
 
   /* ==================== setOrusPoint ================================== */
   public void setOrusPoint(int point_idx, FTVectorRec vec) {
-    orus[orus_idx + point_idx].x = vec.x;
-    orus[orus_idx + point_idx].y = vec.y;
+    orus[orus_idx + point_idx].setX(vec.getX());
+    orus[orus_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setOrusPoint_x ================================== */
   public void setOrusPoint_x(int point_idx, int value) {
-    orus[orus_idx + point_idx].x = value;
+    orus[orus_idx + point_idx].setX(value);
   }
 
   /* ==================== setOrusPoint_y ================================== */
   public void setOrusPoint_y(int point_idx, int value) {
-    orus[orus_idx + point_idx].y = value;
+    orus[orus_idx + point_idx].setY(value);
   }
 
   /* ==================== resetOrusPoint ================================== */
   public void resetOrusPoint(int point_idx) {
-    orus[orus_idx + point_idx].x = 0;
-    orus[orus_idx + point_idx].y = 0;
+    orus[orus_idx + point_idx].setX(0);
+    orus[orus_idx + point_idx].setY(0);
   }
 
   /* ==================== getOrus_idx ================================== */

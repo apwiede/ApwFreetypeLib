@@ -91,9 +91,9 @@ public class TTUtil extends FTDebug {
     Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("Normalize2: Vx: %d, vy: %d", Vx, Vy));
     W = FTCalc.FTHypot(Vx, Vy);
     Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("W: %d 0x%x",  W, W));
-    R.x = FTCalc.FTDivFix(Vx, W << 2);
-    R.y = FTCalc.FTDivFix(Vy, W << 2);
-    Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("R.x: %d, R.y: %d", R.x, R.y));
+    R.setX(FTCalc.FTDivFix(Vx, W << 2));
+    R.setY(FTCalc.FTDivFix(Vy, W << 2));
+    Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("R.x: %d, R.y: %d", R.getX(), R.getY()));
     R_ref.Set(R);
     return true;
   }

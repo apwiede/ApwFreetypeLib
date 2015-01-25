@@ -110,8 +110,8 @@ public class TTInstructionFuncGrp9 extends FTDebug {
       /* UNDOCUMENTED!  The MS rasterizer does that with */
       /* twilight points (confirmed by Greg Hitchcock)   */
     if (cur.graphics_state.gep1 == 0) {
-      cur.zp1.setOrgPoint_x(point, (cur.zp0.getOrgPoint_x(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.x)));
-      cur.zp1.setOrgPoint_y(point, (cur.zp0.getOrgPoint_y(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.y)));
+      cur.zp1.setOrgPoint_x(point, (cur.zp0.getOrgPoint_x(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.getX())));
+      cur.zp1.setOrgPoint_y(point, (cur.zp0.getOrgPoint_y(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.getY())));
       cur.zp1.setCurPoint(point, cur.zp1.getOrgPoint(point));
     }
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("dualproj: point: %d, GS.rp0: %d, zp1.org[point].x: %d, zp1.org[point].y: %d, zp0.org[GS.rp0].x: %d, zp0.org[GS.rp0].y: %d", point, cur.graphics_state.rp0, cur.zp1.getOrgPoint_x(point), cur.zp1.getOrgPoint_y(point), cur.zp0.getOrgPoint_x(cur.graphics_state.rp0), cur.zp0.getOrgPoint_y(cur.graphics_state.rp0)));
@@ -204,25 +204,25 @@ public class TTInstructionFuncGrp9 extends FTDebug {
       FTVectorRec vec1 = cur.zp1.getOrgPoint(point);
       FTVectorRec vec2 = cur.zp0.getOrgPoint(cur.graphics_state.rp0);
 
-      org_dist = cur.funcDualproj(vec1.x - vec2.x, vec1.y - vec2.y);
+      org_dist = cur.funcDualproj(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY());
     } else {
       FTVectorRec vec1 = cur.zp1.getOrus()[cur.zp1.getOrus_idx() + point];
       FTVectorRec vec2 = cur.zp0.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp0];
 
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("vec1: %d %d, vec2: %d %d\n", vec1.x, vec1.y, vec2.x, vec2.y));
+      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("vec1: %d %d, vec2: %d %d\n", vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY()));
       Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x_scale: %d y_scale: %d", cur.metrics.getX_scale(), cur.metrics.getY_scale()));
       if (cur.metrics.getX_scale() == cur.metrics.getY_scale()) {
           /* this should be faster */
-        org_dist = cur.render_funcs.curr_project_func.dualproject(vec1.x - vec2.x, vec1.y - vec2.y);
+        org_dist = cur.render_funcs.curr_project_func.dualproject(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY());
         Debug(0, DebugTag.DBG_INTERP, TAG, String.format("d1: %d", org_dist));
         org_dist = TTUtil.FTMulFix(org_dist, cur.metrics.getX_scale());
         Debug(0, DebugTag.DBG_INTERP, TAG, String.format("d2: %d", org_dist));
       } else {
         FTVectorRec vec = new FTVectorRec();
 
-        vec.x = TTUtil.FTMulFix(vec1.x - vec2.x, cur.metrics.getX_scale());
-        vec.y = TTUtil.FTMulFix(vec1.y - vec2.y, cur.metrics.getY_scale());
-        org_dist = cur.render_funcs.curr_project_func.dualproject(vec.x, vec.y);
+        vec.setX(TTUtil.FTMulFix(vec1.getX() - vec2.getX(), cur.metrics.getX_scale()));
+        vec.setY(TTUtil.FTMulFix(vec1.getY() - vec2.getY(), cur.metrics.getY_scale()));
+        org_dist = cur.render_funcs.curr_project_func.dualproject(vec.getX(), vec.getY());
       }
     }
     Debug(0, DebugTag.DBG_INTERP, TAG, "org_dist1: "+org_dist);

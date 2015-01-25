@@ -245,10 +245,10 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
       return;
     }
     mask = (byte)0xFF;
-    if (cur.graphics_state.freeVector.x != 0) {
+    if (cur.graphics_state.freeVector.getX() != 0) {
       mask &= ~Flags.Curve.TOUCH_X.getVal();
     }
-    if (cur.graphics_state.freeVector.y != 0) {
+    if (cur.graphics_state.freeVector.getY() != 0) {
       mask &= ~Flags.Curve.TOUCH_Y.getVal();
     }
     cur.zp0.getTags()[point] = Flags.Curve.getTableTag(cur.zp0.getTags()[point].getVal() & mask);

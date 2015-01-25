@@ -66,12 +66,12 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
     A = (cur.opcode.getVal() & 1) << 14;
     B = A ^ 0x4000;
-    cur.graphics_state.freeVector.x = A;
-    cur.graphics_state.projVector.x = A;
-    cur.graphics_state.dualVector.x = A;
-    cur.graphics_state.freeVector.y = B;
-    cur.graphics_state.projVector.y = B;
-    cur.graphics_state.dualVector.y = B;
+    cur.graphics_state.freeVector.setX(A);
+    cur.graphics_state.projVector.setX(A);
+    cur.graphics_state.dualVector.setX(A);
+    cur.graphics_state.freeVector.setY(B);
+    cur.graphics_state.projVector.setY(B);
+    cur.graphics_state.dualVector.setY(B);
     cur.render_funcs.ComputeFuncs(cur);
   }
 
@@ -87,10 +87,10 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
     A = (cur.opcode.getVal() & 1) << 14;
     B = A ^ 0x4000;
-    cur.graphics_state.projVector.x = A;
-    cur.graphics_state.dualVector.x = A;
-    cur.graphics_state.projVector.y = B;
-    cur.graphics_state.dualVector.y = B;
+    cur.graphics_state.projVector.setX(A);
+    cur.graphics_state.dualVector.setX(A);
+    cur.graphics_state.projVector.setY(B);
+    cur.graphics_state.dualVector.setY(B);
     cur.render_funcs.ComputeFuncs(cur);
   }
 
@@ -106,8 +106,8 @@ public class TTInstructionFuncGrp1 extends FTDebug {
 
     A = (cur.opcode.getVal() & 1) << 14;
     B = A ^ 0x4000;
-    cur.graphics_state.freeVector.x = A;
-    cur.graphics_state.freeVector.y = B;
+    cur.graphics_state.freeVector.setX(A);
+    cur.graphics_state.freeVector.setY(B);
     cur.render_funcs.ComputeFuncs(cur);
   }
 

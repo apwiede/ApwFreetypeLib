@@ -93,21 +93,21 @@ public class FTGlyphLoadRec extends FTOutlineRec {
       if (points != null) {
         if (points_idx + j < points.length) {
           if (getPoint(j) != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" outl: %d %5d %5d", j, getPoint(j).x, getPoint(j).y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" outl: %d %5d %5d", j, getPoint(j).getX(), getPoint(j).getY()));
           }
         }
       }
       if (extra_points != null) {
         if (j < extra_points.length) {
           if (getExtra_point(j) != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" ext1: %d %5d %5d", j, getExtra_point(j).x, getExtra_point(j).y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" ext1: %d %5d %5d", j, getExtra_point(j).getX(), getExtra_point(j).getY()));
           }
         }
       }
       if (extra_points2 != null) {
         if (extra_points2_idx + j < extra_points2.length) {
           if (getExtra_point2(j) != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" ext2: %d %5d %5d", j, getExtra_point2(j).x, getExtra_point2(j).y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" ext2: %d %5d %5d", j, getExtra_point2(j).getX(), getExtra_point2(j).getY()));
           }
         }
       }

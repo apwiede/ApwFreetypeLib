@@ -117,7 +117,7 @@ public class TTProjectFuncBase extends FTDebug {
   /* ==================== dualproject ===================================== */
   public int dualproject(int dx, int dy) {
     Debug(0, DebugTag.DBG_INTERP, TAG, "DualProject");
-    return TTDotFix14(dx, dy, TTRenderFunc.cur.graphics_state.getDualVector().x, TTRenderFunc.cur.graphics_state.getDualVector().y);
+    return TTDotFix14(dx, dy, TTRenderFunc.cur.graphics_state.getDualVector().getX(), TTRenderFunc.cur.graphics_state.getDualVector().getY());
   }
 
 }

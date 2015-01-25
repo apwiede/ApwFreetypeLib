@@ -188,8 +188,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FTGlyphLoaderCreateExtra 2 extra: "+base
       return error;
     }
     /* copy advance while converting it to 16.16 format */
-    glyph.advance.x = slot.getAdvance().x << 10;
-    glyph.advance.y = slot.getAdvance().y << 10;
+    glyph.advance.setX(slot.getAdvance().getX() << 10);
+    glyph.advance.setY(slot.getAdvance().getY() << 10);
     /* now import the image from the glyph slot */
     error = clazz.glyphInit(glyph, slot);
     /* if an error occurred, destroy the glyph */
@@ -254,17 +254,17 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FTGlyphLoaderAdd3: n_point
    *
    * =====================================================================
    */
-  public static void translate_array(int n, FTVectorRec[] coords, int idx, long delta_x, long delta_y) {
+  public static void translate_array(int n, FTVectorRec[] coords, int idx, int delta_x, int delta_y) {
     int k;
 
     if (delta_x != 0) {
       for (k = 0; k < n; k++) {
-        coords[idx + k].x += delta_x;
+        coords[idx + k].setX(coords[idx + k].getX() + delta_x);
       }
     }
     if (delta_y != 0) {
       for (k = 0; k < n; k++) {
-        coords[idx + k].y += delta_y;
+        coords[idx + k].setY(coords[idx + k].getY() + delta_y);
       }
     }
   }
@@ -369,8 +369,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_RENEW_ARRAY base.extra_points: "+base
           base.setExtra_points((FTVectorRec[])FTUtil.FT_RENEW_ARRAY(base.getExtra_points(), FTUtilFlags.ArrayType.FT_VECTOR, old_max * 2, new_max * 2));
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "after FT_RENEW_ARRAY base.extra_points: "+base.getExtra_points()+"!use_extra: "+use_extra+"!");
           for (k = 0; k < old_max; k++) {
-            base.getExtra_points()[new_max + k].x = base.getExtra_points()[old_max + k].x;
-            base.getExtra_points()[new_max + k].y = base.getExtra_points()[old_max + k].y;
+            base.getExtra_points()[new_max + k].setX(base.getExtra_points()[old_max + k].getX());
+            base.getExtra_points()[new_max + k].setY(base.getExtra_points()[old_max + k].getY());
           }
           base.setExtra_points2(new FTVectorRec[new_max]);
           for (k = old_max; k < old_max * 2; k++) {

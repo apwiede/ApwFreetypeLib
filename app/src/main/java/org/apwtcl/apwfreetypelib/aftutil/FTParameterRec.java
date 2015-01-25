@@ -34,11 +34,11 @@ package org.apwtcl.apwfreetypelib.aftutil;
 
 import android.util.SparseArray;
 
-public class FTParameter extends FTDebug {
-    private static int oid = 0;
+public class FTParameterRec extends FTDebug {
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTParameter";
+  private int id;
+  private static String TAG = "FTParameterRec";
 
   public enum ParamTag {
     FT_PARAM_TAG_IGNORE_PREFERRED_FAMILY(TTUtil.TagToInt("igpf"), "FT_PARAM_TAG_IGNORE_PREFERRED_FAMILY"),
@@ -69,30 +69,30 @@ public class FTParameter extends FTDebug {
     }
   }
 
-    public ParamTag tag;
-    public Object[] data;
+  private ParamTag tag;
+  private Object[] data;
 
-    /* ==================== FTParameter ================================== */
-    public FTParameter() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTParameter ================================== */
+  public FTParameterRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    return str.toString();
+  }
 
   /* ==================== getTag ===================================== */
   public ParamTag getTag() {

@@ -75,12 +75,12 @@ public class TTMoveFunc extends TTMoveFuncBase {
   public void move(TTGlyphZoneRec zone, int point, int distance) {
     int v;
     Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMove");
-    v = cur.graphics_state.freeVector.x;
+    v = cur.graphics_state.freeVector.getX();
     if (v != 0) {
       zone.setCurPoint_x(point,  zone.getCurPoint_x(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
       zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
     }
-    v = cur.graphics_state.freeVector.y;
+    v = cur.graphics_state.freeVector.getY();
     if (v != 0) {
       zone.setCurPoint_y(point, zone.getCurPoint_y(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
       zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());

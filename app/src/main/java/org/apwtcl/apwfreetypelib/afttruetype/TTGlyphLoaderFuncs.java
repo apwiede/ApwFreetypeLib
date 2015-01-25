@@ -97,9 +97,9 @@ public class TTGlyphLoaderFuncs extends FTDebug {
       if ((loader.getLoad_flags().getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
         loader.getZone().tt_prepare_zone(gloader.getCurrent(), 0, 0);
         for (int i = 0; i < (loader.getZone().getN_points() + 4); i++) {
-          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i] = new FTVectorRec();
-          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].x = loader.getZone().getCurPoint_x(i);
-          loader.getZone().getOrus()[loader.getZone().getOrus_idx() + i].y = loader.getZone().getCurPoint_y(i);
+          loader.getZone().setOrusPoint(i, new FTVectorRec());
+          loader.getZone().getOrusPoint(i).setX(loader.getZone().getCurPoint_x(i));
+          loader.getZone().getOrusPoint(i).setY(loader.getZone().getCurPoint_y(i));
         }
       }
       {
@@ -118,8 +118,8 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         }
         if (do_scale) {
           for (vecIdx = 0; vecIdx < limit; vecIdx++) {
-            gloader.getCurrent().getPoints()[vecIdx].x = TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].x, x_scale);
-            gloader.getCurrent().getPoints()[vecIdx].y = TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].y, y_scale);
+            gloader.getCurrent().getPoints()[vecIdx].setX(TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].getX(), x_scale));
+            gloader.getCurrent().getPoints()[vecIdx].setY(TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].getY(), y_scale));
           }
           loader.setPp1(gloader.getCurrent().getPoints()[n_points - 4]);
           loader.setPp2(gloader.getCurrent().getPoints()[n_points - 3]);
@@ -178,8 +178,8 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         if (k >= num_base_points || l >= num_points) {
           return FTError.ErrorTag.GLYPH_INVALID_COMPOSITE;
         }
-        x = gloader.getBase().getPoints()[k].x - gloader.getBase().getPoints()[l].x;
-        y = gloader.getBase().getPoints()[k].y - gloader.getBase().getPoints()[l].y;
+        x = gloader.getBase().getPoints()[k].getX() - gloader.getBase().getPoints()[l].getX();
+        y = gloader.getBase().getPoints()[k].getY() - gloader.getBase().getPoints()[l].getY();
       } else {
         x = subglyph.getArg1();
         y = subglyph.getArg2();
@@ -194,8 +194,8 @@ public class TTGlyphLoaderFuncs extends FTDebug {
           /*                                                                       */
           /* This algorithm is a guess and works much better than the above.       */
           /*                                                                       */
-          int mac_xscale = FTCalc.FTHypot(subglyph.getTransform().xx, subglyph.getTransform().xy);
-          int mac_yscale = FTCalc.FTHypot(subglyph.getTransform().yy, subglyph.getTransform().yx);
+          int mac_xscale = FTCalc.FTHypot(subglyph.getTransform().getXx(), subglyph.getTransform().getXy());
+          int mac_yscale = FTCalc.FTHypot(subglyph.getTransform().getYy(), subglyph.getTransform().getYx());
           x = TTUtil.FTMulFix(x, mac_xscale);
           y = TTUtil.FTMulFix(y, mac_yscale);
         }

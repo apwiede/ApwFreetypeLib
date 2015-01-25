@@ -251,7 +251,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
    * =====================================================================
    */
   public static FTError.ErrorTag FTNewFace(FTLibraryRec library, String pathname, int face_index, FTReference<FTFaceRec> face_ref) {
-    FTOpenArgs args = new FTOpenArgs();
+    FTOpenArgsRec args = new FTOpenArgsRec();
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FTNewFace: pathname: "+pathname+"!");
@@ -272,7 +272,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
    * =====================================================================
    */
   public FTError.ErrorTag open_face(FTDriverRec driver, FTStreamRec stream, int face_index, int num_params,
-                                           FTParameter[] params) {
+                                           FTParameterRec[] params) {
     FTDriverClassRec clazz;
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTError.ErrorTag error2 = FTError.ErrorTag.ERR_OK;
@@ -306,7 +306,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
    * FTOpenFace
    * =====================================================================
    */
-  public static FTError.ErrorTag FTOpenFace(FTLibraryRec library, FTOpenArgs args, int face_index, FTReference<FTFaceRec> face_ref) {
+  public static FTError.ErrorTag FTOpenFace(FTLibraryRec library, FTOpenArgsRec args, int face_index, FTReference<FTFaceRec> face_ref) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTDriverRec driver = null;
     FTReference<RandomAccessFile> stream_ref = new FTReference<RandomAccessFile>();
@@ -357,7 +357,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
       /* not all modules are drivers, so check... */
       if ((driver.getDriver_clazz().module_flags & Flags.Module.FONT_DRIVER.getVal()) != 0) {
         int num_params = 0;
-        FTParameter[] params =null ;
+        FTParameterRec[] params =null ;
 
         if (FTUtilFlags.StreamOpen.isParams(args.getFlags())) {
           num_params = args.getNum_params();
@@ -391,7 +391,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
           /* not all modules are font drivers, so check... */
         if ((cur.module_clazz.module_flags & Flags.Module.FONT_DRIVER.getVal()) != 0) {
           int num_params = 0;
-          FTParameter params[] = null;
+          FTParameterRec params[] = null;
 
           TTDriverRec cur_obj = (TTDriverRec)library.getModule(module_idx);
           driver = cur_obj;
@@ -509,12 +509,12 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     }
       /* initialize internal face data */
     {
-      face.internal.getTransform_matrix().xx = 0x10000;
-      face.internal.getTransform_matrix().xy = 0;
-      face.internal.getTransform_matrix().yx = 0;
-      face.internal.getTransform_matrix().yy = 0x10000;
-      face.internal.getTransform_delta().x = 0;
-      face.internal.getTransform_delta().y = 0;
+      face.internal.getTransform_matrix().setXx(0x10000);
+      face.internal.getTransform_matrix().setXy(0);
+      face.internal.getTransform_matrix().setYx(0);
+      face.internal.getTransform_matrix().setYy(0x10000);
+      face.internal.getTransform_delta().setX(0);
+      face.internal.getTransform_delta().setY(0);
       face.internal.setRefcount(1);
     }
     if (face_ref != null) {

@@ -78,8 +78,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     }
     p1 = cur.zp1.getCurPoint(aIdx2);
     p2 = cur.zp2.getCurPoint(aIdx1);
-    A = p1.x - p2.x;
-    B = p1.y - p2.y;
+    A = p1.getX() - p2.getX();
+    B = p1.getY() - p2.getY();
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("1: A: %d B: %d", A, B));
       /* If p1 == p2, SPVTL and SFVTL behave the same as */
       /* SPVTCA[X] and SFVTCA[X], respectively.          */
@@ -97,7 +97,7 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("2: A: %d B: %d", A, B));
     TTUtil.Normalize(A, B, vec_ref);
     FTVectorRec vec = vec_ref.Get();
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("vec: %d %d", vec.x, vec.y));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("vec: %d %d", vec.getX(), vec.getY()));
     return true;
   }
 
@@ -111,7 +111,7 @@ public class TTInstructionFuncGrp0 extends FTDebug {
     FTReference<FTVectorRec> ft_unit_ref = new FTReference<FTVectorRec>();
 
     ft_unit_ref.Set(cur.graphics_state.projVector);
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("SPvTL: %d, %d", cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0]));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("SPvTL: %d, %d", cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0]));
     if (SxVTL(cur.stack[cur.stack_idx + 1], cur.stack[cur.stack_idx + 0], cur.opcode, ft_unit_ref)) {
       cur.graphics_state.projVector = ft_unit_ref.Get();
       cur.graphics_state.dualVector = ft_unit_ref.Get();
@@ -190,8 +190,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
    * =====================================================================
    */
   public void GPV() {
-    cur.stack[cur.stack_idx + 0] = cur.graphics_state.projVector.x & 0xFFFF;
-    cur.stack[cur.stack_idx + 1] = cur.graphics_state.projVector.y & 0xFFFF;
+    cur.stack[cur.stack_idx] = cur.graphics_state.projVector.getX() & 0xFFFF;
+    cur.stack[cur.stack_idx + 1] = cur.graphics_state.projVector.getY() & 0xFFFF;
   }
 
   /* =====================================================================
@@ -201,8 +201,8 @@ public class TTInstructionFuncGrp0 extends FTDebug {
    * =====================================================================
    */
   public void GFV() {
-    cur.stack[cur.stack_idx + 0] = cur.graphics_state.freeVector.x & 0xFFFF;
-    cur.stack[cur.stack_idx + 1] = cur.graphics_state.freeVector.y & 0xFFFF;
+    cur.stack[cur.stack_idx] = cur.graphics_state.freeVector.getX() & 0xFFFF;
+    cur.stack[cur.stack_idx + 1] = cur.graphics_state.freeVector.getY() & 0xFFFF;
   }
 
   /* =====================================================================
@@ -277,10 +277,10 @@ public class TTInstructionFuncGrp0 extends FTDebug {
       /* thresholding abs(tan(angle)) at 1/19, corresponding to 3 degrees. */
     if (19 * FTCalc.FT_ABS(discriminant) > FTCalc.FT_ABS(dotproduct)) {
       val = FTCalc.FT_MulDiv(dx, -dby, 0x40) + FTCalc.FT_MulDiv(dy, dbx, 0x40);
-      R.x = FTCalc.FT_MulDiv(val, dax, discriminant);
-      R.y = FTCalc.FT_MulDiv(val, day, discriminant);
-      cur.zp2.setCurPoint_x(point, (cur.zp1.getCurPoint_x(a0) + R.x));
-      cur.zp2.setCurPoint_y(point, (cur.zp1.getCurPoint_y(a0) + R.y));
+      R.setX(FTCalc.FT_MulDiv(val, dax, discriminant));
+      R.setY(FTCalc.FT_MulDiv(val, day, discriminant));
+      cur.zp2.setCurPoint_x(point, (cur.zp1.getCurPoint_x(a0) + R.getX()));
+      cur.zp2.setCurPoint_y(point, (cur.zp1.getCurPoint_y(a0) + R.getY()));
     } else {
         /* else, take the middle of the middles of A and B */
       cur.zp2.setCurPoint_x(point, ((cur.zp1.getCurPoint_x(a0) + cur.zp1.getCurPoint_x(a1) +

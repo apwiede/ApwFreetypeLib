@@ -351,12 +351,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
 
       /* UNDOCUMENTED!  The MS rasterizer doesn't allow the following */
       /* graphics state variables to be modified by the CVT program.  */
-    exec.graphics_state.getDualVector().x = 0x4000;
-    exec.graphics_state.getDualVector().y = 0;
-    exec.graphics_state.getProjVector().x = 0x4000;
-    exec.graphics_state.getProjVector().y = 0x0;
-    exec.graphics_state.getFreeVector().x = 0x4000;
-    exec.graphics_state.getFreeVector().y = 0x0;
+    exec.graphics_state.getDualVector().setX(0x4000);
+    exec.graphics_state.getDualVector().setY(0);
+    exec.graphics_state.getProjVector().setX(0x4000);
+    exec.graphics_state.getProjVector().setY(0x0);
+    exec.graphics_state.getFreeVector().setX(0x4000);
+    exec.graphics_state.getFreeVector().setY(0x0);
     exec.graphics_state.setRp0(0);
     exec.graphics_state.setRp1(0);
     exec.graphics_state.setRp2(0);

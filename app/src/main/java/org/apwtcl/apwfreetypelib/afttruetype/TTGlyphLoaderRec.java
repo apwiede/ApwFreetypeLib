@@ -154,7 +154,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("Tag: t: %d: 0x%02x: ", t, 
     current.setN_points(n_points);
     current.setN_contours(n_contours);
 for (int i = 0; i < n_points; i++) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point i:%d  %d %d", i, current.getPoints()[i].x, current.getPoints()[i].y));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point i:%d  %d %d", i, current.getPoints()[i].getX(), current.getPoints()[i].getY()));
 }
     return error;
   }

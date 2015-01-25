@@ -356,12 +356,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.id: "+face+"!"+face.getMax_profile(
     graphics_state.setGep0(1);
     graphics_state.setGep1(1);
     graphics_state.setGep2(1);
-    graphics_state.getProjVector().x = 0x4000;
-    graphics_state.getProjVector().y = 0x0000;
-    graphics_state.getFreeVector().x = graphics_state.getProjVector().x;
-    graphics_state.getFreeVector().y = graphics_state.getProjVector().y;
-    graphics_state.getDualVector().x = graphics_state.getProjVector().x;
-    graphics_state.getDualVector().y = graphics_state.getProjVector().y;
+    graphics_state.getProjVector().setX(0x4000);
+    graphics_state.getProjVector().setY(0x0000);
+    graphics_state.getFreeVector().setX(graphics_state.getProjVector().getX());
+    graphics_state.getFreeVector().setY(graphics_state.getProjVector().getY());
+    graphics_state.getDualVector().setX(graphics_state.getProjVector().getX());
+    graphics_state.getDualVector().setY(graphics_state.getProjVector().getY());
     graphics_state.setRound_state(TTInterpTags.Round.To_Grid);
     graphics_state.setLoop(1);
     /* some glyphs leave something on the stack. so we clean it */

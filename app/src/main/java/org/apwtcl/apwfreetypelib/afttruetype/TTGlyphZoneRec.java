@@ -167,21 +167,21 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
       if (cur != null) {
         if (j < cur.length) {
           if (cur[cur_idx + j] != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  cur: %d %5d %5d", j, cur[cur_idx + j].x, cur[cur_idx + j].y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  cur: %d %5d %5d", j, cur[cur_idx + j].getX(), cur[cur_idx + j].getY()));
           }
         }
       }
       if (orus != null) {
         if (j < orus.length) {
           if (orus[orus_idx + j] != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" orus: %d %5d %5d", j, orus[orus_idx + j].x, orus[orus_idx + j].y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" orus: %d %5d %5d", j, orus[orus_idx + j].getX(), orus[orus_idx + j].getY()));
           }
         }
       }
       if (org != null) {
         if (j < org.length) {
           if (org[org_idx + j] != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  org: %d %5d %5d", j, org[org_idx + j].x, org[org_idx + j].y));
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  org: %d %5d %5d", j, org[org_idx + j].getX(), org[org_idx + j].getY()));
           }
         }
       }
@@ -195,17 +195,17 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
     for( int j = 0; j < n_points; j++) {
       if (cur != null) {
         if (j < cur.length) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  cur: %d %5d %5d", j, cur[cur_idx + j].x, cur[cur_idx + j].y));
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  cur: %d %5d %5d", j, cur[cur_idx + j].getX(), cur[cur_idx + j].getY()));
         }
       }
       if (orus != null) {
         if (j < orus.length) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" orus: %d %5d %5d", j, orus[orus_idx + j].x, orus[orus_idx + j].y));
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" orus: %d %5d %5d", j, orus[orus_idx + j].getX(), orus[orus_idx + j].getY()));
         }
       }
       if (org != null) {
         if (j < org.length) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  org: %d %5d %5d", j, org[org_idx + j].x, org[org_idx + j].y));
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  org: %d %5d %5d", j, org[org_idx + j].getX(), org[org_idx + j].getY()));
         }
       }
     }
@@ -225,24 +225,24 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
 
     if (org != null) {
       for (i = 0; i < org.length; i++) {
-        org[i].x = 0;
-        org[i].y = 0;
+        org[i].setX(0);
+        org[i].setY(0);
       }
     }
     org_idx = 0;
 
     if (cur != null) {
       for (i = 0; i < cur.length; i++) {
-        cur[i].x = 0;
-        cur[i].y = 0;
+        cur[i].setX(0);
+        cur[i].setY(0);
       }
     }
     cur_idx = 0;
 
     if (orus != null) {
       for (i = 0; i < orus.length; i++) {
-        orus[i].x = 0;
-        orus[i].y = 0;
+        orus[i].setX(0);
+        orus[i].setY(0);
       }
     }
     orus_idx = 0;
@@ -413,12 +413,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== getOrgPoint_x ================================== */
   public int getOrgPoint_x(int point_idx) {
-    return org[org_idx + point_idx].x;
+    return org[org_idx + point_idx].getX();
   }
 
   /* ==================== getOrgPoint_y ================================== */
   public int getOrgPoint_y(int point_idx) {
-    return org[org_idx + point_idx].y;
+    return org[org_idx + point_idx].getY();
   }
 
   /* ==================== setOrg ================================== */
@@ -428,24 +428,24 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== setOrgPoint ================================== */
   public void setOrgPoint(int point_idx, FTVectorRec vec) {
-    org[org_idx + point_idx].x = vec.x;
-    org[org_idx + point_idx].y = vec.y;
+    org[org_idx + point_idx].setX(vec.getX());
+    org[org_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setOrgPoint_x ================================== */
   public void setOrgPoint_x(int point_idx, int value) {
-    org[org_idx + point_idx].x = value;
+    org[org_idx + point_idx].setX(value);
   }
 
   /* ==================== setOrgPoint_y ================================== */
   public void setOrgPoint_y(int point_idx, int value) {
-    org[org_idx + point_idx].y = value;
+    org[org_idx + point_idx].setY(value);
   }
 
   /* ==================== resetOrgPoint ================================== */
   public void resetOrgPoint(int point_idx) {
-    org[org_idx + point_idx].x = 0;
-    org[org_idx + point_idx].y = 0;
+    org[org_idx + point_idx].setX(0);
+    org[org_idx + point_idx].setY(0);
   }
 
   /* ==================== getOrg_idx ================================== */
@@ -470,12 +470,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== getCurPoint_x ================================== */
   public int getCurPoint_x(int point_idx) {
-    return cur[cur_idx + point_idx].x;
+    return cur[cur_idx + point_idx].getX();
   }
 
   /* ==================== getCurPoint_y ================================== */
   public int getCurPoint_y(int point_idx) {
-    return cur[cur_idx + point_idx].y;
+    return cur[cur_idx + point_idx].getY();
   }
 
   /* ==================== setCur ================================== */
@@ -485,24 +485,24 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== setCurPoint ================================== */
   public void setCurPoint(int point_idx, FTVectorRec vec) {
-    cur[cur_idx + point_idx].x = vec.x;
-    cur[cur_idx + point_idx].y = vec.y;
+    cur[cur_idx + point_idx].setX(vec.getX());
+    cur[cur_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setCurPoint_x ================================== */
   public void setCurPoint_x(int point_idx, int value) {
-    cur[cur_idx + point_idx].x = value;
+    cur[cur_idx + point_idx].setX(value);
   }
 
   /* ==================== setCurPoint_y ================================== */
   public void setCurPoint_y(int point_idx, int value) {
-    cur[cur_idx + point_idx].y = value;
+    cur[cur_idx + point_idx].setY(value);
   }
 
   /* ==================== resetCurPoint ================================== */
   public void resetCurPoint(int point_idx) {
-    cur[cur_idx + point_idx].x = 0;
-    cur[cur_idx + point_idx].y = 0;
+    cur[cur_idx + point_idx].setX(0);
+    cur[cur_idx + point_idx].setY(0);
   }
 
   /* ==================== getCur_idx ================================== */
@@ -527,12 +527,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== getOrusPoint_x ================================== */
   public int getOrusPoint_x(int point_idx) {
-    return orus[orus_idx + point_idx].x;
+    return orus[orus_idx + point_idx].getX();
   }
 
   /* ==================== getOrusPoint_y ================================== */
   public int getOrusPoint_y(int point_idx) {
-    return orus[orus_idx + point_idx].y;
+    return orus[orus_idx + point_idx].getY();
   }
 
   /* ==================== setOrus ================================== */
@@ -542,24 +542,24 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
 
   /* ==================== setOrusPoint ================================== */
   public void setOrusPoint(int point_idx, FTVectorRec vec) {
-    orus[orus_idx + point_idx].x = vec.x;
-    orus[orus_idx + point_idx].y = vec.y;
+    orus[orus_idx + point_idx].setX(vec.getX());
+    orus[orus_idx + point_idx].setY(vec.getY());
   }
 
   /* ==================== setOrusPoint_x ================================== */
   public void setOrusPoint_x(int point_idx, int value) {
-    orus[orus_idx + point_idx].x = value;
+    orus[orus_idx + point_idx].setX(value);
   }
 
   /* ==================== setOrusPoint_y ================================== */
   public void setOrusPoint_y(int point_idx, int value) {
-    orus[orus_idx + point_idx].y = value;
+    orus[orus_idx + point_idx].setY(value);
   }
 
   /* ==================== resetOrusPoint ================================== */
   public void resetOrusPoint(int point_idx) {
-    orus[orus_idx + point_idx].x = 0;
-    orus[orus_idx + point_idx].y = 0;
+    orus[orus_idx + point_idx].setX(0);
+    orus[orus_idx + point_idx].setY(0);
   }
 
   /* ==================== getOrus_idx ================================== */

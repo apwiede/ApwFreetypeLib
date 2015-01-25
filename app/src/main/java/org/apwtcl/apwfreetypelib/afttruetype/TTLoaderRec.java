@@ -357,20 +357,20 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp1: loader.bbo
       /* Calculate the four phantom points.                     */
       /* The first two stand for horizontal origin and advance. */
       /* The last two stand for vertical origin and advance.    */
-      pp1.x = bbox.getxMin() - left_bearing;
-      pp1.y = 0;
-      pp2.x = pp1.x + advance;
-      pp2.y = 0;
-      pp3.x = 0;
-      pp3.y = top_bearing + bbox.getyMax();
-      pp4.x = 0;
-      pp4.y = pp3.y - vadvance;
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d %d %d %d %d", pp1.x, pp2.x, pp3.y, pp4.y, (load_flags.getVal() & Flags.Load.NO_SCALE.getVal())));
+      pp1.setX(bbox.getxMin() - left_bearing);
+      pp1.setY(0);
+      pp2.setX(pp1.getX() + advance);
+      pp2.setY(0);
+      pp3.setX(0);
+      pp3.setY(top_bearing + bbox.getyMax());
+      pp4.setX(0);
+      pp4.setY(pp3.getY() - vadvance);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d %d %d %d %d", pp1.getX(), pp2.getX(), pp3.getY(), pp4.getY(), (load_flags.getVal() & Flags.Load.NO_SCALE.getVal())));
       if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
-        pp1.x = TTUtil.FTMulFix(pp1.x, x_scale);
-        pp2.x = TTUtil.FTMulFix(pp2.x, x_scale);
-        pp3.y = TTUtil.FTMulFix(pp3.y, y_scale);
-        pp4.y = TTUtil.FTMulFix(pp4.y, y_scale);
+        pp1.setX(TTUtil.FTMulFix(pp1.getX(), x_scale));
+        pp2.setX(TTUtil.FTMulFix(pp2.getX(), x_scale));
+        pp3.setY(TTUtil.FTMulFix(pp3.getY(), y_scale));
+        pp4.setY(TTUtil.FTMulFix(pp4.getY(), y_scale));
       }
       error = FTError.ErrorTag.ERR_OK;
       if (opened_frame) {
@@ -385,15 +385,15 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp2: loader.bbo
     /* Calculate the four phantom points.                     */
     /* The first two stand for horizontal origin and advance. */
     /* The last two stand for vertical origin and advance.    */
-    pp1.x = bbox.getxMin() - left_bearing;
-    pp1.y = 0;
-    pp2.x = pp1.x + advance;
-    pp2.y = 0;
-    pp3.x = 0;
-    pp3.y = top_bearing + bbox.getyMax();
-    pp4.x = 0;
-    pp4.y = pp3.y - vadvance;
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp3: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.x, pp1.y, pp2.x, pp2.y, pp3.x, pp3.y, pp4.x, pp4.y));
+    pp1.setX(bbox.getxMin() - left_bearing);
+    pp1.setY(0);
+    pp2.setX(pp1.getX() + advance);
+    pp2.setY(0);
+    pp3.setX(0);
+    pp3.setY(top_bearing + bbox.getyMax());
+    pp4.setX(0);
+    pp4.setY(pp3.getY() - vadvance);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp3: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pp3.getX(), pp3.getY(), pp4.getX(), pp4.getY()));
     /***********************************************************************/
     /***********************************************************************/
     /***********************************************************************/
@@ -439,15 +439,15 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp3: loader.pp1
         /* all data we need are read */
         ttface.forgetGlyphFrame(this);
         opened_frame = false;
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp4: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.x, pp1.y, pp2.x, pp2.y, pp3.x, pp3.y, pp4.x, pp4.y));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp4: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pp3.getX(), pp3.getY(), pp4.getX(), pp4.getY()));
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("LOAD_NO_SCALE: %d", (load_flags.getVal() & Flags.Load.NO_SCALE.getVal())));
         if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
-          pp1.x = TTUtil.FTMulFix(pp1.x, x_scale);
-          pp2.x = TTUtil.FTMulFix(pp2.x, x_scale);
-          pp3.y = TTUtil.FTMulFix(pp3.y, y_scale);
-          pp4.y = TTUtil.FTMulFix(pp4.y, y_scale);
+          pp1.setX(TTUtil.FTMulFix(pp1.getX(), x_scale));
+          pp2.setX(TTUtil.FTMulFix(pp2.getX(), x_scale));
+          pp3.setY(TTUtil.FTMulFix(pp3.getY(), y_scale));
+          pp4.setY(TTUtil.FTMulFix(pp4.getY(), y_scale));
         }
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.x, pp1.y, pp2.x, pp2.y, pp3.x, pp3.y, pp4.x, pp4.y));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pp3.getX(), pp3.getY(), pp4.getX(), pp4.getY()));
         /* if the flag FT_LOAD_NO_RECURSE is set, we return the subglyph */
         /* `as is' in the glyph slot (the client application will be     */
         /* responsible for interpreting these data)...                   */
@@ -570,7 +570,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
     glyph.setLinearHoriAdvance(linear);
     glyph.getMetrics().setHoriBearingX(bbox.getxMin());
     glyph.getMetrics().setHoriBearingY(bbox.getyMax());
-    glyph.getMetrics().setHoriAdvance(pp2.x - pp1.x);
+    glyph.getMetrics().setHoriAdvance(pp2.getX() - pp1.getX());
       /* adjust advance width to the value contained in the hdmx table */
     if (ttface.getPostscript().getIsFixedPitch() != 0 &&
         (load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
@@ -593,11 +593,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
 
         /* Get the unscaled top bearing and advance height. */
       if (ttface.isVertical_info() && ttface.getVertical().getNumberOfVMetrics() > 0) {
-        top = FTCalc.FTDivFix(pp3.y - bbox.getyMax(), y_scale);
-        if (pp3.y <= pp4.y) {
+        top = FTCalc.FTDivFix(pp3.getY() - bbox.getyMax(), y_scale);
+        if (pp3.getY() <= pp4.getY()) {
           advance = 0;
         } else {
-          advance = FTCalc.FTDivFix(pp3.y - pp4.y, y_scale);
+          advance = FTCalc.FTDivFix(pp3.getY() - pp4.getY(), y_scale);
         }
       } else {
         int height;
@@ -650,8 +650,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
 
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
     for(int i = 0; i < gloader.getCurrent().getN_points() + 4; i++) {
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP: %d %d %d\n", i, gloader.getCurrent().getPoints()[i].x,
-          gloader.getCurrent().getPoints()[i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP: %d %d %d\n", i, gloader.getCurrent().getPoints()[i].getX(),
+          gloader.getCurrent().getPoints()[i].getY()));
     }
     if (glyph.getControl_len() > 0xFFFFL) {
       FTTrace.Trace(7, TAG, "TT_Hint_Glyph: too long instructions ");
@@ -659,7 +659,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
           glyph.getControl_len()));
     }
     n_ins = (glyph.getControl_len());
-    origin = zone.getCurPoint(zone.getN_points() - 4).x;
+    origin = zone.getCurPoint(zone.getN_points() - 4).getX();
     origin = FTCalc.FT_PIX_ROUND(origin) - origin;
     Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
     if (origin != 0) {
@@ -667,12 +667,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
     }
     for (int i = 0; i < 5; i++) {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d orus.x: %d, orus.y: %d", i, zone.getOrusPoint_x(i), zone.getOrusPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
     for (int i = zone.getN_points() - 4; i < zone.getN_points(); i++) {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d orus.x: %d, orus.y: %d", i, zone.getOrusPoint_x(i), zone.getOrusPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30A1: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
       /* save original point position in org */
@@ -683,7 +683,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
     }
     for (int i = 0; i < 5; i++) {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d cur.x: %d, cur.y: %d", i, zone.getCurPoint_x(i), zone.getCurPoint_y(i)));
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d orus.x: %d, orus.y: %d", i, zone.getOrus()[zone.getOrus_idx() + i].x, zone.getOrus()[zone.getOrus_idx() + i].y));
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d orus.x: %d, orus.y: %d", i, zone.getOrusPoint_x(i), zone.getOrusPoint_y(i)));
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTHintGlyph 30B: i: %d org.x: %d, org.y: %d", i, zone.getOrgPoint_x(i), zone.getOrgPoint_y(i)));
     }
       /* Reset graphics state. */

@@ -22,7 +22,6 @@ import android.util.Log;
 
 import org.apwtcl.apwfreetypelib.aftbase.*;
 import org.apwtcl.apwfreetypelib.aftsfnt.FTSfntInterfaceClass;
-import org.apwtcl.apwfreetypelib.aftttinterpreter.TTOpCode;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTRunInstructions;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
@@ -102,7 +101,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, String.format("module_type: %s", driver.getDriv
    *    FreeType error code.  0 means success.
    * =====================================================================
    */
-  private FTError.ErrorTag tt_face_init(FTStreamRec stream, TTFaceRec ttface, int face_index, int num_params, FTParameter[] params) {
+  private FTError.ErrorTag tt_face_init(FTStreamRec stream, TTFaceRec ttface, int face_index, int num_params, FTParameterRec[] params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTLibraryRec library;
     FTSfntInterfaceClass sfnt = null;
@@ -410,7 +409,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "tt_glyph_load");
   /* ==================== initFace ===================================== */
   @Override
   public FTError.ErrorTag initFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params,
-                                   FTParameter[] params) {
+                                   FTParameterRec[] params) {
     return tt_face_init(stream, (TTFaceRec)face, face_index, num_params, params);
   }
 

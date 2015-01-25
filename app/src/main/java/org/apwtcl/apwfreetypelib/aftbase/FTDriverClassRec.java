@@ -58,7 +58,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTDriverClassRec constructor called!!"
 
   /* ==================== initFace ===================================== */
   public FTError.ErrorTag initFace(FTStreamRec stream, FTFaceRec face, int face_index, int num_params,
-        FTParameter[] params) {
+        FTParameterRec[] params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Log.e(TAG, "initFace not yet implemented");

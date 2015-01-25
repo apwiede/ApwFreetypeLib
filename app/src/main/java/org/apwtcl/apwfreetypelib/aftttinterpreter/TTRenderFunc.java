@@ -166,20 +166,20 @@ public class TTRenderFunc extends FTDebug {
    */
   public void ComputeFuncs(TTExecContextRec exec) {
     cur = exec;
-    if (exec.graphics_state.getFreeVector().x == 0x4000) {
-      exec.F_dot_P = exec.graphics_state.getProjVector().x;
+    if (exec.graphics_state.getFreeVector().getX() == 0x4000) {
+      exec.F_dot_P = exec.graphics_state.getProjVector().getX();
     } else {
-      if (exec.graphics_state.getFreeVector().y == 0x4000) {
-        exec.F_dot_P = exec.graphics_state.getProjVector().y;
+      if (exec.graphics_state.getFreeVector().getY() == 0x4000) {
+        exec.F_dot_P = exec.graphics_state.getProjVector().getY();
       } else {
-        exec.F_dot_P = (exec.graphics_state.getProjVector().x * exec.graphics_state.getFreeVector().x +
-            exec.graphics_state.getProjVector().y * exec.graphics_state.getFreeVector().y) >> 14;
+        exec.F_dot_P = (exec.graphics_state.getProjVector().getX() * exec.graphics_state.getFreeVector().getX() +
+            exec.graphics_state.getProjVector().getY() * exec.graphics_state.getFreeVector().getY()) >> 14;
       }
     }
-    if (exec.graphics_state.getProjVector().x == 0x4000) {
+    if (exec.graphics_state.getProjVector().getX() == 0x4000) {
       curr_project_func = project_x;
     } else {
-      if (exec.graphics_state.getProjVector().y == 0x4000) {
+      if (exec.graphics_state.getProjVector().getY() == 0x4000) {
         curr_project_func = project_y;
       } else {
         curr_project_func = project;
@@ -187,10 +187,10 @@ public class TTRenderFunc extends FTDebug {
     }
     curr_move_func = move;
     if (exec.F_dot_P == 0x4000) {
-      if (exec.graphics_state.getFreeVector().x == 0x4000) {
+      if (exec.graphics_state.getFreeVector().getX() == 0x4000) {
         curr_move_func = move_x;
       } else {
-        if (exec.graphics_state.getFreeVector().y == 0x4000) {
+        if (exec.graphics_state.getFreeVector().getY() == 0x4000) {
           curr_move_func = move_y;
         }
       }

@@ -15,10 +15,8 @@ package org.apwtcl.apwfreetypelib.aftutil;
 
 import org.apwtcl.apwfreetypelib.aftbase.FTModuleRec;
 
-import java.io.*;
-
   /* ===================================================================== */
-  /*    FTOpenArgs                                                          */
+  /*    FTOpenArgsRec                                                      */
   /*                                                                       */
   /* <Description>                                                         */
   /*    A structure used to indicate how to open a new font file or        */
@@ -75,21 +73,21 @@ import java.io.*;
   /*                                                                       */
   /* ===================================================================== */
 
-public class FTOpenArgs extends FTDebug {
+public class FTOpenArgsRec extends FTDebug {
   private static int oid = 0;
 
   private int id;
-  private static String TAG = "FTOpenArgs";
+  private static String TAG = "FTOpenArgsRec";
 
   private int flags = 0;
   private String pathname = null;
   private FTStreamRec stream = null;
   private FTModuleRec driver = null;
   private int num_params = 0;
-  private FTParameter[] params = null;
+  private FTParameterRec[] params = null;
 
-  /* ==================== FTOpenArgs ================================== */
-  public FTOpenArgs() {
+  /* ==================== FTOpenArgsRec ================================== */
+  public FTOpenArgsRec() {
     oid++;
     id = oid;
   }
@@ -164,12 +162,12 @@ public class FTOpenArgs extends FTDebug {
   }
 
   /* ==================== getParams ================================== */
-  public FTParameter[] getParams() {
+  public FTParameterRec[] getParams() {
     return params;
   }
 
   /* ==================== setParams ================================== */
-  public void setParams(FTParameter[] params) {
+  public void setParams(FTParameterRec[] params) {
     this.params = params;
   }
 

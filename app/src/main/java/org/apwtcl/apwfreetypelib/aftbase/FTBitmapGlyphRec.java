@@ -146,8 +146,8 @@ System.out.println("prep2: ");
     }
     if (destroy && origin != null) {
       FTVectorRec v = new FTVectorRec();
-      v.x = -origin.x;
-      v.y = -origin.y;
+      v.setX(-origin.getX());
+      v.setY(-origin.getY());
       GlyphTransform(this, 0, v);
     }
     if (error != FTError.ErrorTag.ERR_OK) {

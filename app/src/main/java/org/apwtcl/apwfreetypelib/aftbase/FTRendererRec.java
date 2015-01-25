@@ -25,7 +25,7 @@ import org.apwtcl.apwfreetypelib.aftraster.FTRasterParamsRec;
 import org.apwtcl.apwfreetypelib.aftraster.FTRasterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTParameter;
+import org.apwtcl.apwfreetypelib.aftutil.FTParameterRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
@@ -175,11 +175,11 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
    * FTSetRenderer
    * =====================================================================
    */
-  public static FTError.ErrorTag FTSetRenderer(FTLibraryRec library, FTRendererRec renderer, int num_params, FTParameter[] parameters) {
+  public static FTError.ErrorTag FTSetRenderer(FTLibraryRec library, FTRendererRec renderer, int num_params, FTParameterRec[] parameters) {
 FTDebug.Debug(0, FTDebug.DebugTag.DBG_RENDER, TAG, "FTSetRenderer");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTListNodeRec node;
-    FTParameter parameter;
+    FTParameterRec parameter;
     int parameterIdx = 0;
 
     if (library == null) {

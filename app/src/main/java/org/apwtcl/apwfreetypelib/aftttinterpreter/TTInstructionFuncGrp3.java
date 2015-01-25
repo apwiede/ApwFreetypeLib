@@ -237,9 +237,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int_ref.Set(p);
     d = cur.funcProject(zp.getCurPoint_x(p) - zp.getOrgPoint_x(p),
         zp.getCurPoint_y(p) - zp.getOrgPoint_y(p));
-    x = FTCalc.FT_MulDiv(d, cur.graphics_state.freeVector.x, cur.F_dot_P);
+    x = FTCalc.FT_MulDiv(d, cur.graphics_state.freeVector.getX(), cur.F_dot_P);
     x_ref.Set(x);
-    y = FTCalc.FT_MulDiv(d, cur.graphics_state.freeVector.y, cur.F_dot_P);
+    y = FTCalc.FT_MulDiv(d, cur.graphics_state.freeVector.getY(), cur.F_dot_P);
     y_ref.Set(y);
     return true;
   }
@@ -249,13 +249,13 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * =====================================================================
    */
   private void MoveZp2Point(int point, int dx, int dy, boolean touch) {
-    if (cur.graphics_state.freeVector.x != 0) {
+    if (cur.graphics_state.freeVector.getX() != 0) {
       cur.zp2.setCurPoint_x(point, (cur.zp2.getCurPoint_x(point) + dx));
       if (touch) {
         cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
       }
     }
-    if (cur.graphics_state.freeVector.y != 0) {
+    if (cur.graphics_state.freeVector.getY() != 0) {
       cur.zp2.setCurPoint_y(point, (cur.zp2.getCurPoint_y(point) + dy));
       if (touch) {
         cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());
@@ -525,8 +525,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       cur.new_top = cur.stack_idx;
       return;
     }
-    dx = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.x);
-    dy = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.y);
+    dx = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.getX());
+    dy = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.getY());
     while (cur.graphics_state.loop > 0) {
       cur.stack_idx--;
       point = cur.stack[cur.stack_idx];
@@ -587,8 +587,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       orus_base = cur.zp0.getOrgPoint(cur.graphics_state.rp1);
     } else {
       orus_base = cur.zp0.getOrus()[cur.zp0.getOrus_idx() + cur.graphics_state.rp1];
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus.x: %d, orus.y: %d", orus_base.x,orus_base.y));
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus2.x: %d, orus2.y: %d", cur.zp0.getOrus()[cur.zp0.getOrus_idx() + 1].x, cur.zp0.getOrus()[cur.zp0.getOrus_idx() + 1].y));
+      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus.x: %d, orus.y: %d", orus_base.getX(),orus_base.getY()));
+      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus2.x: %d, orus2.y: %d", cur.zp0.getOrusPoint_x(1), cur.zp0.getOrusPoint(1)));
     }
     cur_base = cur.zp0.getCurPoint(cur.graphics_state.rp1);
       /* XXX: There are some glyphs in some braindead but popular */
@@ -600,26 +600,26 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       cur_range = 0;
     } else {
       if (twilight) {
-        old_range = cur.funcDualproj(cur.zp1.getOrgPoint_x(cur.graphics_state.rp2) - orus_base.x,
-            cur.zp1.getOrgPoint_y(cur.graphics_state.rp2) - orus_base.y);
+        old_range = cur.funcDualproj(cur.zp1.getOrgPoint_x(cur.graphics_state.rp2) - orus_base.getX(),
+            cur.zp1.getOrgPoint_y(cur.graphics_state.rp2) - orus_base.getY());
       } else {
         System.out.println(String.format("x_scale: %d,  y_scale:%d", cur.metrics.getX_scale(), cur.metrics.getY_scale()));
         if (cur.metrics.getX_scale() == cur.metrics.getY_scale()) {
-          Debug(0, DebugTag.DBG_INTERP, TAG, String.format("rp2: %d, zp1.orus.x: %d, x: %d, zp1.orus.y: %d, y: %d", cur.graphics_state.rp2, cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].x, orus_base.x,
-              cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].y, orus_base.y));
-          old_range = cur.funcDualproj(cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].x - orus_base.x,
-              cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].y - orus_base.y);
-          Debug(0, DebugTag.DBG_INTERP, TAG, String.format("old_range: %d, rp2.x: %d, rp2.y: %d, orus.x: %d, orus.y: %d", old_range, cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].x, cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].y, orus_base.x, orus_base.y));
+          Debug(0, DebugTag.DBG_INTERP, TAG, String.format("rp2: %d, zp1.orus.x: %d, x: %d, zp1.orus.y: %d, y: %d", cur.graphics_state.rp2, cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].getX(), orus_base.getX(),
+              cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].getY(), orus_base.getY()));
+          old_range = cur.funcDualproj(cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].getX() - orus_base.getX(),
+              cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].getY() - orus_base.getY());
+          Debug(0, DebugTag.DBG_INTERP, TAG, String.format("old_range: %d, rp2.x: %d, rp2.y: %d, orus.x: %d, orus.y: %d", old_range, cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].getX(), cur.zp1.getOrusPoint_y(cur.graphics_state.rp2), orus_base.getX(), orus_base.getY()));
         } else {
           FTVectorRec vec = new FTVectorRec();
 
-          vec.x = TTUtil.FTMulFix(cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].x - orus_base.x, cur.metrics.getX_scale());
-          vec.y = TTUtil.FTMulFix(cur.zp1.getOrus()[cur.zp1.getOrus_idx() + cur.graphics_state.rp2].y - orus_base.y, cur.metrics.getY_scale());
-          old_range = cur.funcDualproj(vec.x, vec.y);
+          vec.setX(TTUtil.FTMulFix(cur.zp1.getOrusPoint_x(cur.graphics_state.rp2) - orus_base.getX(), cur.metrics.getX_scale()));
+          vec.setY(TTUtil.FTMulFix(cur.zp1.getOrusPoint_y(cur.graphics_state.rp2) - orus_base.getY(), cur.metrics.getY_scale()));
+          old_range = cur.funcDualproj(vec.getX(), vec.getY());
         }
       }
-      cur_range = cur.funcProject(cur.zp1.getCurPoint_x(cur.graphics_state.rp2) - cur_base.x,
-          cur.zp1.getCurPoint_y(cur.graphics_state.rp2) - cur_base.y);
+      cur_range = cur.funcProject(cur.zp1.getCurPoint_x(cur.graphics_state.rp2) - cur_base.getX(),
+          cur.zp1.getCurPoint_y(cur.graphics_state.rp2) - cur_base.getY());
     }
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("old_range:%d cur_range: %d", old_range, cur_range));
     for (; cur.graphics_state.loop > 0; --cur.graphics_state.loop) {
@@ -637,24 +637,24 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
         continue;
       }
       if (twilight) {
-        org_dist = cur.funcDualproj(cur.zp2.getOrgPoint_x(point) - orus_base.x,
-            cur.zp2.getOrgPoint_y(point) - orus_base.y);
+        org_dist = cur.funcDualproj(cur.zp2.getOrgPoint_x(point) - orus_base.getX(),
+            cur.zp2.getOrgPoint_y(point) - orus_base.getY());
       } else {
         if (cur.metrics.getX_scale() == cur.metrics.getY_scale()) {
-          org_dist = cur.funcDualproj(cur.zp2.getOrus()[cur.zp2.getOrus_idx() + point].x - orus_base.x,
-              cur.zp2.getOrus()[cur.zp2.getOrus_idx() + point].y - orus_base.y);
+          org_dist = cur.funcDualproj(cur.zp2.getOrusPoint_x(point) - orus_base.getX(),
+              cur.zp2.getOrusPoint_y(point) - orus_base.getY());
         } else {
           FTVectorRec vec = new FTVectorRec();
 
-          vec.x = TTUtil.FTMulFix(cur.zp2.getOrus()[cur.zp2.getOrus_idx() + point].x - orus_base.x,
-              cur.metrics.getX_scale());
-          vec.y = TTUtil.FTMulFix(cur.zp2.getOrus()[cur.zp2.getOrus_idx() + point].y - orus_base.y,
-              cur.metrics.getY_scale());
-          org_dist = cur.funcDualproj(vec.x, vec.y);
+          vec.setX(TTUtil.FTMulFix(cur.zp2.getOrusPoint_x(point) - orus_base.getX(),
+              cur.metrics.getX_scale()));
+          vec.setY(TTUtil.FTMulFix(cur.zp2.getOrusPoint_y(point) - orus_base.getY(),
+              cur.metrics.getY_scale()));
+          org_dist = cur.funcDualproj(vec.getX(), vec.getY());
         }
       }
-      cur_dist = cur.funcProject(cur.zp2.getCurPoint_x(point) - cur_base.x,
-          cur.zp2.getCurPoint_y(point) - cur_base.y);
+      cur_dist = cur.funcProject(cur.zp2.getCurPoint_x(point) - cur_base.getX(),
+          cur.zp2.getCurPoint_y(point) - cur_base.getY());
       if (org_dist != 0) {
         if (old_range != 0) {
           new_dist = FTCalc.FT_MulDiv(org_dist, cur_range, old_range);
@@ -808,8 +808,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       /* Confirmed by Greg Hitchcock.                                       */
     distance = cur.funcReadCvt(0);
     if (cur.graphics_state.gep0 == 0) {  /* If in twilight zone */
-      cur.zp0.setOrgPoint_x(point, (TTUtil.TTMulFix14(distance, cur.graphics_state.freeVector.x)));
-      cur.zp0.setOrgPoint_y(point, (TTUtil.TTMulFix14(distance, cur.graphics_state.freeVector.y)));
+      cur.zp0.setOrgPoint_x(point, (TTUtil.TTMulFix14(distance, cur.graphics_state.freeVector.getX())));
+      cur.zp0.setOrgPoint_y(point, (TTUtil.TTMulFix14(distance, cur.graphics_state.freeVector.getY())));
       cur.zp0.setCurPoint(point, cur.zp0.getOrgPoint(point));
     }
     org_dist = cur.funcProject(cur.zp0.getCurPoint_x(point) - cur.zp0.getCurPoint_x(point),

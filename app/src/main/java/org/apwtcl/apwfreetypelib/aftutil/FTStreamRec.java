@@ -87,7 +87,7 @@ public class FTStreamRec extends FTDebug {
    * create a new input stream from an FTOpenArgs structure
    * =====================================================================
    */
-  public FTError.ErrorTag Open(FTOpenArgs args) {
+  public FTError.ErrorTag Open(FTOpenArgsRec args) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     if (args == null) {

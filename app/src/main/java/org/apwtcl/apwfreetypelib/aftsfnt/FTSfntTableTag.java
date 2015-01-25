@@ -13,9 +13,6 @@ package org.apwtcl.apwfreetypelib.aftsfnt;
  * =====================================================================
  */
 
-import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
-import android.util.SparseArray;
-
 
 public class FTSfntTableTag {
 }

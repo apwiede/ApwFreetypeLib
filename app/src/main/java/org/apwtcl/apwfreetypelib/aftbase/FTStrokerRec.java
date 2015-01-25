@@ -88,12 +88,12 @@ public class FTStrokerRec extends FTDebug {
       StringBuffer str = new StringBuffer(mySelf()+"\n");
       str.append("..angle_in: "+angle_in+'\n');
       str.append("..angle_out: "+angle_out+'\n');
-      str.append("..center: "+center.x+" "+center.y+'\n');
+      str.append("..center: "+center.getX()+" "+center.getY()+'\n');
       str.append("..line_length: "+line_length+'\n');
       str.append("..first_point: "+first_point+'\n');
       str.append("..subpath_open: "+subpath_open+'\n');
       str.append("..subpath_angle: "+subpath_angle+'\n');
-      str.append("..subpath_start: "+subpath_start.x+" "+subpath_start.y+'\n');
+      str.append("..subpath_start: "+subpath_start.getX()+" "+subpath_start.getY()+'\n');
       str.append("..subpath_line_length: "+subpath_line_length+'\n');
       str.append("..handle_wide_strokes: "+handle_wide_strokes+'\n');
       str.append("..line_cap: "+line_cap+'\n');
