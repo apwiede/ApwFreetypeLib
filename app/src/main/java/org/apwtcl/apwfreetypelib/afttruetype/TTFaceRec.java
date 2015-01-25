@@ -771,7 +771,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_access_glyph_frame");
    * =====================================================================
    */
   public FTError.ErrorTag tt_load_composite_glyph(TTLoaderRec loader) {
-      System.out.println("tt_load_composite_glyph");
+    Log.e(TAG, "tt_load_composite_glyph not yet implemented");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 /*
     long pIdx = loader.cursor;

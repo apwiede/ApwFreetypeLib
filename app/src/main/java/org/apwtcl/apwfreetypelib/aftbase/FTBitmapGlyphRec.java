@@ -45,11 +45,7 @@ package org.apwtcl.apwfreetypelib.aftbase;
 
 import android.util.Log;
 
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
-import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
-import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
+import org.apwtcl.apwfreetypelib.aftutil.*;
 
 public class FTBitmapGlyphRec extends FTGlyphRec {
   private static int oid = 0;

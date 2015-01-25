@@ -78,6 +78,10 @@ public class FTBBoxRec extends FTDebug {
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...xMin: "+xMin+'\n');
+    str.append("...xMax: "+xMax+'\n');
+    str.append("...yMin: "+yMin+'\n');
+    str.append("...yMax: "+yMax+'\n');
     return str.toString();
   }
 

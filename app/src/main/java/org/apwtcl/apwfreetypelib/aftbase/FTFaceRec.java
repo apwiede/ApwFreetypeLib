@@ -510,13 +510,13 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     }
       /* initialize internal face data */
     {
-      face.internal.transform_matrix.xx = 0x10000;
-      face.internal.transform_matrix.xy = 0;
-      face.internal.transform_matrix.yx = 0;
-      face.internal.transform_matrix.yy = 0x10000;
-      face.internal.transform_delta.x = 0;
-      face.internal.transform_delta.y = 0;
-      face.internal.refcount = 1;
+      face.internal.getTransform_matrix().xx = 0x10000;
+      face.internal.getTransform_matrix().xy = 0;
+      face.internal.getTransform_matrix().yx = 0;
+      face.internal.getTransform_matrix().yy = 0x10000;
+      face.internal.getTransform_delta().x = 0;
+      face.internal.getTransform_delta().y = 0;
+      face.internal.setRefcount(1);
     }
     if (face_ref != null) {
       face_ref.Set(face);

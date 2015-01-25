@@ -21,12 +21,7 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphZoneRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTIUPWorkerRec;
-import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
-import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
-import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
+import org.apwtcl.apwfreetypelib.aftutil.*;
 
 public class TTInstructionFuncGrp3 extends FTDebug {
   private static int oid = 0;
@@ -79,16 +74,16 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     if (p1 > p2) {
       return;
     }
-    if (TTUtil.BOUNDS(ref1, worker.max_points) ||
-        TTUtil.BOUNDS(ref2, worker.max_points)) {
+    if (TTUtil.BOUNDS(ref1, worker.getMax_points()) ||
+        TTUtil.BOUNDS(ref2, worker.getMax_points())) {
       return;
     }
     if (useX) {
-      orus1 = worker.orus[worker.orus_idx + ref1].x;
-      orus2 = worker.orus[worker.orus_idx + ref2].x;
+      orus1 = worker.getOrusPoint_x(ref1);
+      orus2 = worker.getOrusPoint_x(ref2);
     } else {
-      orus1 = worker.orus[worker.orus_idx + ref1].y;
-      orus2 = worker.orus[worker.orus_idx + ref2].y;
+      orus1 = worker.getOrusPoint_y(ref1);
+      orus2 = worker.getOrusPoint_y(ref2);
     }
     if (orus1 > orus2) {
       int tmp_o;
@@ -102,15 +97,15 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       ref2  = tmp_r;
     }
     if (useX) {
-      org1   = worker.orgs[worker.org_idx + ref1].x;
-      org2   = worker.orgs[worker.org_idx + ref2].x;
-      delta1 = worker.curs[worker.cur_idx + ref1].x - org1;
-      delta2 = worker.curs[worker.org_idx + ref2].x - org2;
+      org1   = worker.getOrgPoint_x(ref1);
+      org2   = worker.getOrgPoint_x(ref2);
+      delta1 = worker.getCurPoint_x(ref1) - org1;
+      delta2 = worker.getCurPoint_x(ref2) - org2;
     } else {
-      org1   = worker.orgs[worker.org_idx + ref1].y;
-      org2   = worker.orgs[worker.org_idx + ref2].y;
-      delta1 = worker.curs[worker.cur_idx + ref1].y - org1;
-      delta2 = worker.curs[worker.org_idx + ref2].y - org2;
+      org1   = worker.getOrgPoint_y(ref1);
+      org2   = worker.getOrgPoint_y(ref2);
+      delta1 = worker.getCurPoint_y(ref1) - org1;
+      delta2 = worker.getCurPoint_y(ref2) - org2;
     }
     Debug(0, DebugTag.DBG_INTERP, TAG, String.format("org1: %d,  org2: %d, delta1: %d, delta2: %d, orus1. %d, orus2: %d", org1, org2, delta1, delta2, orus1, orus2));
     if (orus1 == orus2) {
@@ -119,20 +114,20 @@ public class TTInstructionFuncGrp3 extends FTDebug {
         int x;
 
         if (useX) {
-          x = worker.orgs[worker.org_idx + i].x;
+          x = worker.getOrgPoint_x(i);
         } else {
-          x = worker.orgs[worker.org_idx + i].y;
+          x = worker.getOrgPoint_y(i);
         }
         if (x <= org1) {
           x += delta1;
         } else {
           x += delta2;
         }
-        Debug(0, DebugTag.DBG_INTERP, TAG, String.format("i: %d curs[i].x: %d x: %d",  i, useX ? worker.curs[worker.cur_idx + i].x : worker.curs[worker.cur_idx + i].y, x));
+        Debug(0, DebugTag.DBG_INTERP, TAG, String.format("i: %d curs[i].x: %d x: %d",  i, useX ? worker.getCurPoint_x(i) : worker.getCurPoint_y(i), x));
         if (useX) {
-          worker.curs[worker.cur_idx + i].x = x;
+          worker.setCurPoint_x(i,  x);
         } else {
-          worker.curs[worker.cur_idx + i].y = x;
+          worker.setCurPoint_y(i,  x);
         }
       }
     } else {
@@ -145,9 +140,9 @@ public class TTInstructionFuncGrp3 extends FTDebug {
         int x;
 
         if (useX) {
-          x = worker.orgs[worker.org_idx + i].x;
+          x = worker.getOrgPoint_x(i);
         } else {
-          x = worker.orgs[worker.org_idx + i].y;
+          x = worker.getOrgPoint_y(i);
         }
         Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d org1: %d, org2: %d, delta1: %d", x, org1, org2, delta1));
         if (x <= org1) {
@@ -160,19 +155,19 @@ public class TTInstructionFuncGrp3 extends FTDebug {
               scale_valid = true;
               scale = FTCalc.FTDivFix(org2 + delta2 - (org1 + delta1), orus2 - orus1);
             }
-            Debug(0, DebugTag.DBG_INTERP, TAG, String.format("scale: %d, org1: %d, delta1: %d, worker.orus[i].x: %d, orus1: %d", scale, org1, delta1, useX ?  worker.orus[worker.orus_idx + i].x :  worker.orus[worker.orus_idx + i].y, orus1));
+            Debug(0, DebugTag.DBG_INTERP, TAG, String.format("scale: %d, org1: %d, delta1: %d, worker.orus[i].x: %d, orus1: %d", scale, org1, delta1, useX ?  worker.getOrusPoint_x(i) :  worker.getOrusPoint_y(i), orus1));
             if (useX) {
-              x = (org1 + delta1) + TTUtil.FTMulFix(worker.orus[worker.orus_idx + i].x - orus1, scale);
+              x = (org1 + delta1) + TTUtil.FTMulFix(worker.getOrusPoint_x(i) - orus1, scale);
             } else {
-              x = (org1 + delta1) + TTUtil.FTMulFix(worker.orus[worker.orus_idx + i].y - orus1, scale);
+              x = (org1 + delta1) + TTUtil.FTMulFix(worker.getOrusPoint_y(i) - orus1, scale);
             }
             Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d", x));
           }
         }
         if (useX) {
-          worker.curs[worker.cur_idx + i].x = x;
+          worker.setCurPoint_x(i, x);
         } else {
-          worker.curs[worker.cur_idx + i].y = x;
+          worker.setCurPoint_y(i, x);
         }
       }
     }
@@ -190,23 +185,23 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     TTIUPWorkerRec worker = worker_ref.Get();
 
     if (useX) {
-      dx = worker.curs[worker.cur_idx + p].x - worker.orgs[worker.org_idx + p].x;
+      dx = worker.getCurPoint_x(p) - worker.getOrgPoint_x(p);
     } else {
-      dx = worker.curs[worker.cur_idx + p].y - worker.orgs[worker.org_idx + p].y;
+      dx = worker.getCurPoint_y(p) - worker.getOrgPoint_y(p);
     }
     if (dx != 0) {
       for (i = p1; i < p; i++) {
         if (useX) {
-          worker.curs[worker.cur_idx + i].x = worker.curs[worker.cur_idx + i].x + dx;
+          worker.setCurPoint_x(i, worker.getCurPoint_x(i) + dx);
         } else {
-          worker.curs[worker.cur_idx + i].y = worker.curs[worker.cur_idx + i].y + dx;
+          worker.setCurPoint_y(i, worker.getCurPoint_y(i) + dx);
         }
       }
       for (i = p + 1; i <= p2; i++) {
         if (useX) {
-          worker.curs[worker.cur_idx + i].x = worker.curs[worker.cur_idx + i].x + dx;
+          worker.setCurPoint_x(i, worker.getCurPoint_x(i) + dx);
         } else {
-          worker.curs[worker.cur_idx + i].y = worker.curs[worker.cur_idx + i].y + dx;
+          worker.setCurPoint_y(i, worker.getCurPoint_y(i) + dx);
         }
       }
     }
@@ -286,7 +281,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int contour;       /* current contour */
     boolean useX;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, "insIUP");
+Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       /* ignore empty outlines */
     if (cur.pts.getN_contours() == 0) {
       return;
@@ -295,26 +290,26 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     if ((cur.opcode.getVal() & 1) != 0) {
       useX = true;
       mask = Flags.Curve.TOUCH_X;
-      V.orgs = cur.pts.getOrg();
-      V.org_idx = cur.pts.getOrg_idx();
-      V.curs = cur.pts.getCur();
-      V.cur_idx = cur.pts.getCur_idx();
-      V.orus = cur.pts.getOrus();
-      V.orus_idx = cur.pts.getOrus_idx();
+      V.setOrg(cur.pts.getOrg());
+      V.setOrg_idx(cur.pts.getOrg_idx());
+      V.setCur(cur.pts.getCur());
+      V.setCur_idx(cur.pts.getCur_idx());
+      V.setOrus(cur.pts.getOrus());
+      V.setOrus_idx(cur.pts.getOrus_idx());
     } else {
       useX = false;
       mask = Flags.Curve.TOUCH_Y;
-      V.orgs = cur.pts.getOrg();
+      V.setOrg(cur.pts.getOrg());
 //        V.org_idx = cur.pts.org_idx + 1;
-      V.org_idx = cur.pts.getOrg_idx();
-      V.curs = cur.pts.getCur();
+      V.setOrg_idx(cur.pts.getOrg_idx());
+      V.setCur(cur.pts.getCur());
 //        V.cur_idx = cur.pts.cur_idx + 1;
-      V.cur_idx = cur.pts.getCur_idx();
-      V.orus = cur.pts.getOrus();
+      V.setCur_idx(cur.pts.getCur_idx());
+      V.setOrus(cur.pts.getOrus());
 //        V.orus_idx = cur.pts.orus_idx + 1;
-      V.orus_idx = cur.pts.getOrus_idx();
+      V.setOrus_idx(cur.pts.getOrus_idx());
     }
-    V.max_points = cur.pts.getN_points();
+    V.setMax_points(cur.pts.getN_points());
     contour = 0;
     point = 0;
     do {

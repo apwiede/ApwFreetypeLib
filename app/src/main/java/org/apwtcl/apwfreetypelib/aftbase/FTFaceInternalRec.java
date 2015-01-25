@@ -78,40 +78,104 @@ import org.apwtcl.apwfreetypelib.aftutil.FTMatrixRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
 public class FTFaceInternalRec extends FTDebug {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTFaceInternalRec";
+  private int id;
+  private static String TAG = "FTFaceInternalRec";
 
-    FTMatrixRec transform_matrix = null;
-    FTVectorRec transform_delta = null;
-    int transform_flags = 0;
-    FTServiceCacheRec services = null;
-    boolean ignore_unpatented_hinter = false;
-    int refcount;
+  private FTMatrixRec transform_matrix = null;
+  private FTVectorRec transform_delta = null;
+  private int transform_flags = 0;
+  FTServiceCacheRec services = null;
+  private boolean ignore_unpatented_hinter = false;
+  private int refcount;
 
-    /* ==================== FTFaceInternalRec ================================== */
-    public FTFaceInternalRec() {
-      oid++;
-      id = oid;
-      transform_matrix = new FTMatrixRec();
-      transform_delta = new FTVectorRec();
-    }
+  /* ==================== FTFaceInternalRec ================================== */
+  public FTFaceInternalRec() {
+    oid++;
+    id = oid;
+
+    transform_matrix = new FTMatrixRec();
+    transform_delta = new FTVectorRec();
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...transform_flags: "+transform_flags+'\n');
+    str.append("...ignore_unpatented_hinter: "+ignore_unpatented_hinter+'\n');
+    str.append("...refcount: "+refcount+'\n');
+    return str.toString();
+  }
+
+  /* ==================== getTransform_matrix ================================== */
+  public FTMatrixRec getTransform_matrix() {
+    return transform_matrix;
+  }
+
+  /* ==================== setTransform_matrix ================================== */
+  public void setTransform_matrix(FTMatrixRec transform_matrix) {
+    this.transform_matrix = transform_matrix;
+  }
+
+  /* ==================== getTransform_delta ================================== */
+  public FTVectorRec getTransform_delta() {
+    return transform_delta;
+  }
+
+  /* ==================== setTransform_delta ================================== */
+  public void setTransform_delta(FTVectorRec transform_delta) {
+    this.transform_delta = transform_delta;
+  }
+
+  /* ==================== getTransform_flags ================================== */
+  public int getTransform_flags() {
+    return transform_flags;
+  }
+
+  /* ==================== getTransform_flags ================================== */
+  public void setTransform_flags(int transform_flags) {
+    this.transform_flags = transform_flags;
+  }
+
+  /* ==================== getServices ================================== */
+  public FTServiceCacheRec getServices() {
+    return services;
+  }
+
+  /* ==================== setServices ================================== */
+  public void setServices(FTServiceCacheRec services) {
+    this.services = services;
+  }
+
+  /* ==================== isIgnore_unpatented_hinter ================================== */
+  public boolean isIgnore_unpatented_hinter() {
+    return ignore_unpatented_hinter;
+  }
+
+  /* ==================== serIgnore_unpatented_hinter ================================== */
+  public void setIgnore_unpatented_hinter(boolean ignore_unpatented_hinter) {
+    this.ignore_unpatented_hinter = ignore_unpatented_hinter;
+  }
+
+  /* ==================== getRefcount ================================== */
+  public int getRefcount() {
+    return refcount;
+  }
+
+  /* ==================== setRefcount ================================== */
+  public void setRefcount(int refcount) {
+    this.refcount = refcount;
+  }
+
 }

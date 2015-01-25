@@ -568,9 +568,9 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
       /* get the device-independent horizontal advance; it is scaled later */
       /* by the base layer.                                                */
     glyph.setLinearHoriAdvance(linear);
-    glyph.getMetrics().horiBearingX = bbox.getxMin();
-    glyph.getMetrics().horiBearingY = bbox.getyMax();
-    glyph.getMetrics().horiAdvance = pp2.x - pp1.x;
+    glyph.getMetrics().setHoriBearingX(bbox.getxMin());
+    glyph.getMetrics().setHoriBearingY(bbox.getyMax());
+    glyph.getMetrics().setHoriAdvance(pp2.x - pp1.x);
       /* adjust advance width to the value contained in the hdmx table */
     if (ttface.getPostscript().getIsFixedPitch() != 0 &&
         (load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
@@ -578,12 +578,12 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
 
       widthpIdx = TTLoad.tt_face_get_device_metrics(ttface, ttsize.getMetrics().getX_ppem(), glyph_index);
       if (widthpIdx != 0) {
-        glyph.getMetrics().horiAdvance = ttface.getHdmx_table().getRecords()[widthpIdx] << 6;
+        glyph.getMetrics().setHoriAdvance(ttface.getHdmx_table().getRecords()[widthpIdx] << 6);
       }
     }
       /* set glyph dimensions */
-    glyph.getMetrics().width = bbox.getxMax() - bbox.getxMin();
-    glyph.getMetrics().height = bbox.getyMax() - bbox.getyMin();
+    glyph.getMetrics().setWidth(bbox.getxMax() - bbox.getxMin());
+    glyph.getMetrics().setHeight(bbox.getyMax() - bbox.getyMin());
       /* Now take care of vertical metrics.  In the case where there is */
       /* no vertical information within the font (relatively common),   */
       /* create some metrics manually                                   */
@@ -626,10 +626,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
         /* XXX: for now, we have no better algorithm for the lsb, but it */
         /*      should work fine.                                        */
         /*                                                               */
-      glyph.getMetrics().vertBearingX = glyph.getMetrics().horiBearingX -
-          glyph.getMetrics().horiAdvance / 2;
-      glyph.getMetrics().vertBearingY = top;
-      glyph.getMetrics().vertAdvance = advance;
+      glyph.getMetrics().setVertBearingX(glyph.getMetrics().getHoriBearingX() -
+          glyph.getMetrics().getHoriAdvance() / 2);
+      glyph.getMetrics().setVertBearingY(top);
+      glyph.getMetrics().setVertAdvance(advance);
     }
     return error;
   }

@@ -317,8 +317,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0) &&
         ((face.getFace_flags() & Flags.Face.TRICKY.getVal()) == 0) &&
         (((load_flags & Flags.Load.IGNORE_TRANSFORM.getVal()) != 0) ||
-            (face.getInternal().transform_matrix.yx == 0 && face.getInternal().transform_matrix.xx != 0) ||
-            (face.getInternal().transform_matrix.xx == 0 && face.getInternal().transform_matrix.yx != 0))) {
+            (face.getInternal().getTransform_matrix().yx == 0 && face.getInternal().getTransform_matrix().xx != 0) ||
+            (face.getInternal().getTransform_matrix().xx == 0 && face.getInternal().getTransform_matrix().yx != 0))) {
       if (((load_flags & Flags.Load.FORCE_AUTOHINT.getVal()) != 0) ||
           ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_HAS_HINTER.getVal()) == 0)) {
         autohint = true;
@@ -327,7 +327,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         /* the check for `num_locations' assures that we actually    */
         /* test for instructions in a TTF and not in a CFF-based OTF */
         if ((mode == FTTags.RenderMode.LIGHT.getVal()) ||
-            face.getInternal().ignore_unpatented_hinter ||
+            face.getInternal().isIgnore_unpatented_hinter() ||
             ((face.getFace_flags() & Flags.Face.SFNT.getVal()) != 0 &&
                 ttface.getLoca_table().getNum_locations() != 0 &&
                 ttface.getMax_profile().getMaxSizeOfInstructions() == 0)) {
@@ -353,15 +353,15 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         }
         if (! Load_Ok) {
           FTFaceInternalRec internal = face.getInternal();
-          int transform_flags = internal.transform_flags;
+          int transform_flags = internal.getTransform_flags();
 
           /* since the auto-hinter calls FT_Load_Glyph by itself, */
           /* make sure that glyphs aren't transformed             */
-          internal.transform_flags = 0;
+          internal.setTransform_flags(0);
           /* load auto-hinted outline */
           hinting = (FTAutoHinterInterfaceClass)hinter.module_clazz.module_interface;
           error = hinting.loadGlyph(hinter, this, face.getSize(), glyph_index, load_flags);
-          internal.transform_flags = transform_flags;
+          internal.setTransform_flags(transform_flags);
         }
     } else {
       error = driver.getDriver_clazz().loadGlyph(this, face.getSize(), glyph_index, load_flags);
@@ -381,9 +381,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     /* compute the advance */
     if ((load_flags & Flags.Load.VERTICAL_LAYOUT.getVal()) != 0) {
       advance.x = 0;
-      advance.y = metrics.vertAdvance;
+      advance.y = metrics.getVertAdvance();
     } else {
-      advance.x = metrics.horiAdvance;
+      advance.x = metrics.getHoriAdvance();
       advance.y = 0;
     }
     /* compute the linear advance in 16.16 pixels */
@@ -402,30 +402,30 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       FTReference<FTVectorRec> delta_ref = new FTReference<FTVectorRec>();
 
       /* now, transform the glyph image if needed */
-      if (internal.transform_flags != 0) {
+      if (internal.getTransform_flags() != 0) {
         /* get renderer */
         FTRendererRec renderer = driver.getGlyph_loader().ft_lookup_glyph_renderer(this);
         if (renderer != null) {
-          matrix_ref.Set(internal.transform_matrix);
-          delta_ref.Set(internal.transform_delta);
+          matrix_ref.Set(internal.getTransform_matrix());
+          delta_ref.Set(internal.getTransform_delta());
           error = renderer.clazz.transformGlyph(renderer, this, matrix_ref, delta_ref);
-          internal.transform_matrix = matrix_ref.Get();
-          internal.transform_delta = delta_ref.Get();
+          internal.setTransform_matrix(matrix_ref.Get());
+          internal.setTransform_delta(delta_ref.Get());
         } else {
           if (format == FTTags.GlyphFormat.OUTLINE) {
             /* apply `standard' transformation if no renderer is available */
-            if ((internal.transform_flags & 1) != 0) {
+            if ((internal.getTransform_flags() & 1) != 0) {
               Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "standard outline transform");
-              outline.OutlineTransform(internal.transform_matrix);
+              outline.OutlineTransform(internal.getTransform_matrix());
             }
-            if ((internal.transform_flags & 2) != 0) {
-              outline.OutlineTranslate(internal.transform_delta.x, internal.transform_delta.y);
+            if ((internal.getTransform_flags() & 2) != 0) {
+              outline.OutlineTranslate(internal.getTransform_delta().x, internal.getTransform_delta().y);
             }
           }
         }
         /* transform advance */
-        outline.VectorTransform(advance, internal.transform_matrix);
-        internal.transform_matrix = matrix_ref.Get();
+        outline.VectorTransform(advance, internal.getTransform_matrix());
+        internal.setTransform_matrix(matrix_ref.Get());
       }
     }
     FTTrace.Trace(7, TAG, String.format("  x advance: %d", advance.x));

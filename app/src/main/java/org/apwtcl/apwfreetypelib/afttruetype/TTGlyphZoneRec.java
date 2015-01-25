@@ -535,6 +535,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     return orus[orus_idx + point_idx].y;
   }
 
+  /* ==================== setOrus ================================== */
+  public void xsetOrus(FTVectorRec[] orus) {
+    this.orus = orus;
+  }
+
   /* ==================== setOrusPoint ================================== */
   public void setOrusPoint(int point_idx, FTVectorRec vec) {
     orus[orus_idx + point_idx].x = vec.x;
@@ -555,11 +560,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   public void resetOrusPoint(int point_idx) {
     orus[orus_idx + point_idx].x = 0;
     orus[orus_idx + point_idx].y = 0;
-  }
-
-  /* ==================== setOrus ================================== */
-  public void xsetOrus(FTVectorRec[] orus) {
-    this.orus = orus;
   }
 
   /* ==================== getOrus_idx ================================== */
