@@ -24,7 +24,7 @@ public class FTCBasicFamilyRec extends FTCFamilyRec {
   private int id;
   private static String TAG = "FTCBasicFamilyRec";
 
-  public FTCBasicAttrRec attrs = null;
+  protected FTCBasicAttrRec attrs = null;
 
   /* ==================== FTCBasicFamilyRec ================================== */
   public FTCBasicFamilyRec() {

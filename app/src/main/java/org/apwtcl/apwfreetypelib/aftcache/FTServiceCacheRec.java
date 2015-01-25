@@ -31,37 +31,87 @@ package org.apwtcl.apwfreetypelib.aftcache;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
 public class FTServiceCacheRec extends FTDebug {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTServiceCacheRec";
+  private int id;
+  private static String TAG = "FTServiceCacheRec";
 
-    public Object service_POSTSCRIPT_FONT_NAME = null;
-    public Object service_MULTI_MASTERS = null;
-    public Object service_GLYPH_DICT = null;
-    public Object service_PFR_METRICS = null;
-    public Object service_WINFNT = null;
+  protected Object service_POSTSCRIPT_FONT_NAME = null;
+  protected Object service_MULTI_MASTERS = null;
+  protected Object service_GLYPH_DICT = null;
+  protected Object service_PFR_METRICS = null;
+  protected Object service_WINFNT = null;
 
-    /* ==================== FTServiceCacheRec ================================== */
-    public FTServiceCacheRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTServiceCacheRec ================================== */
+  public FTServiceCacheRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
- 
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    return str.toString();
+  }
+
+  /* ==================== getService_POSTSCRIPT_FONT_NAME ================================== */
+  public Object getService_POSTSCRIPT_FONT_NAME() {
+    return service_POSTSCRIPT_FONT_NAME;
+  }
+
+  /* ==================== setService_POSTSCRIPT_FONT_NAME ================================== */
+  public void setService_POSTSCRIPT_FONT_NAME(Object service_POSTSCRIPT_FONT_NAME) {
+    this.service_POSTSCRIPT_FONT_NAME = service_POSTSCRIPT_FONT_NAME;
+  }
+
+  /* ==================== getService_MULTI_MASTERS ================================== */
+  public Object getService_MULTI_MASTERS() {
+    return service_MULTI_MASTERS;
+  }
+
+  /* ==================== setService_MULTI_MASTERS ================================== */
+  public void setService_MULTI_MASTERS(Object service_MULTI_MASTERS) {
+    this.service_MULTI_MASTERS = service_MULTI_MASTERS;
+  }
+
+  /* ==================== getService_GLYPH_DICT ================================== */
+  public Object getService_GLYPH_DICT() {
+    return service_GLYPH_DICT;
+  }
+
+  /* ==================== setService_GLYPH_DICT ================================== */
+  public void setService_GLYPH_DICT(Object service_GLYPH_DICT) {
+    this.service_GLYPH_DICT = service_GLYPH_DICT;
+  }
+
+  /* ==================== getService_PFR_METRICS ================================== */
+  public Object getService_PFR_METRICS() {
+    return service_PFR_METRICS;
+  }
+
+  /* ==================== setService_PFR_METRICS ================================== */
+  public void setService_PFR_METRICS(Object service_PFR_METRICS) {
+    this.service_PFR_METRICS = service_PFR_METRICS;
+  }
+
+  /* ==================== getService_WINFNT ================================== */
+  public Object getService_WINFNT() {
+    return service_WINFNT;
+  }
+
+  /* ==================== setService_WINFNT ================================== */
+  public void setService_WINFNT(Object service_WINFNT) {
+    this.service_WINFNT = service_WINFNT;
+  }
+
 }

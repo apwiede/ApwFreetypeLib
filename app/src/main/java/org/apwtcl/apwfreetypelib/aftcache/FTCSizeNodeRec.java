@@ -35,17 +35,6 @@ public class FTCSizeNodeRec extends FTCMruNodeRec {
     id = oid;
   }
     
-  /* ==================== FTCSizeNodeRec ================================== */
-  public void XFTCSizeNodeRec(FTCMruNodeRec node) {
-    oid++;
-    id = oid;
-
-//    this.next = node.next;
-    //    this.prev = node.prev;;
-    size = new FTSizeRec();
-    scaler = new FTCScalerRec();
-  }
-    
   /* ==================== mySelf ================================== */
   public String mySelf() {
       return TAG+"!"+id+"!";

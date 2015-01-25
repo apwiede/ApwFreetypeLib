@@ -109,8 +109,114 @@ Debug(0, DebugTag.DBG_CACHE, TAG, "call new FTCSizeListClass");
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("...max_weight: "+max_weight+'\n');
+    str.append("...cur_weight: "+cur_weight+'\n');
+    str.append("...num_nodes: "+num_nodes+'\n');
+    str.append("...num_caches: "+num_caches+'\n');
     return str.toString();
   }
+  /* =====================================================================
+   * RegisterCache
+   * =====================================================================
+   */
+  public FTError.ErrorTag RegisterCache(FTCGCacheClassRec cache) {
+    FTError.ErrorTag error;
+
+Debug(0, DebugTag.DBG_CACHE, TAG, "FTCManagerRegisterCache");
+    if (num_caches >= FTC_MAX_CACHES) {
+      error = FTError.ErrorTag.GLYPH_TOO_MANY_CACHES;
+      Log.e(TAG, "RegisterCache: too many registered caches");
+      return error;
+    }
+    cache.setManager(this);
+    /* THIS IS VERY IMPORTANT!  IT WILL WRETCH THE MANAGER */
+    /* IF IT IS NOT SET CORRECTLY                          */
+    cache.setIndex(num_caches);
+    error = cache.cacheInit();
+    if (error != FTError.ErrorTag.ERR_OK) {
+      cache.cacheDone();
+      return error;
+    }
+    caches[num_caches++] = cache;
+    return error;
+  }
+
+  /* =====================================================================
+   * LookupSize
+   * =====================================================================
+   */
+  public FTError.ErrorTag LookupSize(FTCScalerRec scaler, FTReference<FTSizeRec> size_ref) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    FTReference<FTCMruNodeRec> mru_ref = new FTReference<>();
+    FTCMruNodeRec mrunode = null;
+
+Debug(0, DebugTag.DBG_CACHE, TAG, "LookupSize");
+    if (size_ref == null) {
+      return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
+    }
+    size_ref.Set(null);
+Debug(0, DebugTag.DBG_CACHE, TAG, "LookupSize1b");
+    error = sizes.FTCMruListLookup(scaler, mru_ref);
+    mrunode = mru_ref.Get();
+    if (error == FTError.ErrorTag.ERR_OK) {
+      FTCSizeNodeRec size_node = (FTCSizeNodeRec)mrunode;
+      size_node.setScaler(scaler);
+      size_ref.Set(size_node.getSize());
+    }
+Debug(0, DebugTag.DBG_CACHE, TAG, "FTCManagerLookupSize2");
+    return error;
+  }
+
+  /* =====================================================================
+   * LookupFace
+   * =====================================================================
+   */
+  public FTError.ErrorTag LookupFace(Object face_id, FTReference<FTFaceRec> face_ref) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    FTReference<FTCMruNodeRec> mru_ref = new FTReference<>();
+
+Debug(0, DebugTag.DBG_CACHE, TAG, "LookupFace");
+    if (face_ref == null) {
+      return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
+    }
+    face_ref.Set(null);
+    error = faces.FTCMruListLookup(face_id, mru_ref);
+    FTCFaceNodeRec face_node = (FTCFaceNodeRec)mru_ref.Get();
+    if (error == FTError.ErrorTag.ERR_OK) {
+Debug(0, DebugTag.DBG_CACHE, TAG, "face_node.face: "+face_node+"+"+face_node.getFace()+"+"+face_node.getFace().getDriver());
+      face_ref.Set(face_node.getFace());
+    }
+Debug(0, DebugTag.DBG_CACHE, TAG, "LookupFace end "+face_node+"+"+face_node.getFace()+"+"+face_node.getFace().getDriver());
+    return error;
+  }
+
+  /* =====================================================================
+   * Compress
+   * =====================================================================
+   */
+  public void Compress() {
+    FTCMruNodeRec node;
+    FTCNodeRec first;
+    FTCMruNodeRec prev;
+
+    first = nodes_list;
+//      FTC_Manager_Check( manager );
+    FTTrace.Trace(7, TAG, String.format("compressing, weight = %d, max = %d, nodes = %d",
+        cur_weight, max_weight, num_nodes));
+    if (cur_weight < max_weight || first == null) {
+      return;
+    }
+    /* go to last node -- it's a circular list */
+    node = first.getPrev();
+    do {
+      prev = ( node == first ) ? null : node.getPrev();
+      if (((FTCNodeRec)node).ref_count <= 0) {
+        ((FTCNodeRec)node).ftc_node_destroy(this);
+      }
+      node = prev;
+    } while (node != null && cur_weight > max_weight);
+  }
+
 
   /* ==================== getLibrary ================================== */
   public FTLibraryRec getLibrary() {
@@ -212,7 +318,7 @@ Debug(0, DebugTag.DBG_CACHE, TAG, "call new FTCSizeListClass");
     this.request_data = request_data;
   }
 
-  /* ==================== getRequest_fac ================================== */
+  /* ==================== getRequest_face ================================== */
   public FTFaceRequester getRequest_face() {
     return request_face;
   }
@@ -220,108 +326,6 @@ Debug(0, DebugTag.DBG_CACHE, TAG, "call new FTCSizeListClass");
   /* ==================== setRequest_face ================================== */
   public void setRequest_face(FTFaceRequester request_face) {
     this.request_face = request_face;
-  }
-
-  /* =====================================================================
-   * RegisterCache
-   * =====================================================================
-   */
-  public FTError.ErrorTag RegisterCache(FTCGCacheClassRec cache) {
-    FTError.ErrorTag error;
-
-Debug(0, DebugTag.DBG_CACHE, TAG, "FTCManagerRegisterCache");
-    if (num_caches >= FTC_MAX_CACHES) {
-      error = FTError.ErrorTag.GLYPH_TOO_MANY_CACHES;
-      Log.e(TAG, "RegisterCache: too many registered caches");
-      return error;
-    }
-    cache.setManager(this);
-    /* THIS IS VERY IMPORTANT!  IT WILL WRETCH THE MANAGER */
-    /* IF IT IS NOT SET CORRECTLY                          */
-    cache.setIndex(num_caches);
-    error = cache.cacheInit();
-    if (error != FTError.ErrorTag.ERR_OK) {
-      cache.cacheDone();
-      return error;
-    }
-    caches[num_caches++] = cache;
-    return error;
-  }
-
-  /* =====================================================================
-   * LookupSize
-   * =====================================================================
-   */
-  public FTError.ErrorTag LookupSize(FTCScalerRec scaler, FTReference<FTSizeRec> size_ref) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    FTReference<FTCMruNodeRec> mru_ref = new FTReference<>();
-    FTCMruNodeRec mrunode = null;
-
-Debug(0, DebugTag.DBG_CACHE, TAG, "LookupSize");
-    if (size_ref == null) {
-      return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
-    }
-    size_ref.Set(null);
-Debug(0, DebugTag.DBG_CACHE, TAG, "LookupSize1b");
-    error = sizes.FTCMruListLookup(scaler, mru_ref);
-    mrunode = mru_ref.Get();
-    if (error == FTError.ErrorTag.ERR_OK) {
-      FTCSizeNodeRec size_node = (FTCSizeNodeRec)mrunode;
-      size_node.setScaler(scaler);
-      size_ref.Set(size_node.getSize());
-    }
-Debug(0, DebugTag.DBG_CACHE, TAG, "FTCManagerLookupSize2");
-    return error;
-  }
-
-  /* =====================================================================
-   * LookupFace
-   * =====================================================================
-   */
-  public FTError.ErrorTag LookupFace(Object face_id, FTReference<FTFaceRec> face_ref) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    FTReference<FTCMruNodeRec> mru_ref = new FTReference<>();
-
-Debug(0, DebugTag.DBG_CACHE, TAG, "LookupFace");
-    if (face_ref == null) {
-      return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
-    }
-    face_ref.Set(null);
-    error = faces.FTCMruListLookup(face_id, mru_ref);
-    FTCFaceNodeRec face_node = (FTCFaceNodeRec)mru_ref.Get();
-    if (error == FTError.ErrorTag.ERR_OK) {
-Debug(0, DebugTag.DBG_CACHE, TAG, "face_node.face: "+face_node+"+"+face_node.getFace()+"+"+face_node.getFace().getDriver());
-      face_ref.Set(face_node.getFace());
-    }
-Debug(0, DebugTag.DBG_CACHE, TAG, "LookupFace end "+face_node+"+"+face_node.getFace()+"+"+face_node.getFace().getDriver());
-    return error;
-  }
-
-  /* =====================================================================
-   * Compress
-   * =====================================================================
-   */
-  public void Compress() {
-    FTCMruNodeRec node;
-    FTCNodeRec first;
-    FTCMruNodeRec prev;
-
-    first = nodes_list;
-//      FTC_Manager_Check( manager );
-    FTTrace.Trace(7, TAG, String.format("compressing, weight = %d, max = %d, nodes = %d",
-        cur_weight, max_weight, num_nodes));
-    if (cur_weight < max_weight || first == null) {
-      return;
-    }
-    /* go to last node -- it's a circular list */
-    node = first.getPrev();
-    do {
-      prev = ( node == first ) ? null : node.getPrev();
-      if (((FTCNodeRec)node).ref_count <= 0) {
-        ((FTCNodeRec)node).ftc_node_destroy(this);
-      }
-      node = prev;
-    } while (node != null && cur_weight > max_weight);
   }
 
 }

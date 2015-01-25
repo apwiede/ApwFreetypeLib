@@ -33,36 +33,28 @@ public class FTCFamilyRec extends FTCMruNodeRec {
   private FTCCacheRec cache = null;
   private FTCMruListClassRec clazz = null;
 
-    /* ==================== FTCFamilyRec ================================== */
-    public FTCFamilyRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTCFamilyRec ================================== */
+  public FTCFamilyRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== FTCFamilyRec ================================== */
-    public void XFTCFamilyRec(FTCMruNodeRec mru_node) {
-      oid++;
-      id = oid;
-//      this.next = mru_node.next;
-//      this.prev = mru_node.prev;
-    }
-    
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      str.append("..num_nodes: "+num_nodes+'\n');
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("..num_nodes: "+num_nodes+'\n');
+    return str.toString();
+  }
 
   /* ==================== getNum_nodes ================================== */
   public int getNum_nodes() {
