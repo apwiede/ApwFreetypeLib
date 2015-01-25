@@ -18,10 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    references to render functions for interpreter                     */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
-import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
@@ -119,7 +115,7 @@ public class TTRenderFunc extends FTDebug {
    *
    * =====================================================================
    */
-  public void ComputeRound(TTInterpTags.RoundState round_mode) {
+  public void ComputeRound(TTInterpTags.Round round_mode) {
     Debug(0, DebugTag.DBG_INTERP, TAG, "ComputeRound");
     switch (round_mode) {
       case Off:

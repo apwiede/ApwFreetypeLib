@@ -138,7 +138,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    */
   public void SROUND() {
     cur.render_funcs.round_super.SetSuperRound(0x4000, cur.stack[cur.stack_idx + 0]);
-    cur.graphics_state.round_state = TTInterpTags.RoundState.Super;
+    cur.graphics_state.round_state = TTInterpTags.Round.Super;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super;
   }
 
@@ -150,7 +150,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    */
   public void S45ROUND() {
     cur.render_funcs.round_super.SetSuperRound(0x2D41, cur.stack[cur.stack_idx + 0]);
-    cur.graphics_state.round_state = TTInterpTags.RoundState.Super_45;
+    cur.graphics_state.round_state = TTInterpTags.Round.Super_45;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_super45;
   }
 
@@ -201,7 +201,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void ROFF() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.Off;
+    cur.graphics_state.round_state = TTInterpTags.Round.Off;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_none;
   }
 
@@ -212,7 +212,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void RUTG() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.Up_To_Grid;
+    cur.graphics_state.round_state = TTInterpTags.Round.Up_To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_up_to_grid;
   }
 
@@ -223,7 +223,7 @@ public class TTInstructionFuncGrp7 extends FTDebug {
    * =====================================================================
    */
   public void RDTG() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.Down_To_Grid;
+    cur.graphics_state.round_state = TTInterpTags.Round.Down_To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_down_to_grid;
   }
 

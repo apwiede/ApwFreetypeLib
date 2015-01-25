@@ -714,7 +714,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       debug = ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0 && ((TTSizeRec)size).isDebug());
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "call TTRunContext");
 //_showLoaderZone("before call TTRunContext");
-      error = TTInterpRun.TTRunContext(exec, debug);
+      error = exec.TTRunContext(debug);
       if (error != FTError.ErrorTag.ERR_OK && exec.pedantic_hinting) {
         return error;
       }

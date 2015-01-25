@@ -439,7 +439,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec_idx: "+rec_idx+"!");
     }
       /* Now skip the whole function definition. */
       /* We don't allow nested IDEFS & FDEFs.    */
-    while (TTInstructionFuncGrp1.SkipCode(cur) == true) {
+    while (cur.SkipCode() == true) {
       switch (cur.opcode) {
         case IDEF:    /* IDEF */
         case FDEF:    /* FDEF */

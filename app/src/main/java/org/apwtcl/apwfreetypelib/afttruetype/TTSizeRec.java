@@ -27,8 +27,6 @@ import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTGraphicsStateRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTInterpTags;
-import org.apwtcl.apwfreetypelib.aftttinterpreter.TTOpCode;
-import org.apwtcl.apwfreetypelib.aftttinterpreter.TTRunInstructions;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
 public class TTSizeRec extends FTSizeRec {
@@ -82,7 +80,6 @@ public class TTSizeRec extends FTSizeRec {
     }
     graphics_state = new TTDefaultGraphicsStateClass();
     twilight = new TTGlyphZoneRec();
-//    context = new TTRunInstructions();
 Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
   }
     
@@ -431,7 +428,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init_bytecode");
       /* set `ttface.interpreter' according to the debug hook present */
     {
 //        FTLibraryRec library = ttface.driver.library;
-//        ttface.interpreter = (TTInterpRun) library.debug_hooks[FT_DEBUG_HOOK_TRUETYPE];
+//        ttface.interpreter = library.debug_hooks[FT_DEBUG_HOOK_TRUETYPE];
     }
       /* Fine, now run the font program! */
     error = tt_size_run_fpgm(pedantic);

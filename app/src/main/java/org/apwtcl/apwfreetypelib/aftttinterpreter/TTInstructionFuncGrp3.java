@@ -283,8 +283,8 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int first_touched; /* first touched point in contour   */
     int cur_touched;   /* current touched point in contour */
     int point;         /* current point   */
-    int contour;     /* current contour */
-    boolean useX = true;
+    int contour;       /* current contour */
+    boolean useX;
 
     Debug(0, DebugTag.DBG_INTERP, TAG, "insIUP");
       /* ignore empty outlines */
@@ -314,7 +314,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
 //        V.orus_idx = cur.pts.orus_idx + 1;
       V.orus_idx = cur.pts.getOrus_idx();
     }
-    V.max_points = (int)cur.pts.getN_points();
+    V.max_points = cur.pts.getN_points();
     contour = 0;
     point = 0;
     do {
@@ -326,7 +326,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       while (point <= end_point && (cur.pts.getTags()[point].getVal() & mask.getVal()) == 0) {
         point++;
       }
-      worker_ref = new FTReference<TTIUPWorkerRec>();
+      worker_ref = new FTReference<>();
       worker_ref.Set(V);
       if (point <= end_point) {
         first_touched = point;
@@ -363,14 +363,12 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * =====================================================================
    */
   public void SHP() {
-    TTGlyphZoneRec zp;
-    int ref;
     int dx;
     int dy;
     int point;
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
-    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
+    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<>();
     FTReference<Integer> int_ref = new FTReference<>();
 
     if (cur.top < cur.graphics_state.loop) {
@@ -425,7 +423,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int i;
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
-    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
+    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<>();
     FTReference<Integer> int_ref = new FTReference<>();
 
     contour = cur.stack[cur.stack_idx];
@@ -476,10 +474,10 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int i;
     FTReference<Integer> dx_ref = new FTReference<>();
     FTReference<Integer> dy_ref = new FTReference<>();
-    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<TTGlyphZoneRec>();
+    FTReference<TTGlyphZoneRec> zp_ref = new FTReference<>();
     FTReference<Integer> int_ref = new FTReference<>();
 
-    if (TTUtil.BOUNDS(cur.stack[cur.stack_idx + 0], 2)) {
+    if (TTUtil.BOUNDS(cur.stack[cur.stack_idx], 2)) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
@@ -532,8 +530,8 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       cur.new_top = cur.stack_idx;
       return;
     }
-    dx = TTUtil.TTMulFix14(cur.stack[cur.stack_idx + 0], cur.graphics_state.freeVector.x);
-    dy = TTUtil.TTMulFix14(cur.stack[cur.stack_idx + 0], cur.graphics_state.freeVector.y);
+    dx = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.x);
+    dy = TTUtil.TTMulFix14(cur.stack[cur.stack_idx], cur.graphics_state.freeVector.y);
     while (cur.graphics_state.loop > 0) {
       cur.stack_idx--;
       point = cur.stack[cur.stack_idx];
@@ -766,7 +764,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
    * =====================================================================
    */
   public void RTDG() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.To_Double_Grid;
+    cur.graphics_state.round_state = TTInterpTags.Round.To_Double_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_double_grid;
   }
 
@@ -825,7 +823,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       if (FTCalc.FT_ABS(distance - org_dist) > control_value_cutin) {
         distance = org_dist;
       }
-      distance = (int)cur.funcRound(distance, cur.tt_metrics.getCompensations()[0]);
+      distance = cur.funcRound(distance, cur.tt_metrics.getCompensations()[0]);
     }
     cur.funcMove(cur.zp0, point, distance - org_dist);
     cur.graphics_state.rp0 = point;

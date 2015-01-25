@@ -18,12 +18,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    set of Project functions for interpreter                           */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
-
 public class TTProjectXFunc extends TTProjectFuncBase {
   private static int oid = 0;
 

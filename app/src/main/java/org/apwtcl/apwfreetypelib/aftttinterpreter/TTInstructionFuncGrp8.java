@@ -333,7 +333,7 @@ public class TTInstructionFuncGrp8 extends FTDebug {
     }
       /* Now skip the whole function definition. */
       /* We don't allow nested IDEFs & FDEFs.    */
-    while (TTInstructionFuncGrp1.SkipCode(cur) == true) {
+    while (cur.SkipCode() == true) {
       switch (cur.opcode) {
         case IDEF:   /* IDEF */
         case FDEF:   /* FDEF */

@@ -20,13 +20,9 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
 
 import android.util.Log;
 
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphZoneRec;
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
 public class TTMoveFunc extends TTMoveFuncBase {
   private static int oid = 0;

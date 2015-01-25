@@ -154,6 +154,26 @@ public class TTExecContextRec extends FTDebug {
     return str.toString();
   }
 
+  /* ==================== SkipCode ========================= */
+  public boolean SkipCode() {
+    IP += length;
+    if (IP < codeSize) {
+      opcode = TTOpCode.OpCode.getTableTag(code[IP].getVal() & 0xFF);
+      length = opcode.getOpCodeLength();
+      if (length < 0) {
+        if (IP + 1 >= codeSize) {
+          error = FTError.ErrorTag.INTERP_CODE_OVERFLOW;
+          return false;
+        }
+        length = 2 - length * (code[IP + 1].getVal() & 0xFF);
+      }
+      if (IP + length <= codeSize) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /* =====================================================================
    * <Function>
    *    InitContext
@@ -311,6 +331,44 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.id: "+face+"!"+face.getMax_profile(
 
     instruction_trap = false;
     return error;
+  }
+
+  /* =====================================================================
+   * TTRunContext
+   * =====================================================================
+   */
+
+  public FTError.ErrorTag TTRunContext(boolean debug) {
+    FTError.ErrorTag error;
+    Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("TT_Run_Context %d", TTInterpTags.CodeRange.GLYPH)+" zp0.cur: "+zp0.getCur()+"\n zp1.cur: "+zp1.getCur());
+
+    if ((error = TTGotoCodeRange(TTInterpTags.CodeRange.GLYPH, 0)) != FTError.ErrorTag.ERR_OK) {
+      return error;
+    }
+    zp0 = pts;
+    zp1 = pts;
+    zp2 = pts;
+    Debug(0, DebugTag.DBG_INTERP, TAG, "TT_Run_Context2 zp0.cur: "+zp0.getCur()+" \nzp1.cur: "+(Object)zp1.getCur());
+    for( int i = 0; i < 6; i++) {
+//  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.org[i].x, cur.zp1.org[i].y));
+//  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.org[i].x, cur.zp0.org[i].y));
+    }
+    graphics_state.setGep0(1);
+    graphics_state.setGep1(1);
+    graphics_state.setGep2(1);
+    graphics_state.getProjVector().x = 0x4000;
+    graphics_state.getProjVector().y = 0x0000;
+    graphics_state.getFreeVector().x = graphics_state.getProjVector().x;
+    graphics_state.getFreeVector().y = graphics_state.getProjVector().y;
+    graphics_state.getDualVector().x = graphics_state.getProjVector().x;
+    graphics_state.getDualVector().y = graphics_state.getProjVector().y;
+    graphics_state.setRound_state(TTInterpTags.Round.To_Grid);
+    graphics_state.setLoop(1);
+    /* some glyphs leave something on the stack. so we clean it */
+    /* before a new execution.                                  */
+    top = 0;
+    callTop = 0;
+    return face.Interpreter(this);
   }
 
   /* =====================================================================

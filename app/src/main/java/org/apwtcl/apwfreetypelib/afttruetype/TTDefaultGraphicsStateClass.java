@@ -54,7 +54,7 @@ public class TTDefaultGraphicsStateClass extends TTGraphicsStateRec {
 
     loop = 1;
     minimum_distance = 64;
-    round_state = TTInterpTags.RoundState.To_Grid;
+    round_state = TTInterpTags.Round.To_Grid;
 
     auto_flip = true;
     control_value_cutin = 68;

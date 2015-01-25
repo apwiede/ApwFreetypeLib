@@ -24,7 +24,6 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /* ===================================================================== */
 
 
-import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
@@ -42,7 +41,7 @@ public class TTGraphicsStateRec extends FTDebug {
   protected FTVectorRec freeVector;
   protected int loop;
   protected int minimum_distance;
-  protected TTInterpTags.RoundState round_state;
+  protected TTInterpTags.Round round_state;
   protected boolean auto_flip;
   protected int control_value_cutin;
   protected int single_width_cutin;
@@ -184,12 +183,12 @@ public class TTGraphicsStateRec extends FTDebug {
   }
 
   /* ==================== getRound_state ================================== */
-  public TTInterpTags.RoundState getRound_state() {
+  public TTInterpTags.Round getRound_state() {
     return round_state;
   }
 
   /* ==================== setRound_state ================================== */
-  public void setRound_state(TTInterpTags.RoundState round_state) {
+  public void setRound_state(TTInterpTags.Round round_state) {
     this.round_state = round_state;
   }
 

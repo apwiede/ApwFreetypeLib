@@ -22,7 +22,7 @@ public class TTInterpTags {
    *
    * =====================================================================
    */
-  public enum RoundState {
+  public enum Round {
     To_Half_Grid(0, "TT_Round_To_Half_Grid"),
     To_Grid(1, "TT_Round_To_Grid"),
     To_Double_Grid(2, "TT_Round_To_Double_Grid"),
@@ -33,20 +33,20 @@ public class TTInterpTags {
     Super_45(7, "TT_Round_Super_45");
     private int val;
     private String str;
-    private static SparseArray<RoundState> tagToRoundStateMapping;
-    public static RoundState getTableTag(int i) {
+    private static SparseArray<Round> tagToRoundStateMapping;
+    public static Round getTableTag(int i) {
       if (tagToRoundStateMapping == null) {
         initMapping();
       }
       return tagToRoundStateMapping.get(i);
     }
     private static void initMapping() {
-      tagToRoundStateMapping = new SparseArray<RoundState>();
-      for (RoundState t : values()) {
+      tagToRoundStateMapping = new SparseArray<Round>();
+      for (Round t : values()) {
         tagToRoundStateMapping.put(t.val, t);
       }
     }
-    private RoundState(int val, String str) {
+    private Round(int val, String str) {
       this.val = val;
       this.str = str;
     }

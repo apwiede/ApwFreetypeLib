@@ -152,7 +152,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     nIfs = 1;
     Out = false;
     do {
-      if (TTInstructionFuncGrp1.SkipCode(cur) == false) {
+      if (cur.SkipCode() == false) {
         return;
       }
       switch (cur.opcode) {

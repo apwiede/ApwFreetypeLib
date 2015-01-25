@@ -55,33 +55,6 @@ public class TTInstructionFuncGrp1 extends FTDebug {
   }
 
   /* =====================================================================
-   *
-   * MANAGING THE FLOW OF CONTROL
-   *
-   *   Instructions appear in the specification's order.
-   *
-   * =====================================================================
-   */
-  public static boolean SkipCode(TTExecContextRec cur) {
-    cur.IP += cur.length;
-    if ( cur.IP < cur.codeSize ) {
-      cur.opcode = TTOpCode.OpCode.getTableTag(cur.code[cur.IP].getVal() & 0xFF);
-      cur.length = cur.opcode.getOpCodeLength();
-      if (cur.length < 0) {
-        if (cur.IP + 1 >= cur.codeSize) {
-          cur.error = FTError.ErrorTag.INTERP_CODE_OVERFLOW;
-          return false;
-        }
-        cur.length = 2 - cur.length * (cur.code[cur.IP + 1].getVal() & 0xFF);
-      }
-      if (cur.IP + cur.length <= cur.codeSize) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /* =====================================================================
    * SVTCA[a]:     Set (F and P) Vectors to Coordinate Axis
    * Opcode range: 0x00-0x01
    * Stack:        -->
@@ -91,8 +64,8 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     int A;
     int B;
 
-    A = ((cur.opcode.getVal() & 1) << 14);
-    B = (A ^ (short)0x4000);
+    A = (cur.opcode.getVal() & 1) << 14;
+    B = A ^ 0x4000;
     cur.graphics_state.freeVector.x = A;
     cur.graphics_state.projVector.x = A;
     cur.graphics_state.dualVector.x = A;
@@ -112,8 +85,8 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     int A;
     int B;
 
-    A = ((cur.opcode.getVal() & 1) << 14);
-    B = (A ^ (short)0x4000);
+    A = (cur.opcode.getVal() & 1) << 14;
+    B = A ^ 0x4000;
     cur.graphics_state.projVector.x = A;
     cur.graphics_state.dualVector.x = A;
     cur.graphics_state.projVector.y = B;
@@ -131,8 +104,8 @@ public class TTInstructionFuncGrp1 extends FTDebug {
     int A;
     int B;
 
-    A = ((cur.opcode.getVal() & 1) << 14);
-    B = (A ^ (short)0x4000);
+    A = (cur.opcode.getVal() & 1) << 14;
+    B = A ^ 0x4000;
     cur.graphics_state.freeVector.x = A;
     cur.graphics_state.freeVector.y = B;
     cur.render_funcs.ComputeFuncs(cur);
@@ -145,7 +118,7 @@ public class TTInstructionFuncGrp1 extends FTDebug {
    * =====================================================================
    */
   public void SRP0() {
-    cur.graphics_state.rp0 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.rp0 = cur.stack[cur.stack_idx];
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.stack_idx: %d", cur.graphics_state.rp0, cur.stack_idx));
   }
 
@@ -157,7 +130,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SRP1() {
-    cur.graphics_state.rp1 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.rp1 = cur.stack[cur.stack_idx];
   }
 
 
@@ -168,7 +141,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SRP2() {
-    cur.graphics_state.rp2 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.rp2 = cur.stack[cur.stack_idx];
   }
 
 
@@ -192,7 +165,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
         }
         return;
     }
-    cur.graphics_state.gep0 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.gep0 = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -215,7 +188,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
         }
         return;
     }
-    cur.graphics_state.gep1 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.gep1 = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -238,7 +211,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
         }
         return;
     }
-    cur.graphics_state.gep2 = (short)cur.stack[cur.stack_idx];
+    cur.graphics_state.gep2 = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -263,9 +236,9 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
     }
     cur.zp1 = cur.zp0;
     cur.zp2 = cur.zp0;
-    cur.graphics_state.gep0 = (short)cur.stack[cur.stack_idx + 0];
-    cur.graphics_state.gep1 = (short)cur.stack[cur.stack_idx + 0];
-    cur.graphics_state.gep2 = (short)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.gep0 = cur.stack[cur.stack_idx];
+    cur.graphics_state.gep1 = cur.stack[cur.stack_idx];
+    cur.graphics_state.gep2 = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -278,7 +251,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
     if (cur.stack[cur.stack_idx + 0] < 0) {
       cur.error = FTError.ErrorTag.INTERP_BAD_ARGUMENT;
     } else {
-      cur.graphics_state.loop = cur.stack[cur.stack_idx + 0];
+      cur.graphics_state.loop = cur.stack[cur.stack_idx];
     }
   }
 
@@ -289,7 +262,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void RTG() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.To_Grid;
+    cur.graphics_state.round_state = TTInterpTags.Round.To_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_grid;
   }
 
@@ -300,7 +273,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void RTHG() {
-    cur.graphics_state.round_state = TTInterpTags.RoundState.To_Half_Grid;
+    cur.graphics_state.round_state = TTInterpTags.Round.To_Half_Grid;
     cur.render_funcs.curr_round_func = cur.render_funcs.round_to_half_grid;
   }
 
@@ -311,7 +284,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SMD() {
-    cur.graphics_state.minimum_distance = cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.minimum_distance = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -321,22 +294,22 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void ELSE() {
-    int nIfs;
+    int num_ifs;
 
-    nIfs = 1;
+    num_ifs = 1;
     do {
-      if (SkipCode(cur) == false) {
+      if (cur.SkipCode() == false) {
         return;
       }
       switch (cur.opcode) {
         case IF:    /* IF */
-          nIfs++;
+          num_ifs++;
           break;
         case EIF:    /* EIF */
-          nIfs--;
+          num_ifs--;
           break;
       }
-    } while (nIfs != 0);
+    } while (num_ifs != 0);
   }
 
   /* =====================================================================
@@ -364,7 +337,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SCVTCI() {
-    cur.graphics_state.control_value_cutin = (int)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.control_value_cutin = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -374,7 +347,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SSWCI() {
-    cur.graphics_state.single_width_cutin = (int)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.single_width_cutin = cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -384,7 +357,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_SRP0: cur.GS.rp0: %d cur.st
    * =====================================================================
    */
   public void SSW() {
-    cur.graphics_state.single_width_value = FTCalc.FTMulFix(cur.stack[cur.stack_idx + 0], cur.tt_metrics.getScale());
+    cur.graphics_state.single_width_value = FTCalc.FTMulFix(cur.stack[cur.stack_idx], cur.tt_metrics.getScale());
   }
 
 }
