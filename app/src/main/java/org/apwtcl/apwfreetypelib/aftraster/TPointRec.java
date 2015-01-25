@@ -24,7 +24,7 @@ public class TPointRec extends FTDebug {
   private int x = 0;
   private int y = 0;
 
-  /* ==================== ftdemo.TPoint ================================== */
+  /* ==================== TPointRec ================================== */
   public TPointRec() {
     oid++;
     id = oid;

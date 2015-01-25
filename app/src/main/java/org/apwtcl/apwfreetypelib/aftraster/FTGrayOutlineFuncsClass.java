@@ -144,19 +144,19 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_find_cell: ras.ex: %d, ra
       x = worker.getCount_ex();
     }
     for(int j = 0; j < worker.getYcount(); j++) {
-      int a = worker.getYcell(j) == null ? -1 : worker.getYcell(j).area;
-      int c = worker.getYcell(j) == null ? -1 : worker.getYcell(j).cover;
+      int a = worker.getYcell(j) == null ? -1 : worker.getYcell(j).getArea();
+      int c = worker.getYcell(j) == null ? -1 : worker.getYcell(j).getCover();
       StringBuffer str = new StringBuffer("");
       str.append(String.format("ycells j: %2d, idx: %2d, x: %4d, a: %6x, c: %6x", j,
-          worker.getYcell(j) == null ? -1 : worker.getYcell(j).self_idx,
-          worker.getYcell(j) == null ? -1 : worker.getYcell(j).x,
+          worker.getYcell(j) == null ? -1 : worker.getYcell(j).getSelf_idx(),
+          worker.getYcell(j) == null ? -1 : worker.getYcell(j).getX(),
           a & 0xFFFFFF, c & 0xFFFFFF));
       cell = worker.getYcell(j);
       while( cell != null) {
-        cell = cell.next;
+        cell = cell.getNext();
         if (cell != null) {
           str.append(String.format("\n              idx: %2d, x: %4d, a: %6x, c: %6x",
-              cell.self_idx, cell.x, cell.area & 0xFFFFFF, cell.cover & 0xFFFFFF));
+              cell.getSelf_idx(), cell.getX(), cell.getArea() & 0xFFFFFF, cell.getCover() & 0xFFFFFF));
         }
       }
 Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
@@ -168,19 +168,19 @@ Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
       if (cellIdx == -1) {
         cell = worker.getYcell(pcellIdx);
       } else {
-        cell = cell.next;
+        cell = cell.getNext();
       }
-      if (cell == null || cell.x > x) {
+      if (cell == null || cell.getX() > x) {
         break;
       }
-      if (cell.x == x) {
+      if (cell.getX() == x) {
         return cell;
       }
       if (!useYcells) {
         isYcell = false;
       }
       useYcells = false;
-      cellIdx = cell.self_idx;
+      cellIdx = cell.getSelf_idx();
     }
     if (worker.getNum_cells() >= worker.getMax_cells()) {
 //FIXME!!        ft_longjmp( worker.jump_buffer, 1 );
@@ -188,24 +188,24 @@ Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
     }
     cell = worker.getCell(worker.getNum_cells());
     worker.setNum_cells(worker.getNum_cells() + 1);
-    cell.self_idx = worker.getNum_cells() - 1;
-    cell.x = x;
-    cell.area = 0;
-    cell.cover = 0;
+    cell.setSelf_idx(worker.getNum_cells() - 1);
+    cell.setX(x);
+    cell.setArea(0);
+    cell.setCover(0);
     if (useYcells) {
-      cell.next = worker.getYcell(pcellIdx);
+      cell.setNext(worker.getYcell(pcellIdx));
 //System.out.println(String.format("pcellIdx: %d",  pcellIdx));
       worker.setYcell(pcellIdx, cell);
     } else {
       if (isYcell) {
-        cell.next = worker.getYcell(pcellIdx).next;
+        cell.setNext(worker.getYcell(pcellIdx).getNext());
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
-        worker.getYcell(pcellIdx).next = cell;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("isYcell: cell idx: %d cell next idx: %d ", cell.self_idx, cell.next == null ? -1 : cell.next.self_idx));
+        worker.getYcell(pcellIdx).setNext(cell);
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("isYcell: cell idx: %d cell next idx: %d ", cell.getSelf_idx(), cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
       } else {
-        cell.next = worker.getCell(cellIdx).next;
+        cell.setNext(worker.getCell(cellIdx).getNext());
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
-        worker.getCell(cellIdx).next = cell;
+        worker.getCell(cellIdx).setNext(cell);
       }
     }
     return cell;
@@ -222,9 +222,9 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell: ras.invalid:
     if (!worker.isInvalid() && (worker.getArea() | worker.getCover()) != 0) {
       TCellRec cell = gray_find_cell(worker);
 
-      cell.area  += worker.getArea();
-      cell.cover += worker.getCover();
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.area, cell.cover, worker.getArea(), worker.getCover()));
+      cell.setArea(cell.getArea() + worker.getArea());
+      cell.setCover(cell.getCover() + worker.getCover());
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.getArea(), cell.getCover(), worker.getArea(), worker.getCover()));
     }
   }
 

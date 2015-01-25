@@ -635,20 +635,20 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_sweep");
       int cover = 0;
       int x = 0;
 
-      for ( ; cell != null; cell = cell.next) {
+      for ( ; cell != null; cell = cell.getNext()) {
         int area;
 
 //System.out.println(String.format("cell->next: %d", cell.next == null ? -1 : cell.next.self_idx));
-        Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_sweep 1: cell.x: %d x: %d,  yindex: %d, cover: %x", cell.x, x, yindex, cover));
-        if (cell.x > x && cover != 0) {
-          gray_hline(worker, x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), cell.x - x );
+        Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_sweep 1: cell.x: %d x: %d,  yindex: %d, cover: %x", cell.getX(), x, yindex, cover));
+        if (cell.getX() > x && cover != 0) {
+          gray_hline(worker, x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), cell.getX() - x );
         }
-        cover += cell.cover;
-        area = cover * (RasterUtil.ONE_PIXEL() * 2) - cell.area;
-        if (area != 0 && cell.x >= 0) {
-          gray_hline(worker, cell.x, yindex, area, 1 );
+        cover += cell.getCover();
+        area = cover * (RasterUtil.ONE_PIXEL() * 2) - cell.getArea();
+        if (area != 0 && cell.getX() >= 0) {
+          gray_hline(worker, cell.getX(), yindex, area, 1 );
         }
-        x = cell.x + 1;
+        x = cell.getX() + 1;
       }
       if (cover != 0) {
         gray_hline(worker, x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), worker.getCount_ex() - x);
