@@ -163,8 +163,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_black_new");
     FTLibraryRec library = module.library;
     FTRendererRec render = (FTRendererRec)module;
 Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
-    render.clazz.rasterReset(render.raster,
-        library.raster_pool, library.raster_pool_size);
+    render.getClazz().rasterReset(render.getRaster(), library.getRaster_pool(), library.getRaster_pool_size());
     return FTError.ErrorTag.ERR_OK;
   }
 
@@ -184,19 +183,19 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
     FTReference<FTBBoxRec> cbox_ref = new FTReference<FTBBoxRec>();
 
       /* check glyph image format */
-    if (slot.getFormat().getVal() != render.glyph_format.getVal()) {
+    if (slot.getFormat().getVal() != render.getGlyph_format().getVal()) {
       error = FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
       return error;
     }
       /* check rendering mode */
     if (mode != FTTags.RenderMode.MONO.getVal()) {
         /* raster1 is only capable of producing monochrome bitmaps */
-      if (render.module_clazz.module_name == "raster1") {
+      if (render.module_clazz.getModule_name() == "raster1") {
         return FTError.ErrorTag.GLYPH_CANNOT_RENDER_GLYPH;
       }
     } else {
         /* raster5 is only capable of producing 5-gray-levels bitmaps */
-      if (render.module_clazz.module_name == "raster5")
+      if (render.module_clazz.getModule_name() == "raster5")
         return FTError.ErrorTag.GLYPH_CANNOT_RENDER_GLYPH;
     }
     outline = slot.getOutline();
@@ -252,7 +251,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_raster1_init");
       params.flags |= FTRasterParams.FT_RASTER_FLAG_AA;
     }
       /* render outline into the bitmap */
-    error = render.rasterRender(render.raster, params);
+    error = render.rasterRender(render.getRaster(), params);
     outline.OutlineTranslate(cbox.getxMin(), cbox.getyMin());
     if (error != FTError.ErrorTag.ERR_OK) {
       return error;

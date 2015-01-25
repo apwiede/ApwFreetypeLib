@@ -70,7 +70,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "TTDriverClass constructor called!!");
 Debug(0, DebugTag.DBG_INIT, TAG, "tt_driver_init");
 
     TTDriverRec  driver = (TTDriverRec)module;
-Debug(0, DebugTag.DBG_INIT, TAG, String.format("module_type: %s", driver.getDriver_clazz().module_type));
+Debug(0, DebugTag.DBG_INIT, TAG, String.format("module_type: %s", driver.getDriver_clazz().getModule_type()));
     if (driver.NewContext() == null) {
       return FTError.ErrorTag.INTERP_COULD_NOT_FIND_CONTEXT;
     }
@@ -110,7 +110,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, String.format("module_type: %s", driver.getDriv
 Debug(0, DebugTag.DBG_INIT, TAG, "tt_face_init");
     FTTrace.Trace(7, TAG, "TTF driver");
     library = ttface.getDriver().library;
-    sfnt = (FTSfntInterfaceClass)FTModuleRec.FTGetModuleInterface(library, "sfnt");
+    sfnt = (FTSfntInterfaceClass)ttface.getDriver().FTGetModuleInterface("sfnt");
     if (sfnt == null) {
       FTTrace.Trace(7, TAG, "tt_face_init: cannot access `sfnt' module");
       error = FTError.ErrorTag.INTERP_MISSING_MODULE;

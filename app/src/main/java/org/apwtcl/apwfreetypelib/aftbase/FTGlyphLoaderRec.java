@@ -130,10 +130,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FTGlyphLoaderCreateExtra 2 extra: "+base
   public FTRendererRec ft_lookup_glyph_renderer(FTGlyphSlotRec slot) {
     FTFaceRec face = slot.getFace();
     FTLibraryRec library = face.getDriver().library;
-    FTRendererRec renderer = library.cur_renderer;
+    FTRendererRec renderer = library.getCur_renderer();
 
     if (renderer == null || renderer.glyph_format != slot.getFormat()) {
-      renderer = library.cur_renderer.FTLookupRenderer(library, slot.getFormat(), null);
+      renderer = library.getCur_renderer().FTLookupRenderer(library, slot.getFormat(), null);
     }
     return renderer;
   }
@@ -170,10 +170,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FTGlyphLoaderCreateExtra 2 extra: "+base
         clazz = glyph_class;
       } else {
         /* try to find a renderer that supports the glyph image format */
-        FTRendererRec render = library.cur_renderer.FTLookupRenderer(library, slot.getFormat(), null);
+        FTRendererRec render = library.getCur_renderer().FTLookupRenderer(library, slot.getFormat(), null);
 
         if (render != null) {
-          clazz = render.getGlyphClass();
+          clazz = render.getGlyph_class();
         }
       }
     }

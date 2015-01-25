@@ -385,16 +385,15 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     } else {
       error = FTError.ErrorTag.LOAD_MISSING_MODULE;
         /* check each font driver for an appropriate format */
-      cur = library.modules[0];
-      limit = library.num_modules;
+      limit = library.getNum_modules();
       for (module_idx = 0; module_idx < limit; module_idx++) {
-        cur = library.modules[module_idx];
+        cur = library.getModule(module_idx);
           /* not all modules are font drivers, so check... */
         if ((cur.module_clazz.module_flags & Flags.Module.FONT_DRIVER.getVal()) != 0) {
           int num_params = 0;
           FTParameter params[] = null;
 
-          TTDriverRec cur_obj = (TTDriverRec)library.modules[module_idx];
+          TTDriverRec cur_obj = (TTDriverRec)library.getModule(module_idx);
           driver = cur_obj;
           if (FTUtilFlags.StreamOpen.isParams(args.getFlags())) {
             num_params = args.getNum_params();

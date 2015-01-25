@@ -284,7 +284,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     ft_glyphslot_clear();
     driver  = face.getDriver();
     library = driver.library;
-    hinter  = library.auto_hinter;
+    hinter  = library.getAuto_hinter();
     /* resolve load flags dependencies */
     if ((load_flags & Flags.Load.NO_RECURSE.getVal()) != 0) {
       load_flags |= Flags.Load.NO_SCALE.getVal() | Flags.Load.IGNORE_TRANSFORM.getVal();

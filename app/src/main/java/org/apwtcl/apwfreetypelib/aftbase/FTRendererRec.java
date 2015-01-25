@@ -37,11 +37,10 @@ public class FTRendererRec extends FTModuleRec {
   private static String TAG = "FTRendererRec";
 
 
-  public FTTags.GlyphFormat glyph_format = FTTags.GlyphFormat.NONE;
+  protected FTTags.GlyphFormat glyph_format = FTTags.GlyphFormat.NONE;
   private FTGlyphClassRec glyph_class = null;
-  public FTRasterRec raster = null;
-
-  public FTRendererClassRec clazz = null;
+  protected FTRasterRec raster = null;
+  protected FTRendererClassRec clazz = null;
 
   /* ==================== FTRendererRec ================================== */
   public FTRendererRec() {
@@ -101,7 +100,7 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "initModule\n");
 
 FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "ft_set_current_renderer\n");
     renderer = this.FTLookupRenderer(library, FTTags.GlyphFormat.OUTLINE, null);
-    library.cur_renderer = renderer;
+    library.setCur_renderer(renderer);
     return error;
   }
 
@@ -131,7 +130,7 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
     /* add to list */
     node = new FTListNodeRec();
     node.data = this;
-    node.FTListAdd(library.renderers);
+    node.FTListAdd(library.getRenderers());
     ft_set_current_renderer(library);
     return error;
   }
@@ -148,7 +147,7 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
     if (library == null) {
       return result;
     }
-    cur = library.renderers.head;
+    cur = library.getRenderers().head;
     if (list_node_ref != null) {
       node = list_node_ref.Get();
       if (node != null) {
@@ -160,7 +159,7 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
       FTRendererRec renderer;
 
       renderer = (FTRendererRec) (cur.data);
-      if (renderer.getGlyphFormat() == format) {
+      if (renderer.glyph_format == format) {
         if (list_node_ref != null) {
           node = cur;
         }
@@ -169,6 +168,7 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
       }
       cur = cur.next;
     }
+    list_node_ref.Set(node);
     return result;
   }
 
@@ -189,14 +189,14 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_RENDER, TAG, "FTSetRenderer");
     if (renderer == null) {
       return FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
     }
-    node = FTListRec.FTListFind(library.renderers, renderer);
+    node = FTListRec.FTListFind(library.getRenderers(), renderer);
     if (node == null) {
       error = FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
       return error;
     }
-    FTListRec.FTListUp(library.renderers, node);
+    FTListRec.FTListUp(library.getRenderers(), node);
     if (renderer.glyph_format == FTTags.GlyphFormat.OUTLINE) {
-      library.cur_renderer = renderer;
+      library.setCur_renderer(renderer);
     }
     if (num_params > 0) {
       parameter = parameters[parameterIdx];
@@ -211,20 +211,44 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_RENDER, TAG, "FTSetRenderer");
     return error;
   }
 
-  /* =====================================================================
-   * getGlyphFormat
-   * =====================================================================
-   */
-  public FTTags.GlyphFormat getGlyphFormat() {
+  /* ==================== getGlyph_format ================================== */
+  public FTTags.GlyphFormat getGlyph_format() {
     return glyph_format;
   }
 
-  /* =====================================================================
-   * getGlyphFormat
-   * =====================================================================
-   */
-  public FTGlyphClassRec getGlyphClass() {
+  /* ==================== setGlyph_format ================================== */
+  public void setGlyph_format(FTTags.GlyphFormat glyph_format) {
+    this.glyph_format = glyph_format;
+  }
+
+  /* ==================== getGlyph_class ================================== */
+  public FTGlyphClassRec getGlyph_class() {
     return glyph_class;
+  }
+
+  /* ==================== setGlyph_class ================================== */
+  public void setGlyph_class(FTGlyphClassRec glyph_class) {
+    this.glyph_class = glyph_class;
+  }
+
+  /* ==================== getRaster ================================== */
+  public FTRasterRec getRaster() {
+    return raster;
+  }
+
+  /* ==================== setRaster ================================== */
+  public void setRaster(FTRasterRec raster) {
+    this.raster = raster;
+  }
+
+  /* ==================== getClazz ================================== */
+  public FTRendererClassRec getClazz() {
+    return clazz;
+  }
+
+  /* ==================== setClazz ================================== */
+  public void setClazz(FTRendererClassRec clazz) {
+    this.clazz = clazz;
   }
 
 }

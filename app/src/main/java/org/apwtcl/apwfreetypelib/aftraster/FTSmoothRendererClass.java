@@ -72,7 +72,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTMSmoothRendererClass constructor cal
     FTLibraryRec library = module.library;
     FTRendererRec render = (FTRendererRec)module;
 Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
-    render.clazz.rasterReset(render.raster, library.raster_pool, library.raster_pool_size);
+    render.getClazz().rasterReset(render.getRaster(), library.getRaster_pool(), library.getRaster_pool_size());
     return FTError.ErrorTag.ERR_OK;
   }
 
@@ -102,7 +102,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     FTReference<FTBBoxRec> cbox_ref = new FTReference<FTBBoxRec>();
 
       /* check glyph image format */
-    if (slot.getFormat() != render.glyph_format) {
+    if (slot.getFormat() != render.getGlyph_format()) {
       error = FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
       return error;
     }
@@ -169,7 +169,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     params.source = slot.getOutline();
     params.flags = FTRasterParams.FT_RASTER_FLAG_AA;
       /* render outline into bitmap */
-    error = render.rasterRender(render.raster, params);
+    error = render.rasterRender(render.getRaster(), params);
     if (error != FTError.ErrorTag.ERR_OK) {
       if (have_outline_shifted) {
         slot.getOutline().OutlineTranslate(x_shift, y_shift);

@@ -66,49 +66,49 @@ public class FTSfntInterfaceClass extends FTModuleInterface {
    * sfnt_init_face
    * =====================================================================
    */
-  public FTError.ErrorTag sfnt_init_face(FTStreamRec stream, TTFaceRec face, int face_index,
+  public FTError.ErrorTag sfnt_init_face(FTStreamRec stream, TTFaceRec ttface, int face_index,
                                          int num_params, FTParameter[] params) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    FTLibraryRec library = face.getDriver().library;
+    FTLibraryRec library = ttface.getDriver().library;
     FTSfntInterfaceClass sfnt;
 
     if (num_params != 0) ; // unused
     if (params == null) ;  // unused
-    Debug(0, DebugTag.DBG_INIT, TAG, "sfnt_init_face called: "+face_index+"!"+face.getSfnt()+"!");
-    sfnt = (FTSfntInterfaceClass)face.getSfnt();
+    Debug(0, DebugTag.DBG_INIT, TAG, "sfnt_init_face called: "+face_index+"!"+ttface.getSfnt()+"!");
+    sfnt = (FTSfntInterfaceClass)ttface.getSfnt();
     if (sfnt == null) {
-      sfnt = (FTSfntInterfaceClass) FTModuleRec.FTGetModuleInterface(library, "sfnt");
+      sfnt = (FTSfntInterfaceClass)ttface.getDriver().FTGetModuleInterface("sfnt");
       if (sfnt == null) {
         FTTrace.Trace(7, TAG, "sfnt_init_face: cannot access `sfnt' module");
         return FTError.ErrorTag.INTERP_MISSING_MODULE;
       }
-      face.setSfnt(sfnt);
+      ttface.setSfnt(sfnt);
 //      FT_FACE_FIND_GLOBAL_SERVICE(face, face.psnames, POSTSCRIPT_CMAPS);
     }
     FTTrace.Trace(7, TAG, "SFNT driver" );
-    error = sfnt_open_font(stream, face);
+    error = sfnt_open_font(stream, ttface);
     if (error != FTError.ErrorTag.ERR_OK) {
       return error;
     }
-    FTTrace.Trace(7, TAG, "sfnt_init_face: "+face+"!"+face_index);
+    FTTrace.Trace(7, TAG, "sfnt_init_face: "+ttface+"!"+face_index);
     if (face_index < 0) {
       face_index = 0;
     }
-    if (face_index >= face.getTtc_header().GetCount()) {
+    if (face_index >= ttface.getTtc_header().GetCount()) {
       return FTError.ErrorTag.INTERP_INVALID_ARGUMENT;
     }
-    Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "offsets: "+face_index+"!"+face.getTtc_header().GetCount()+"!");
-    error = face.getTtc_header().GotoFaceIndex(stream, face_index);
+    Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "offsets: "+face_index+"!"+ttface.getTtc_header().GetCount()+"!");
+    error = ttface.getTtc_header().GotoFaceIndex(stream, face_index);
     if (error != FTError.ErrorTag.ERR_OK) {
       return error;
     }
       /* check that we have a valid TrueType file */
-    error = loadFontDir(face, stream);
+    error = loadFontDir(ttface, stream);
     if (error != FTError.ErrorTag.ERR_OK) {
       return error;
     }
-    face.setNum_faces(face.getTtc_header().GetCount());
-    face.setFace_index(face_index);
+    ttface.setNum_faces(ttface.getTtc_header().GetCount());
+    ttface.setFace_index(face_index);
     Debug(0, DebugTag.DBG_INIT, TAG, "sfnt_init_face done");
     return error;
   }

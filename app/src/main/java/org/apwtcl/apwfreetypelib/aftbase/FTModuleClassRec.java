@@ -31,12 +31,12 @@ public class FTModuleClassRec extends FTDebug {
   private int id;
   private static String TAG = "FTModuleClassRec";
 
-  public int module_flags;
-  public FTTags.ModuleType module_type;
-  public String module_name;
-  public int module_version;
-  public int module_requires;
-  public FTModuleInterface module_interface;
+  protected int module_flags;
+  protected FTTags.ModuleType module_type;
+  protected String module_name;
+  protected int module_version;
+  protected int module_requires;
+  protected FTModuleInterface module_interface;
 
   /* ==================== FTModuleClassRec ================================== */
   public FTModuleClassRec() {
@@ -52,18 +52,6 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTModuleClassRec constructor called!!"
     module_interface = null;
   }
     
-  /* ==================== moduleInit ================================== */
-  public FTError.ErrorTag moduleInit(FTModuleRec module) {
-    Log.e(TAG, "moduleInit not yet implemented");
-    return FTError.ErrorTag.ERR_OK;
-  }
-
-  /* ==================== moduleDone ================================== */
-  public void moduleDone() {
-    Log.e(TAG, "moduleDone not yet implemented");
-  }
-
-  /* ==================== mySelf ================================== */
   public String mySelf() {
       return TAG+"!"+id+"!";
     }
@@ -84,5 +72,76 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTModuleClassRec constructor called!!"
     str.append("..module_interface: "+module_interface);
     return str.toString();
   }
- 
+
+  /* ==================== moduleInit ================================== */
+  public FTError.ErrorTag moduleInit(FTModuleRec module) {
+    Log.e(TAG, "moduleInit not yet implemented");
+    return FTError.ErrorTag.ERR_OK;
+  }
+
+  /* ==================== moduleDone ================================== */
+  public void moduleDone() {
+    Log.e(TAG, "moduleDone not yet implemented");
+  }
+
+  /* ==================== getModule_flags ================================== */
+  public int getModule_flags() {
+    return module_flags;
+  }
+
+  /* ==================== setModule_flags ================================== */
+  public void setModule_flags(int module_flags) {
+    this.module_flags = module_flags;
+  }
+
+  /* ==================== getModule_type ================================== */
+  public FTTags.ModuleType getModule_type() {
+    return module_type;
+  }
+
+  /* ==================== setModule_type ================================== */
+  public void setModule_type(FTTags.ModuleType module_type) {
+    this.module_type = module_type;
+  }
+
+  /* ==================== getModule_name ================================== */
+  public String getModule_name() {
+    return module_name;
+  }
+
+  /* ==================== setModule_name ================================== */
+  public void setModule_name(String module_name) {
+    this.module_name = module_name;
+  }
+
+  /* ==================== getModule_version ================================== */
+  public int getModule_version() {
+    return module_version;
+  }
+
+  /* ==================== setModule_version ================================== */
+  public void setModule_version(int module_version) {
+    this.module_version = module_version;
+  }
+
+  /* ==================== getModule_requires ================================== */
+  public int getModule_requires() {
+    return module_requires;
+  }
+
+  /* ==================== setModule_requires ================================== */
+  public void setModule_requires(int module_requires) {
+    this.module_requires = module_requires;
+  }
+
+  /* ==================== getModule_interface ================================== */
+  public FTModuleInterface getModule_interface() {
+    return module_interface;
+  }
+
+  /* ==================== setModule_interface ================================== */
+  public void setModule_interface(FTModuleInterface module_interface) {
+    this.module_interface = module_interface;
+  }
+
 }

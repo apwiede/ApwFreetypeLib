@@ -85,11 +85,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FTRenderGlyphInternal");
 
         /* small shortcut for the very common case */
         if (slot.getFormat() == FTTags.GlyphFormat.OUTLINE) {
-          renderer = library.cur_renderer;
-          node = library.renderers.head;
+          renderer = library.getCur_renderer();
+          node = library.getRenderers().head;
         } else {
           node_ref.Set(node);
-          renderer = library.cur_renderer.FTLookupRenderer(library, slot.getFormat(), node_ref);
+          renderer = library.getCur_renderer().FTLookupRenderer(library, slot.getFormat(), node_ref);
 Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
           node = node_ref.Get();
         }
@@ -107,7 +107,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 1: "+renderer+"!"+slot.getBitmap()+
           /* now, look for another renderer that supports the same */
           /* format.                                               */
           node_ref.Set(node);
-          renderer = library.cur_renderer.FTLookupRenderer(library, slot.getFormat(), node_ref);
+          renderer = library.getCur_renderer().FTLookupRenderer(library, slot.getFormat(), node_ref);
 if (renderer != null && renderer.clazz != null) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
 }

@@ -31,57 +31,86 @@ package org.apwtcl.apwfreetypelib.aftbase;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 
 public class FTListNodeRec extends FTDebug {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTListNodeRec";
+  private int id;
+  private static String TAG = "FTListNodeRec";
 
-    public FTListNodeRec next = null;
-    public FTListNodeRec prev = null;
-    public Object data = null;
+  protected FTListNodeRec next = null;
+  protected FTListNodeRec prev = null;
+  protected Object data = null;
 
 
-    /* ==================== FTListNodeRec ================================== */
-    public FTListNodeRec() {
-      oid++;
-      id = oid;
-    }
+  /* ==================== FTListNodeRec ================================== */
+  public FTListNodeRec() {
+    oid++;
+    id = oid;
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
-      return TAG+"!"+id+"!";
-
-    } 
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
+    return TAG+"!"+id+"!";
+  }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      str.append("..next: "+next+'\n');
-      str.append("..prev: "+prev+'\n');
-      str.append("..data: "+data+'\n');
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    str.append("..next: "+next+'\n');
+    str.append("..prev: "+prev+'\n');
+    str.append("..data: "+data+'\n');
+    return str.toString();
+  }
  
-    /* =====================================================================
-     * FTListAdd 
-     * =====================================================================
-     */
-    public void FTListAdd(FTListRec list) {
-      FTListNodeRec before = list.tail;
+  /* =====================================================================
+   * FTListAdd
+   * =====================================================================
+   */
+  public void FTListAdd(FTListRec list) {
+    FTListNodeRec before = list.tail;
 
-      next = null;
-      prev = before;
-      if (before != null) {
-        before.next = this;
-      } else {
-        list.head = this;
-      }
-      list.tail = this;
+    next = null;
+    prev = before;
+    if (before != null) {
+      before.next = this;
+    } else {
+      list.head = this;
     }
+    list.tail = this;
+  }
+
+  /* ==================== getNext ================================== */
+  public FTListNodeRec getNext() {
+    return next;
+  }
+
+  /* ==================== setNext ================================== */
+  public void setNext(FTListNodeRec next) {
+    this.next = next;
+  }
+
+  /* ==================== getPrev ================================== */
+  public FTListNodeRec getPrev() {
+    return prev;
+  }
+
+  /* ==================== setPrev ================================== */
+  public void setPrev(FTListNodeRec prev) {
+    this.prev = prev;
+  }
+
+  /* ==================== getData ================================== */
+  public Object getData() {
+    return data;
+  }
+
+  /* ==================== setData ================================== */
+  public void setData(Object data) {
+    this.data = data;
+  }
 
 }

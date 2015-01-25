@@ -138,8 +138,8 @@ FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT, TAG, String.format("add module: %d 
       return FTError.ErrorTag.INIT_INVALID_ARGUMENT;
     }
 
-    for (nn = 0; nn < library.num_modules; nn++) {
-      module = library.modules[nn];
+    for (nn = 0; nn < library.getNum_modules(); nn++) {
+      module = library.getModule(nn);
 FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG,  "nn: "+nn+"!"+module.module_clazz);
       if (module.module_clazz.module_name.equals(module_clazz.module_name)) {
         /* this installed module has the same name, compare their versions */
@@ -153,7 +153,7 @@ FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG,  "nn: "+nn+"!"+module.module_
       }
     }
     error = FTError.ErrorTag.ERR_OK;
-    if (library.num_modules >= FT_MAX_MODULES) {
+    if (library.getNum_modules() >= FT_MAX_MODULES) {
       error = FTError.ErrorTag.INIT_TOO_MANY_DRIVERS;
       return error;
     }
@@ -209,7 +209,7 @@ FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG, "REND1: "+module.module_clazz
     }
     // is the module a auto-hinter?
     if (Flags.Module.isHinter(flags)) {
-      library.auto_hinter = module;
+      library.setAuto_hinter(module);
     }
     // if the module is a font driver
     if (Flags.Module.isFontDriver(flags)) {
@@ -226,7 +226,8 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FT_Add_Module call module_init
     error = module_clazz.moduleInit(module);
     if (error == FTError.ErrorTag.ERR_OK) {
       /* add module to the library's table */
-      library.modules[library.num_modules++] = module;
+      library.setModule(library.getNum_modules(),  module);
+      library.setNum_modules(library.getNum_modules() + 1);
       return error;
     }
     if (Flags.Module.isFontDriver(flags)) {
