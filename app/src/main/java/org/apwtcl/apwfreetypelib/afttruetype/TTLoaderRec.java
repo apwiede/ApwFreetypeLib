@@ -191,6 +191,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "fill TTSizeRec\n");
       }
       exec.pedantic_hinting = (load_flags.getVal() & Flags.Load.PEDANTIC.getVal()) != 0;
       this.exec = exec;
+      this.base.setExec(exec);
+      this.zone.setExec(exec);
       this.instructions = exec.glyphIns;
     }
     /* seek to the beginning of the glyph table -- for Type 42 fonts     */

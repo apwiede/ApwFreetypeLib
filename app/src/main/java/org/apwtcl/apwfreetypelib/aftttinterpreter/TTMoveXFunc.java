@@ -18,15 +18,8 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
   /*    set of Move functions for interpreter                              */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoaderRec;
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphZoneRec;
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpBase;
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
 public class TTMoveXFunc extends TTMoveFuncBase {
   private static int oid = 0;

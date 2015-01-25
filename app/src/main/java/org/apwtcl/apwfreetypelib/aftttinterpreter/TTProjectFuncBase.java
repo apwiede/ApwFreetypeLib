@@ -20,9 +20,7 @@ package org.apwtcl.apwfreetypelib.aftttinterpreter;
 
 import android.util.Log;
 
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpRun;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
 public class TTProjectFuncBase extends FTDebug {
   private static int oid = 0;

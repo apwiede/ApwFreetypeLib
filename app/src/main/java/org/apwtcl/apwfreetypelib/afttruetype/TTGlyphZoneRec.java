@@ -45,6 +45,7 @@ package org.apwtcl.apwfreetypelib.afttruetype;
 
 import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoadRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
+import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
@@ -71,6 +72,7 @@ public class TTGlyphZoneRec extends FTDebug {
   private int[] contours = null;     /* contour end points          */
   private int contours_idx = 0;
   private int first_point = 0;       /* offset of first (#0) point  */
+  private TTExecContextRec exec = null;
 
   /* ==================== TTGlyphZoneRec ================================== */
   public TTGlyphZoneRec() {
@@ -123,30 +125,30 @@ public class TTGlyphZoneRec extends FTDebug {
   }
 
   /* ==================== showLoaderZone ================================== */
-  public void showLoaderZone(String str) {
+  public void showLoaderZone(String str, TTExecContextRec exec) {
     int j;
 
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
-    if (TTInterpBase.cur != null) {
-      if (TTInterpBase.cur.zp0 != null) {
-        if (TTInterpBase.cur.zp0.cur != null) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.cur: "+(Object)TTInterpBase.cur.zp0.cur);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.org: "+(Object)TTInterpBase.cur.zp0.org);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.orus: "+(Object)TTInterpBase.cur.zp0.orus);
+    if (exec != null) {
+      if (exec.zp0 != null) {
+        if (exec.zp0.cur != null) {
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.cur: "+exec.zp0.cur);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.org: "+exec.zp0.org);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp0.orus: "+exec.zp0.orus);
         }
       }
-      if (TTInterpBase.cur.zp1 != null) {
-        if (TTInterpBase.cur.zp1.cur != null) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.cur: "+(Object)TTInterpBase.cur.zp1.cur);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.org: "+(Object)TTInterpBase.cur.zp1.org);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.orus: "+(Object)TTInterpBase.cur.zp1.orus);
+      if (exec.zp1 != null) {
+        if (exec.zp1.cur != null) {
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.cur: "+exec.zp1.cur);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.org: "+exec.zp1.org);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp1.orus: "+exec.zp1.orus);
         }
       }
-      if (TTInterpBase.cur.zp2 != null) {
-        if (TTInterpBase.cur.zp2.cur != null) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.cur: "+(Object)TTInterpBase.cur.zp2.cur);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.org: "+(Object)TTInterpBase.cur.zp2.org);
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.orus: "+(Object)TTInterpBase.cur.zp2.orus);
+      if (exec.zp2 != null) {
+        if (exec.zp2.cur != null) {
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.cur: "+exec.zp2.cur);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.org: "+exec.zp2.org);
+          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zp2.orus: "+exec.zp2.orus);
         }
       }
     }
@@ -327,9 +329,9 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_prepare_zone1: extra_points length: "
     tags_idx = load.getTags_idx() + start_point;
     contours = load.getContours();
     contours_idx = load.getContours_idx() + start_contour;
-    first_point = (short)start_point;
+    first_point = start_point;
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "!" + load.getExtra_points_idx() + "!" + load.getExtra_points2() + "!" + load.getExtra_points2_idx() + "!");
-    showLoaderZone("tt_prepare_zone");
+    showLoaderZone("tt_prepare_zone", exec);
   }
 
   /* =====================================================================
@@ -628,6 +630,15 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   /* ==================== setFirst_point ================================== */
   public void setFirst_point(int first_point) {
     this.first_point = first_point;
+  }
+
+
+  public TTExecContextRec getExec() {
+    return exec;
+  }
+
+  public void setExec(TTExecContextRec exec) {
+    this.exec = exec;
   }
 
 }

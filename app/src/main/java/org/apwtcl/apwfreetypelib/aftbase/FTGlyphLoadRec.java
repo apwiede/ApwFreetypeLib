@@ -18,7 +18,6 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /*                                                                       */
   /* ===================================================================== */
 
-import org.apwtcl.apwfreetypelib.afttruetype.TTInterpBase;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
 public class FTGlyphLoadRec extends FTOutlineRec {
