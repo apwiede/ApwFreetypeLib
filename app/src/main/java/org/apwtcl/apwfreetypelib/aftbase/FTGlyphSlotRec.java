@@ -443,7 +443,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
           (load_flags & Flags.Load.MONOCHROME.getVal()) != 0) {
         mode = FTTags.RenderMode.MONO.getVal();
       }
-      error = FTGlyphRenderFuncs.FTRenderGlyph(this, mode);
+      error = this.FTRenderGlyph(mode);
     }
     return error;
   }
@@ -474,6 +474,125 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       cur = cur.next;
     }
     return error;
+  }
+
+  /* =====================================================================
+   * FTRenderGlyphInternal
+   * =====================================================================
+   */
+  public FTError.ErrorTag FTRenderGlyphInternal(FTLibraryRec library, int render_mode) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    FTRendererRec renderer;
+    FTReference<FTListNodeRec> node_ref = new FTReference<FTListNodeRec>();
+
+    Debug(0, DebugTag.DBG_RENDER, TAG, "FTRenderGlyphInternal");
+    /* if it is already a bitmap, no need to do anything */
+    if (this.format == FTTags.GlyphFormat.BITMAP) {
+      /* already a bitmap, don't do anything */
+    } else {
+      FTListNodeRec node = null;
+      boolean update = false;
+
+      /* small shortcut for the very common case */
+      if (this.format == FTTags.GlyphFormat.OUTLINE) {
+        renderer = library.getCur_renderer();
+        node = library.getRenderers().head;
+      } else {
+        node_ref.Set(node);
+        renderer = library.getCur_renderer().FTLookupRenderer(library, this.format, node_ref);
+        Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
+        node = node_ref.Get();
+      }
+      error = FTError.ErrorTag.GLYPH_UNIMPLEMENTED_FEATURE;
+      Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 0: "+renderer+"!");
+      while (renderer != null) {
+        Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 1: "+renderer+"!"+this.bitmap+"!");
+        error = renderer.render(renderer, this, render_mode, null);
+        if (error == FTError.ErrorTag.ERR_OK || error != FTError.ErrorTag.GLYPH_CANNOT_RENDER_GLYPH) {
+          break;
+        }
+        /* FT_Err_Cannot_Render_Glyph is returned if the render mode   */
+        /* is unsupported by the current renderer for this glyph image */
+        /* format.                                                     */
+        /* now, look for another renderer that supports the same */
+        /* format.                                               */
+        node_ref.Set(node);
+        renderer = library.getCur_renderer().FTLookupRenderer(library, this.format, node_ref);
+        if (renderer != null && renderer.clazz != null) {
+          Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
+        }
+        node = node_ref.Get();
+        update = true;
+      }
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert0d: rows %d width %d pitch %d num_grays %d", this.bitmap.getRows(), this.bitmap.getWidth(), this.bitmap.getPitch(), this.bitmap.getNum_grays()));
+      /* if we changed the current renderer for the glyph image format */
+      /* we need to select it as the next current one                  */
+      if (error == FTError.ErrorTag.ERR_OK && update && renderer != null) {
+        FTRendererRec.FTSetRenderer(library, renderer, 0, null);
+      }
+    }
+    /* we convert to a single bitmap format for computing the checksum */
+    {
+      FTBitmapRec bitmap = new FTBitmapRec();
+      FTError.ErrorTag err;
+      FTReference<FTBitmapRec> bitmap_ref = new FTReference<FTBitmapRec>();
+
+      bitmap_ref.Set(bitmap);
+      StringBuffer str = new StringBuffer("");
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert: rows %d width %d pitch %d num_grays %d", bitmap.getRows(), bitmap.getWidth(), bitmap.getPitch(), bitmap.getNum_grays()));
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert slot: rows %d width %d pitch %d num_grays %d", this.bitmap.getRows(), this.bitmap.getWidth(), this.bitmap.getPitch(), this.bitmap.getNum_grays()));
+      err = this.bitmap.Convert(library, bitmap, 1);
+      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("after BITMAP convert: rows %d width %d pitch %d num_grays %d", bitmap.getRows(), bitmap.getWidth(), bitmap.getPitch(), bitmap.getNum_grays()));
+      bitmap = bitmap_ref.Get();
+      int r;
+      int c;
+//Debug(0, DebugTag.DBG_RENDER, TAG, String.format("++ Bitmapconv char: %c %d rows: %d width: %d",
+//    FTDemoHandle.currCharacter, FTDemoHandle.currGIndex, bitmap.rows, bitmap.width));
+      str = new StringBuffer("");
+      for(r = 0; r < bitmap.getRows(); r++) {
+        str.delete(0,  str.length());
+        str.append(String.format("%02d: ", r));
+        for(c = 0; c < bitmap.getWidth(); c++) {
+          str.append(String.format("%02x", bitmap.getBuffer()[r+c]));
+        }
+        Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
+      }
+      if (err == FTError.ErrorTag.ERR_OK) {
+        MD5CTX ctx = null;
+        byte[] md5 = new byte[16];
+        int i;
+
+        ctx = new MD5CTX();
+        ctx.MD5Init();
+        FTReference<Object> buffer_ref = new FTReference<Object>();
+        buffer_ref.Set(bitmap.getBuffer());
+        ctx.MD5Update(buffer_ref, (long) (bitmap.getRows() * bitmap.getPitch()));
+        bitmap.setBuffer((byte[]) buffer_ref.Get());
+        ctx.MD5Final(md5);
+        str = new StringBuffer(String.format("MD5 checksum for %dx%d bitmap:  ", bitmap.getRows(), bitmap.getPitch()));
+        for (i = 0; i < 16; i++) {
+          str.append(String.format("%02X", md5[i]));
+        }
+        FTTrace.Trace(7, TAG, str.toString());
+      }
+      bitmap.Done(library);
+    }
+    return error;
+  }
+
+  /* =====================================================================
+   * FTRenderGlyph
+   * =====================================================================
+   */
+  public FTError.ErrorTag FTRenderGlyph(int render_mode) {
+    Debug(0, DebugTag.DBG_RENDER, TAG, "FTRenderGlyph");
+    FTLibraryRec library;
+
+    if (this.face == null) {
+      return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
+    }
+    library = this.face.getDriver().library;
+    return FTRenderGlyphInternal(library, render_mode);
   }
 
   /* ==================== getLibrary ================================== */

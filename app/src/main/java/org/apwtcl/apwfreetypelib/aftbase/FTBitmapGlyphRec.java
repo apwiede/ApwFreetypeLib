@@ -142,7 +142,7 @@ System.out.println("prep2: ");
     error = glyphPrepare(this, dummy_ref);
     dummy = dummy_ref.Get();
     if (error == FTError.ErrorTag.ERR_OK) {
-      error = FTGlyphRenderFuncs.FTRenderGlyphInternal(this.library, dummy, render_mode);
+      error = dummy.FTRenderGlyphInternal(this.library, render_mode);
     }
     if (destroy && origin != null) {
       FTVectorRec v = new FTVectorRec();

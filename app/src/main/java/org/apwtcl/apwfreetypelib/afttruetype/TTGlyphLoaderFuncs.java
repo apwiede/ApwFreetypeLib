@@ -152,7 +152,7 @@ public class TTGlyphLoaderFuncs extends FTDebug {
       int x;
       int y;
 
-      have_scale = ((subglyph.flags.getVal() & (Flags.LoadType.WE_HAVE_A_SCALE.getVal() |
+      have_scale = ((subglyph.getFlags().getVal() & (Flags.LoadType.WE_HAVE_A_SCALE.getVal() |
           Flags.LoadType.WE_HAVE_AN_XY_SCALE.getVal() | Flags.LoadType.WE_HAVE_A_2X2.getVal())) != 0);
       /* perform the transform required for this subglyph */
       if (have_scale) {
@@ -166,9 +166,9 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         }
       }
       /* get offset */
-      if ((subglyph.flags.getVal() & Flags.LoadType.ARGS_ARE_XY_VALUES.getVal()) == 0) {
-        int k = subglyph.arg1;
-        int l = subglyph.arg2;
+      if ((subglyph.getFlags().getVal() & Flags.LoadType.ARGS_ARE_XY_VALUES.getVal()) == 0) {
+        int k = subglyph.getArg1();
+        int l = subglyph.getArg2();
 
         /* match l-th point of the newly loaded component to the k-th point */
         /* of the previously loaded components.                             */
@@ -181,21 +181,21 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         x = gloader.getBase().getPoints()[k].x - gloader.getBase().getPoints()[l].x;
         y = gloader.getBase().getPoints()[k].y - gloader.getBase().getPoints()[l].y;
       } else {
-        x = subglyph.arg1;
-        y = subglyph.arg2;
+        x = subglyph.getArg1();
+        y = subglyph.getArg2();
         if (x == 0 && y == 0) {
           return FTError.ErrorTag.ERR_OK;
         }
         /* Use a default value dependent on                                     */
         /* TT_CONFIG_OPTION_COMPONENT_OFFSET_SCALED.  This is useful for old TT */
         /* fonts which don't set the xxx_COMPONENT_OFFSET bit.                  */
-        if (have_scale && (subglyph.flags.getVal() & Flags.LoadType.SCALED_COMPONENT_OFFSET.getVal()) != 0) {
+        if (have_scale && (subglyph.getFlags().getVal() & Flags.LoadType.SCALED_COMPONENT_OFFSET.getVal()) != 0) {
           /*************************************************************************/
           /*                                                                       */
           /* This algorithm is a guess and works much better than the above.       */
           /*                                                                       */
-          int mac_xscale = FTCalc.FTHypot(subglyph.transform.xx, subglyph.transform.xy);
-          int mac_yscale = FTCalc.FTHypot(subglyph.transform.yy, subglyph.transform.yx);
+          int mac_xscale = FTCalc.FTHypot(subglyph.getTransform().xx, subglyph.getTransform().xy);
+          int mac_yscale = FTCalc.FTHypot(subglyph.getTransform().yy, subglyph.getTransform().yx);
           x = TTUtil.FTMulFix(x, mac_xscale);
           y = TTUtil.FTMulFix(y, mac_yscale);
         }
@@ -204,7 +204,7 @@ public class TTGlyphLoaderFuncs extends FTDebug {
           int y_scale = ((TTSizeRec)loader.getSize()).getMetrics().getY_scale();
           x = TTUtil.FTMulFix(x, x_scale);
           y = TTUtil.FTMulFix(y, y_scale);
-          if ((subglyph.flags.getVal() & Flags.LoadType.ROUND_XY_TO_GRID.getVal()) != 0) {
+          if ((subglyph.getFlags().getVal() & Flags.LoadType.ROUND_XY_TO_GRID.getVal()) != 0) {
             x = FTCalc.FT_PIX_ROUND(x);
             y = FTCalc.FT_PIX_ROUND(y);
           }

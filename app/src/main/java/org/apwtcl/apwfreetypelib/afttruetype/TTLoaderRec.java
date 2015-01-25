@@ -487,7 +487,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
             pp[2] = pp3;
             pp[3] = pp4;
             num_base_points = gloader.getBase().getN_points();
-            error = load_truetype_glyph(subglyph.index, recurse_count + 1, false);
+            error = load_truetype_glyph(subglyph.getIndex(), recurse_count + 1, false);
             if (error != FTError.ErrorTag.ERR_OK) {
               if (opened_frame) {
                 ttface.forgetGlyphFrame(this);
@@ -496,7 +496,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
             }
             /* restore subglyph pointer */
             subglyph = gloader.getBase().getSubglyphs()[num_base_subgs + n];
-            if ((subglyph.flags.getVal() & Flags.SubGlyph.USE_MY_METRICS.getVal()) != 0) {
+            if ((subglyph.getFlags().getVal() & Flags.SubGlyph.USE_MY_METRICS.getVal()) != 0) {
               pp1 = pp[0];
               pp2 = pp[1];
               pp3 = pp[2];
@@ -520,7 +520,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
           /* process the glyph */
           this.ins_pos = ins_pos;
           if (((load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) != 0) &&
-                  ((subglyph.flags.getVal() & Flags.LoadType.WE_HAVE_INSTR.getVal()) != 0) && (num_points > start_point)) {
+                  ((subglyph.getFlags().getVal() & Flags.LoadType.WE_HAVE_INSTR.getVal()) != 0) && (num_points > start_point)) {
             TTGlyphLoaderFuncs.TTProcessCompositeGlyph(this, start_point, start_contour);
           } 
         }
