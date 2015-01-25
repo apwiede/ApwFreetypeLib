@@ -181,7 +181,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTRequestMetrics:");
       int scaled_w = 0;
       int scaled_h = 0;
 
-      switch (req.type) {
+      switch (req.getType()) {
       case NOMINAL:
         h = face.getUnits_per_EM();
         w = h;
@@ -203,8 +203,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "met3: "+w+"!"+h+"!");
 Debug(0, DebugTag.DBG_INIT, TAG, "met4: "+w+"!"+h+"!");
         break;
       case SCALES:
-        metrics.x_scale = req.width;
-        metrics.y_scale = req.height;
+        metrics.x_scale = req.getWidth();
+        metrics.y_scale = req.getHeight();
         if (metrics.x_scale == 0) {
           metrics.x_scale = metrics.y_scale;
         } else {
@@ -226,19 +226,19 @@ Debug(0, DebugTag.DBG_INIT, TAG, "met5: "+w+"!"+h+"!");
         if (h < 0) {
           h = -h;
         }
-        scaled_w = req.horiResolution != 0
-            ? ((req.width * req.horiResolution + 36) / 72)
-            : req.width;
-        scaled_h = req.vertResolution != 0
-            ? ((req.height * req.vertResolution + 36) / 72)
-            : req.height;
+        scaled_w = req.getHoriResolution() != 0
+            ? ((req.getWidth() * req.getHoriResolution() + 36) / 72)
+            : req.getWidth();
+        scaled_h = req.getVertResolution() != 0
+            ? ((req.getHeight() * req.getVertResolution() + 36) / 72)
+            : req.getHeight();
 Debug(0, DebugTag.DBG_INIT, TAG, "scaled_w: "+scaled_w+"!"+scaled_h+"!"+req);
         /* determine scales */
-        if (req.width != 0) {
+        if (req.getWidth() != 0) {
           metrics.x_scale = FTCalc.FTDivFix(scaled_w, w);
-          if (req.height != 0) {
+          if (req.getHeight() != 0) {
             metrics.y_scale = FTCalc.FTDivFix(scaled_h, h);
-            if (req.type == FTTags.SizeRequestType.CELL) {
+            if (req.getType() == FTTags.SizeRequestType.CELL) {
               if (metrics.y_scale > metrics.x_scale) {
                 metrics.y_scale = metrics.x_scale;
               } else {
@@ -255,7 +255,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "scaled_w: "+scaled_w+"!"+scaled_h+"!"+req);
         }
       }
       /* calculate the ppems */
-      if (req.type != FTTags.SizeRequestType.NOMINAL) {
+      if (req.getType() != FTTags.SizeRequestType.NOMINAL) {
         scaled_w = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.x_scale);
         scaled_h = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.y_scale);
       }

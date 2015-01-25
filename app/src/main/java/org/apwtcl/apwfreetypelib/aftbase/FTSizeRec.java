@@ -154,19 +154,19 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
       return FTError.ErrorTag.GLYPH_INVALID_FACE_HANDLE;
     }
     /* FT_Bitmap_Size doesn't provide enough info... */
-    if (req.type != FTTags.SizeRequestType.NOMINAL) {
+    if (req.getType() != FTTags.SizeRequestType.NOMINAL) {
       return FTError.ErrorTag.GLYPH_UNIMPLEMENTED_FEATURE;
     }
-    w = req.horiResolution != 0
-        ? ((req.width * req.horiResolution + 36) / 72)
-        : req.width;
-    h = req.vertResolution != 0
-        ? ((req.height * req.vertResolution + 36) / 72)
-        : req.height;
-    if (req.width != 0 && req.height == 0) {
+    w = req.getHoriResolution() != 0
+        ? ((req.getWidth() * req.getHoriResolution() + 36) / 72)
+        : req.getWidth();
+    h = req.getVertResolution() != 0
+        ? ((req.getHeight() * req.getVertResolution() + 36) / 72)
+        : req.getHeight();
+    if (req.getWidth() != 0 && req.getHeight() == 0) {
       h = w;
     } else {
-      if (req.width == 0 && req.height != 0) {
+      if (req.getWidth() == 0 && req.getHeight() != 0) {
         w = h;
       }
     }
@@ -283,8 +283,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     if (face == null) {
       return FTError.ErrorTag.GLYPH_INVALID_FACE_HANDLE;
     }
-    if (req == null || req.width < 0 || req.height < 0 ||
-        req.type.getVal() >= FTTags.SizeRequestType.MAX.getVal()) {
+    if (req == null || req.getWidth() < 0 || req.getHeight() < 0 ||
+        req.getType().getVal() >= FTTags.SizeRequestType.MAX.getVal()) {
       return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
     }
     clazz = face.getDriver().getDriver_clazz();
@@ -363,11 +363,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+metrics.getAscender()+" "+me
     if (horz_resolution == 0) {
       horz_resolution = vert_resolution = 72;
     }
-    req.type = FTTags.SizeRequestType.NOMINAL;
-    req.width = char_width;
-    req.height = char_height;
-    req.horiResolution = horz_resolution;
-    req.vertResolution = vert_resolution;
+    req.setType(FTTags.SizeRequestType.NOMINAL);
+    req.setWidth(char_width);
+    req.setHeight(char_height);
+    req.setHoriResolution(horz_resolution);
+    req.setVertResolution(vert_resolution);
     req_ref.Set(req);
     return RequestSize(face, req_ref);
   }
