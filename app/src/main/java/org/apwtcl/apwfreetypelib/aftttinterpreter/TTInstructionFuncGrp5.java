@@ -61,7 +61,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void LT() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] < cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] < cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -71,7 +71,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void LTEQ() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] <= cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] <= cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -81,7 +81,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
   * =====================================================================
       */
   public void GT() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] > cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] > cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -91,8 +91,8 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void GTEQ() {
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_GTEQ: %d >= %d", cur.stack[cur.stack_idx + 0], cur.stack[cur.stack_idx + 1]));
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] >= cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("GTEQ: %d >= %d", cur.stack[cur.stack_idx + 0], cur.stack[cur.stack_idx + 1]));
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] >= cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -102,7 +102,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void EQ() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] == cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] == cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -112,7 +112,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void NEQ() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] != cur.stack[cur.stack_idx + 1]) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] != cur.stack[cur.stack_idx + 1]) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -122,7 +122,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void ODD() {
-    cur.stack[cur.stack_idx + 0] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.stack_idx + 0], 0) & 127) == 64 ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.stack_idx], 0) & 127) == 64 ? 1 : 0;
   }
 
   /* =====================================================================
@@ -132,7 +132,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void EVEN() {
-    cur.stack[cur.stack_idx + 0] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.stack_idx + 0], 0) & 127) == 0 ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.render_funcs.curr_round_func.round(cur.stack[cur.stack_idx], 0) & 127) == 0 ? 1 : 0;
   }
 
   /* =====================================================================
@@ -145,8 +145,8 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     int nIfs;
     boolean Out;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("insIF: %d\n", cur.stack[cur.stack_idx + 0]));
-    if (cur.stack[cur.stack_idx + 0] != 0) {
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("IF: %d\n", cur.stack[cur.stack_idx]));
+    if (cur.stack[cur.stack_idx] != 0) {
       return;
     }
     nIfs = 1;
@@ -177,7 +177,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void AND() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] != 0 && cur.stack[cur.stack_idx + 1] != 0) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] != 0 && cur.stack[cur.stack_idx + 1] != 0) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -187,7 +187,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void OR() {
-    cur.stack[cur.stack_idx + 0] = (cur.stack[cur.stack_idx + 0] != 0 || cur.stack[cur.stack_idx + 1] != 0) ? 1 : 0;
+    cur.stack[cur.stack_idx] = (cur.stack[cur.stack_idx] != 0 || cur.stack[cur.stack_idx + 1] != 0) ? 1 : 0;
   }
 
   /* =====================================================================
@@ -197,7 +197,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void NOT() {
-    cur.stack[cur.stack_idx + 0] = cur.stack[cur.stack_idx + 0] == 0  ? 1 : 0;
+    cur.stack[cur.stack_idx] = cur.stack[cur.stack_idx] == 0  ? 1 : 0;
   }
 
   /* =====================================================================
@@ -213,8 +213,8 @@ public class TTInstructionFuncGrp5 extends FTDebug {
     int C;
     int B;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, "insDELTAP");
-    nump = cur.stack[cur.stack_idx + 0];   /* some points theoretically may occur more
+    Debug(0, DebugTag.DBG_INTERP, TAG, "DELTAP");
+    nump = cur.stack[cur.stack_idx];   /* some points theoretically may occur more
                                      than once, thus UShort isn't enough */
     for (k = 1; k <= nump; k++) {
       if (cur.stack_idx < 2) {
@@ -273,7 +273,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void SDB() {
-    cur.graphics_state.delta_base = (short)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.delta_base = (short)cur.stack[cur.stack_idx];
   }
 
   /* =====================================================================
@@ -283,7 +283,7 @@ public class TTInstructionFuncGrp5 extends FTDebug {
    * =====================================================================
    */
   public void SDS() {
-    cur.graphics_state.delta_shift = (short)cur.stack[cur.stack_idx + 0];
+    cur.graphics_state.delta_shift = (short)cur.stack[cur.stack_idx];
   }
 
 }

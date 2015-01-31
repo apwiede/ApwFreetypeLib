@@ -306,7 +306,8 @@ public class TTOpCode extends FTDebug {
     MIRP_28(252, TTUtil.Pack(2, 0), 1, "MIRP[28]", "Move Indirect Relative Point 28"),
     MIRP_29(253, TTUtil.Pack(2, 0), 1, "MIRP[29]", "Move Indirect Relative Point 29"),
     MIRP_30(254, TTUtil.Pack(2, 0), 1, "MIRP[30]", "Move Indirect Relative Point 30"),
-    MIRP_31(255, TTUtil.Pack(2, 0), 1, "MIRP[31]", "Move Indirect Relative Point 31");
+    MIRP_31(255, TTUtil.Pack(2, 0), 1, "MIRP[31]", "Move Indirect Relative Point 31"),
+    UNKNOWN(256, TTUtil.Pack(2, 0), 1, "UNKNOWN", "UNKNOWN instruction");
 
     private int val;
     private byte push_count;
@@ -318,7 +319,11 @@ public class TTOpCode extends FTDebug {
       if (tagToOpCodeMapping == null) {
         initMapping();
       }
-      return tagToOpCodeMapping.get(i);
+      if (i <0 || i > 255) {
+        return UNKNOWN;
+      } else {
+        return tagToOpCodeMapping.get(i);
+      }
     }
     private static void initMapping() {
       tagToOpCodeMapping = new SparseArray<OpCode>();
@@ -349,7 +354,11 @@ public class TTOpCode extends FTDebug {
       return push_count;
     }
     public String toString() {
-      return String.format("opcode: 0x%02x %d ", val, val)+str+": \""+description+"\"\n..."+String.format(" length: %d", opcode_length)+String.format(" push_count: 0x%02x", push_count);
+      if (val >= 0 && val < 256) {
+        return String.format("opcode: 0x%02x %d ", val, val) + str + ": \"" + description + "\"\n..." + String.format(" length: %d", opcode_length) + String.format(" push_count: 0x%02x", push_count);
+      } else {
+        return String.format("opcode: 0x%02x %d ", val, val) + "no opcode";
+      }
     }
   }
 

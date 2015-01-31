@@ -327,15 +327,15 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
    * =====================================================================
    */
   public void CALL() {
-    int F;
+    int function_opc;
     TTCallRec call_rec;
     TTDefRec def;
     int defIdx = 0;
 
       /* first of all, check the index */
-    F = (int)cur.stack[cur.stack_idx];
-    Debug(0, DebugTag.DBG_INTERP, TAG, "insCall: "+F+"!"+cur.maxFunc+"!stack_idx: "+cur.stack_idx);
-    if (TTUtil.BOUNDSL(F, cur.maxFunc + 1)) {
+    function_opc = cur.stack[cur.stack_idx];
+    Debug(0, DebugTag.DBG_INTERP, TAG, "Call: function_opc: "+function_opc+" maxFunc: "+cur.maxFunc+" stack_idx: "+cur.stack_idx);
+    if (TTUtil.BOUNDSL(function_opc, cur.maxFunc + 1)) {
       cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       return;
     }
@@ -348,14 +348,14 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
       /*                                                              */
       /* If this isn't true, we need to look up the function table.   */
 
-    def = cur.FDefs[F];
-    if (cur.maxFunc + 1 != cur.numFDefs || def.getOpc() != F) {
+    def = cur.FDefs[function_opc];
+    if (cur.maxFunc + 1 != cur.numFDefs || def.getOpc() != function_opc) {
         /* look up the FDefs table */
       int limit;
 
       def = cur.FDefs[defIdx];
       limit = defIdx + cur.numFDefs;
-      while (defIdx < limit && def.getOpc() != F) {
+      while (defIdx < limit && def.getOpc() != function_opc) {
         defIdx++;
       }
       if (defIdx == limit) {
@@ -380,7 +380,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("DO_DUP: %d %d", cur.stack[cur.
     call_rec.setCur_restart(def.getStart());
     call_rec.setCur_end(def.getEnd());
     cur.callTop++;
-Debug(0, DebugTag.DBG_INTERP, TAG, "GotoCodeRange: "+def.getRange()+"!"+def.getStart()+"!");
+Debug(0, DebugTag.DBG_INTERP, TAG, "GotoCodeRange: "+def.getRange()+" start: "+def.getStart()+"!");
     cur.TTGotoCodeRange(TTInterpTags.CodeRange.getTableTag(def.getRange()), def.getStart());
     cur.step_ins = false;
     return;
@@ -431,9 +431,6 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec_idx: "+rec_idx+"!");
     rec.setActive(true);
     rec.setInline_delta(false);
     rec.setSph_fdef_flags(0x0000);
-    for (int j = 0; j < cur.stack_idx; j++) {
-      Debug(0, DebugTag.DBG_INTERP, TAG, "stack: "+cur.stack[j]+"!");
-    }
     if (n > cur.maxFunc) {
       cur.maxFunc = n;
     }
@@ -448,9 +445,6 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "rec_idx: "+rec_idx+"!");
         case ENDF:   /* ENDF */
           rec.setEnd(cur.IP);
 Debug(0, DebugTag.DBG_INTERP, TAG, "rec: " + rec.toDebugString());
-for(int i = rec.getStart(); i < rec.getEnd(); i++) {
-  Debug(0, DebugTag.DBG_INTERP, TAG, "CODE: "+cur.code[i]);
-}
           return;
       }
     }

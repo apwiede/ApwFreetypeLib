@@ -167,7 +167,9 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "addRenderer: " + module_clazz.
       }
       cur = cur.next;
     }
-    list_node_ref.Set(node);
+    if (list_node_ref != null) {
+      list_node_ref.Set(node);
+    }
     return result;
   }
 

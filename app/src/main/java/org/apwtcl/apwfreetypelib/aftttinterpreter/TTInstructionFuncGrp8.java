@@ -148,20 +148,20 @@ public class TTInstructionFuncGrp8 extends FTDebug {
    * =====================================================================
    */
   public void SCANCTRL() {
-    int A;
+    int threshold;
 
       /* Get Threshold */
-    A = (cur.stack[cur.stack_idx + 0] & 0xFF);
-    if (A == 0xFF) {
+    threshold = (cur.stack[cur.stack_idx + 0] & 0xFF);
+    if (threshold == 0xFF) {
       cur.graphics_state.scan_control = true;
       return;
     } else {
-      if ( A == 0 ) {
+      if (threshold == 0) {
         cur.graphics_state.scan_control = false;
         return;
       }
     }
-    if ((cur.stack[cur.stack_idx + 0] & 0x100) != 0 && cur.tt_metrics.getPpem() <= A) {
+    if ((cur.stack[cur.stack_idx + 0] & 0x100) != 0 && cur.tt_metrics.getPpem() <= threshold) {
       cur.graphics_state.scan_control = true;
     }
     if ((cur.stack[cur.stack_idx + 0] & 0x200) != 0 && cur.tt_metrics.isRotated()) {
@@ -170,7 +170,7 @@ public class TTInstructionFuncGrp8 extends FTDebug {
     if ((cur.stack[cur.stack_idx + 0] & 0x400) != 0 && cur.tt_metrics.isStretched()) {
       cur.graphics_state.scan_control = true;
     }
-    if ((cur.stack[cur.stack_idx + 0] & 0x800) != 0 && cur.tt_metrics.getPpem() > A) {
+    if ((cur.stack[cur.stack_idx + 0] & 0x800) != 0 && cur.tt_metrics.getPpem() > threshold) {
       cur.graphics_state.scan_control = false;
     }
     if ((cur.stack[cur.stack_idx + 0] & 0x1000) != 0 && cur.tt_metrics.isRotated()) {
@@ -395,8 +395,8 @@ public class TTInstructionFuncGrp8 extends FTDebug {
    * =====================================================================
    */
   public void SCANTYPE() {
-    if (cur.stack[cur.stack_idx + 0] >= 0) {
-      cur.graphics_state.scan_type = (int)cur.stack[cur.stack_idx + 0];
+    if (cur.stack[cur.stack_idx] >= 0) {
+      cur.graphics_state.scan_type = cur.stack[cur.stack_idx];
     }
   }
 

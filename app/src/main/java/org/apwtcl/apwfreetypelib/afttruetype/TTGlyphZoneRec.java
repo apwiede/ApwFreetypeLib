@@ -332,6 +332,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_prepare_zone1: extra_points length: "
     first_point = start_point;
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "!" + load.getExtra_points_idx() + "!" + load.getExtra_points2() + "!" + load.getExtra_points2_idx() + "!");
     showLoaderZone("tt_prepare_zone", exec);
+    load.showGloaderGlyph("tt_prepare_zone");
   }
 
   /* =====================================================================

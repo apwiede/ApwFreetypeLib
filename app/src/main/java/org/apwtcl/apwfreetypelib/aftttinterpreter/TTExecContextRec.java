@@ -160,6 +160,7 @@ public class TTExecContextRec extends FTDebug {
     if (IP < codeSize) {
       opcode = TTOpCode.OpCode.getTableTag(code[IP].getVal() & 0xFF);
       length = opcode.getOpCodeLength();
+Debug(0, DebugTag.DBG_INTERP, TAG, "SkipCode: " + opcode);
       if (length < 0) {
         if (IP + 1 >= codeSize) {
           error = FTError.ErrorTag.INTERP_CODE_OVERFLOW;
@@ -340,7 +341,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.id: "+face+"!"+face.getMax_profile(
 
   public FTError.ErrorTag TTRunContext(boolean debug) {
     FTError.ErrorTag error;
-    Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, String.format("TT_Run_Context %d", TTInterpTags.CodeRange.GLYPH)+" zp0.cur: "+zp0.getCur()+"\n zp1.cur: "+zp1.getCur());
+Debug(0, FTDebug.DebugTag.DBG_INTERP, TAG, "TT_Run_Context" + TTInterpTags.CodeRange.GLYPH+" zp0.cur: "+zp0.getCur()+"\n zp1.cur: "+zp1.getCur());
 
     if ((error = TTGotoCodeRange(TTInterpTags.CodeRange.GLYPH, 0)) != FTError.ErrorTag.ERR_OK) {
       return error;
@@ -348,7 +349,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.id: "+face+"!"+face.getMax_profile(
     zp0 = pts;
     zp1 = pts;
     zp2 = pts;
-    Debug(0, DebugTag.DBG_INTERP, TAG, "TT_Run_Context2 zp0.cur: "+zp0.getCur()+" \nzp1.cur: "+(Object)zp1.getCur());
+Debug(0, DebugTag.DBG_INTERP, TAG, "TT_Run_Context2 zp0.cur: "+zp0.getCur()+" \nzp1.cur: "+zp1.getCur());
     for( int i = 0; i < 6; i++) {
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp1.org: %d x: %d, y: %d\n", i, cur.zp1.org[i].x, cur.zp1.org[i].y));
 //  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("zp0.org: %d x: %d, y: %d\n", i, cur.zp0.org[i].x, cur.zp0.org[i].y));
@@ -368,6 +369,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.id: "+face+"!"+face.getMax_profile(
     /* before a new execution.                                  */
     top = 0;
     callTop = 0;
+DebugTag.DBG_INTERP.setLevel(0);
     return face.Interpreter(this);
   }
 
@@ -460,7 +462,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTClearCodeRange");
    * =====================================================================
    */
   public FTError.ErrorTag TTGotoCodeRange(TTInterpTags.CodeRange range, int IP) {
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTGotoCodeRange");
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTGotoCodeRange: "+range);
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     if (range.getVal() < TTInterpTags.CodeRange.FONT.getVal() || range.getVal() > TTInterpTags.CodeRange.GLYPH.getVal()) {
@@ -482,7 +484,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTClearCodeRange");
     code = codeRangeTable[range.getVal() - 1].base;
     cvt_code = codeRangeTable[range.getVal() - 1].short_base;
     codeSize = codeRangeTable[range.getVal() - 1].size;
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
+Debug(2, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
     this.IP = IP;
     curRange = range;
     return error;

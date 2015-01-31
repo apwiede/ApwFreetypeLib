@@ -85,21 +85,21 @@ public class TTGlyphLoaderFuncs extends FTDebug {
 
       n_points = gloader.getCurrent().getN_points();
       /* set phantom points */
-      gloader.getCurrent().getPoints()[n_points] = loader.getPp1();
-      gloader.getCurrent().getPoints()[n_points + 1] = loader.getPp2();
-      gloader.getCurrent().getPoints()[n_points + 2] = loader.getPp3();
-      gloader.getCurrent().getPoints()[n_points + 3] = loader.getPp4();
-      gloader.getCurrent().getTags()[n_points] = Flags.Curve.CONIC;
-      gloader.getCurrent().getTags()[n_points + 1] = Flags.Curve.CONIC;
-      gloader.getCurrent().getTags()[n_points + 2] = Flags.Curve.CONIC;
-      gloader.getCurrent().getTags()[n_points + 3] = Flags.Curve.CONIC;
+      gloader.getCurrent().setPoint(n_points, loader.getPp1());
+      gloader.getCurrent().setPoint(n_points + 1, loader.getPp2());
+      gloader.getCurrent().setPoint(n_points + 2, loader.getPp3());
+      gloader.getCurrent().setPoint(n_points + 3, loader.getPp4());
+      gloader.getCurrent().setTag(n_points, Flags.Curve.CONIC);
+      gloader.getCurrent().setTag(n_points + 1, Flags.Curve.CONIC);
+      gloader.getCurrent().setTag(n_points + 2, Flags.Curve.CONIC);
+      gloader.getCurrent().setTag(n_points + 3, Flags.Curve.CONIC);
       n_points += 4;
       if ((loader.getLoad_flags().getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
         loader.getZone().tt_prepare_zone(gloader.getCurrent(), 0, 0);
         for (int i = 0; i < (loader.getZone().getN_points() + 4); i++) {
           loader.getZone().setOrusPoint(i, new FTVectorRec());
-          loader.getZone().getOrusPoint(i).setX(loader.getZone().getCurPoint_x(i));
-          loader.getZone().getOrusPoint(i).setY(loader.getZone().getCurPoint_y(i));
+          loader.getZone().setOrusPoint_x(i, loader.getZone().getCurPoint_x(i));
+          loader.getZone().setOrusPoint_y(i, loader.getZone().getCurPoint_y(i));
         }
       }
       {
@@ -111,15 +111,15 @@ public class TTGlyphLoaderFuncs extends FTDebug {
         {
           /* scale the glyph */
           if ((loader.getLoad_flags().getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
-            x_scale = ((TTSizeRec)loader.getSize()).getMetrics().getX_scale();
-            y_scale = ((TTSizeRec)loader.getSize()).getMetrics().getY_scale();
+            x_scale = (loader.getSize()).getMetrics().getX_scale();
+            y_scale = (loader.getSize()).getMetrics().getY_scale();
             do_scale = true;
           }
         }
         if (do_scale) {
           for (vecIdx = 0; vecIdx < limit; vecIdx++) {
-            gloader.getCurrent().getPoints()[vecIdx].setX(TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].getX(), x_scale));
-            gloader.getCurrent().getPoints()[vecIdx].setY(TTUtil.FTMulFix(gloader.getCurrent().getPoints()[vecIdx].getY(), y_scale));
+            gloader.getCurrent().setPoint_x(vecIdx, TTUtil.FTMulFix(gloader.getCurrent().getPoint_x(vecIdx), x_scale));
+            gloader.getCurrent().setPoint_y(vecIdx, TTUtil.FTMulFix(gloader.getCurrent().getPoint_y(vecIdx), y_scale));
           }
           loader.setPp1(gloader.getCurrent().getPoints()[n_points - 4]);
           loader.setPp2(gloader.getCurrent().getPoints()[n_points - 3]);

@@ -134,7 +134,7 @@ public class TTInstructionFuncGrp4 extends FTDebug {
     int idx;
 
     length = cur.code[cur.IP + 1].getVal() & 0xFF;
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("NPUSHB: L: %d, cur.IP: %d", length, cur.IP));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("NPUSHB: length: %d, cur.IP: %d", length, cur.IP));
     if (TTUtil.BOUNDS(length, cur.stackSize + 1 - cur.top)) {
       cur.error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
       return;

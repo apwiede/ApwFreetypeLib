@@ -584,8 +584,28 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 v_start.x: %d, v_start.y: 
     return points[points_idx+idx];
   }
 
-  /* ==================== setPoints ================================== */
-  public void setPoints(int idx, FTVectorRec point) {
+  /* ==================== getPoint_x ================================== */
+  public int getPoint_x(int idx) {
+    return points[points_idx+idx].getX();
+  }
+
+  /* ==================== getPoint_y ================================== */
+  public int getPoint_y(int idx) {
+    return points[points_idx+idx].getY();
+  }
+
+  /* ==================== setPoint_x ================================== */
+  public void setPoint_x(int idx, int val) {
+    points[points_idx+idx].setX(val);
+  }
+
+  /* ==================== setPoint_y ================================== */
+  public void setPoint_y(int idx, int val) {
+    points[points_idx+idx].setY(val);
+  }
+
+  /* ==================== setPoint ================================== */
+  public void setPoint(int idx, FTVectorRec point) {
     points[points_idx+idx] = point;
   }
 

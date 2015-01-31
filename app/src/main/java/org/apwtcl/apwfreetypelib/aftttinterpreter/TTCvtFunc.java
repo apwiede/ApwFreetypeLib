@@ -73,7 +73,7 @@ public class TTCvtFunc extends TTCvtFuncBase {
   /* ==================== writeCvt ===================================== */
   @Override
   public void writeCvt(int idx, int value) {
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("WriteCVT: idx: %d value: %d", idx, value));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("WriteCVT: idx: %d value: %d", idx, value));
 
     cur.cvt[idx] = value;
   }

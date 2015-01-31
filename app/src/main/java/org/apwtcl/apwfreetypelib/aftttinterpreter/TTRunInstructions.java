@@ -164,7 +164,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "\n..."+opcode.toString());
       }
         /* First, let's check for empty stack and overflow */
       stack_idx = top - (opcode.getPushCount() >> 4);
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("stack_idx: %d top: %d stack[stack_idx]: %s", stack_idx, top, TTOpCode.OpCode.getTableTag(stack[stack_idx]).toString()));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("stack_idx: %d top: %d stack[stack_idx]: %d 0x%08x", stack_idx, top, stack[stack_idx], stack[stack_idx]));
         /* `args' is the top of the stack once arguments have been popped. */
         /* One can also interpret it as the index of the last argument.    */
       if (stack_idx < 0) {
@@ -182,7 +182,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("stack_idx: %d top: %d stack[st
         /* `new_top' is the new top of the stack, after the instruction's */
         /* execution.  `top' will be set to `new_top' after the `switch'  */
         /* statement.                                                     */
-Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: new_top: "+new_top+" stackSize: "+stackSize+"!");
+//Debug(0, DebugTag.DBG_INTERP, TAG, "Stack: new_top: "+new_top+" stackSize: "+stackSize+"!");
       if (new_top > stackSize) {
         error = FTError.ErrorTag.INTERP_STACK_OVERFLOW;
         return LError();

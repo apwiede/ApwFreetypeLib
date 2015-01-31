@@ -32,7 +32,7 @@ public class FTDebug extends Object {
     DBG_CACHE(2, 0, true, "DBG_CACHE"),
     DBG_CMAP(3, 0, true, "DBG_CMAP"),
     DBG_INIT(4, 2, true, "DBG_INIT"),
-    DBG_INTERP(5, 0, true, "DBG_INTERP"),
+    DBG_INTERP(5, 2, true, "DBG_INTERP"),
     DBG_LIBRARY(6, 0, true, "DBG_LIBRARY"),
     DBG_LOAD_FACE(7, 0, true, "DBG_LOAD_FACE"),
     DBG_LOAD_GLYPH(8, 0, true, "DBG_LOAD_GLYPH"),
@@ -63,6 +63,7 @@ public class FTDebug extends Object {
     }
     public boolean isOn() { return dbgIsOn; }
     public int level() { return level; }
+    public void setLevel(int level) { this.level = level; }
     public int getVal() {
         return val;
       }

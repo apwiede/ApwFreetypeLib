@@ -160,10 +160,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "fill TTSizeRec\n");
         return FTError.ErrorTag.GLYPH_COULD_NOT_FIND_CONTEXT;
       }
       grayscale = (((load_flags.getVal() >> 16) & 15) != FTTags.RenderMode.MONO.getVal());
-      FTReference<TTExecContextRec> exec_ref = new FTReference<TTExecContextRec>();
-      exec_ref.Set(exec);
       exec.TTLoadContext(ttface, size);
-      exec = exec_ref.Get();
       {
         /* a change from mono to grayscale rendering (and vice versa) */
         /* requires a re-execution of the CVT program                 */
@@ -653,15 +650,17 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP: %d %d %d\n", i, gloader.getCurrent().getPoints()[i].getX(),
           gloader.getCurrent().getPoints()[i].getY()));
     }
+zone.showLoaderZone("TTHintGlyph1", exec);
+gloader.getCurrent().showGloaderGlyph("TTHintGlyph1");
     if (glyph.getControl_len() > 0xFFFFL) {
       FTTrace.Trace(7, TAG, "TT_Hint_Glyph: too long instructions ");
       FTTrace.Trace(7, TAG, String.format("(0x%lx byte) is truncated",
           glyph.getControl_len()));
     }
-    n_ins = (glyph.getControl_len());
+    n_ins = glyph.getControl_len();
     origin = zone.getCurPoint(zone.getN_points() - 4).getX();
     origin = FTCalc.FT_PIX_ROUND(origin) - origin;
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
     if (origin != 0) {
       FTGlyphLoaderRec.translate_array(zone.getN_points(), zone.getCur(), 0, origin, 0);
     }
@@ -696,8 +695,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       // FIXME !! eventually problem with Arrays.copyOf!!
       zone.xsetOrus(java.util.Arrays.copyOf(zone.getCur(), zone.getN_points()));
     } else {
-      exec.metrics.setX_scale(((TTSizeRec)size).getMetrics().getX_scale());
-      exec.metrics.setY_scale(((TTSizeRec)size).getMetrics().getY_scale());
+      exec.metrics.setX_scale((size).getMetrics().getX_scale());
+      exec.metrics.setY_scale((size).getMetrics().getY_scale());
     }
       /* round pp2 and pp4 */
     zone.setCurPoint_x(zone.getN_points() - 3, FTCalc.FT_PIX_ROUND(zone.getCurPoint_x(zone.getN_points() - 3)));
@@ -714,8 +713,14 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTHintGlyph: "+glyph.getControl_len());
       exec.is_composite = is_composite;
       exec.pts.copy(zone);
       debug = ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0 && ((TTSizeRec)size).isDebug());
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "call TTRunContext");
-//_showLoaderZone("before call TTRunContext");
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "call TTRunContext");
+if (gloader.getBase() != null) {
+  gloader.getBase().showGloaderGlyph("base before call TTRunContext");
+}
+if (gloader.getCurrent() != null) {
+  gloader.getCurrent().showGloaderGlyph("current before call TTRunContext");
+}
+zone.showLoaderZone("before call TTRunContext", exec);
       error = exec.TTRunContext(debug);
       if (error != FTError.ErrorTag.ERR_OK && exec.pedantic_hinting) {
         return error;
