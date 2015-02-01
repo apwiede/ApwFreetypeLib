@@ -15,6 +15,9 @@ package org.apwtcl.apwfreetypelib.aftbase;
 
 import android.util.SparseArray;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Flags {
 
   public enum Module {
@@ -378,6 +381,33 @@ public class Flags {
       this.val = val;
       this.str = str;
     }
+    public static Set<Load> makeTableTagSet(int value) {
+      Set<Load> flags = new HashSet<>();
+      for (Load t : values()) {
+        if ((value & t.getVal()) != 0) {
+          flags.add(t);
+        }
+      }
+      return flags;
+    }
+    public static String CurveSetToString(Set<Curve> flags) {
+      StringBuffer str = new StringBuffer();
+      for (Load t : values()) {
+        if (flags.contains(t)) {
+          str.append(" "+t.toString());
+        }
+      }
+      return str.toString();
+    }
+    public static int CurveSetToInt(Set<Curve> flags) {
+      int val = 0;
+      for (Load t : values()) {
+        if (flags.contains(t)) {
+          val += t.getVal();
+        }
+      }
+      return val;
+    }
     public int getVal() {
       return val;
     }
@@ -540,11 +570,21 @@ public class Flags {
     private int val;
     private String str;
     private static SparseArray<Curve> tagToCurveMapping;
+
     public static Curve getTableTag(int i) {
       if (tagToCurveMapping == null) {
         initMapping();
       }
       return tagToCurveMapping.get(i);
+    }
+    public static Set<Curve> makeTableTagSet(int value) {
+      Set<Curve> flags = new HashSet<>();
+      for (Curve t : values()) {
+        if ((value & t.getVal()) != 0) {
+          flags.add(t);
+        }
+      }
+      return flags;
     }
     private static void initMapping() {
       tagToCurveMapping = new SparseArray<Curve>();
@@ -555,6 +595,24 @@ public class Flags {
     private Curve(int val, String str) {
       this.val = val;
       this.str = str;
+    }
+    public static String CurveSetToString(Set<Curve> flags) {
+      StringBuffer str = new StringBuffer();
+      for (Curve t : values()) {
+        if (flags.contains(t)) {
+          str.append(" "+t.toString());
+        }
+      }
+      return str.toString();
+    }
+    public static int CurveSetToInt(Set<Curve> flags) {
+      int val = 0;
+      for (Curve t : values()) {
+        if (flags.contains(t)) {
+          val += t.getVal();
+        }
+      }
+      return val;
     }
     public int getVal() {
       return val;

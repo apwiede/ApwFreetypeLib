@@ -78,12 +78,12 @@ public class TTMoveFunc extends TTMoveFuncBase {
     v = cur.graphics_state.freeVector.getX();
     if (v != 0) {
       zone.setCurPoint_x(point,  zone.getCurPoint_x(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
-      zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
+      zone.addTag(point, Flags.Curve.TOUCH_X);
     }
     v = cur.graphics_state.freeVector.getY();
     if (v != 0) {
       zone.setCurPoint_y(point, zone.getCurPoint_y(point) + FTCalc.FT_MulDiv(distance, v, cur.F_dot_P));
-      zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());
+      zone.addTag(point, Flags.Curve.TOUCH_Y);
     }
   }
 

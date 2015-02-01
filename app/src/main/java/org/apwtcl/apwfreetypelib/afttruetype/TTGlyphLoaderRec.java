@@ -61,7 +61,7 @@ public class TTGlyphLoaderRec extends FTGlyphLoaderRec {
    */
   public FTError.ErrorTag tt_load_simple_glyph(TTLoaderRec loader) {
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_load_simple_glyph");
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    FTError.ErrorTag error;
     int n_contours = loader.getN_contours();
     TTFaceRec ttface = (TTFaceRec)loader.getFace();
     TTGlyphSimpleRec ttglyph;
@@ -119,7 +119,7 @@ Debug(9, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("i: %d contour: %d", i, cur
       error = FTError.ErrorTag.GLYPH_TOO_MANY_HINTS;
       return error;
     }
-    if ((loader.getLoad_flags().getVal() & Flags.Load.NO_AUTOHINT.getVal()) == 0) {
+    if (!loader.getLoad_flags().contains(Flags.Load.NO_AUTOHINT)) {
       int i;
 
       loader.getGlyph().setControl_len(n_ins);
@@ -139,11 +139,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("ins: %d 0x%02x: ", i, load
     flag_idx = 0;
     flag_limit = n_points;
     while (flag_idx < flag_limit) {
-      current.getTags()[flag_idx++] = Flags.Curve.getTableTag(ttglyph.getTags()[flag_idx]);
+      current.setTag(flag_idx, Flags.Curve.makeTableTagSet(ttglyph.getTag(flag_idx)));
       flag_idx++;
     }
 for(int t = 0; t < flag_idx; t++) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("Tag: t: %d: 0x%02x: ", t, current.getTags()[t].getVal())+current.getTags()[t]);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("Tag: t: %d: 0x%02x", t, Flags.Curve.CurveSetToInt(current.getTag(t)))+Flags.Curve.CurveSetToString(current.getTag(t)));
 }
 
       /* loading the X and y coordinates */

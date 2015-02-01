@@ -61,7 +61,7 @@ public class TTMoveYFunc extends TTMoveFuncBase {
 Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveY");
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_Y: %d %d %d\n", point, zone.getCurPoint_y(point), distance));
     zone.setCurPoint_y(point, zone.getCurPoint_y(point) + distance);
-    zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());
+    zone.addTag(point, Flags.Curve.TOUCH_Y);
   }
 
   /* =====================================================================

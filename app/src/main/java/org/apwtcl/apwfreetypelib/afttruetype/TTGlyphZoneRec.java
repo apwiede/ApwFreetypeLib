@@ -43,6 +43,8 @@ package org.apwtcl.apwfreetypelib.afttruetype;
   /* ===================================================================== */
 
 
+import android.util.Log;
+
 import org.apwtcl.apwfreetypelib.aftbase.FTGlyphLoadRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTExecContextRec;
@@ -50,6 +52,9 @@ import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class TTGlyphZoneRec extends FTDebug {
   private static int oid = 0;
@@ -67,7 +72,7 @@ public class TTGlyphZoneRec extends FTDebug {
   private int cur_idx = 0;
   private FTVectorRec[] orus = null; /* original (unscaled) point coordinates */
   private int orus_idx = 0;
-  private Flags.Curve[] tags = null; /* current touch flags         */
+  private Set<Flags.Curve>[] tags = null; /* current touch flags         */
   private int tags_idx = 0;
   private int[] contours = null;     /* contour end points          */
   private int contours_idx = 0;
@@ -93,9 +98,9 @@ public class TTGlyphZoneRec extends FTDebug {
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    str.append("org: "+(Object)org+"\n");
-    str.append("cur: "+(Object)cur+"\n");
-    str.append("orus: "+(Object)orus);
+    str.append("org: "+org+"\n");
+    str.append("cur: "+cur+"\n");
+    str.append("orus: "+orus);
     return str.toString();
   }
  
@@ -249,7 +254,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
 
     if (tags != null) {
       for (i = 0; i < tags.length; i++) {
-        tags[i] = Flags.Curve.CONIC;
+        tags[i] = new HashSet<>();
       }
     }
     tags_idx = 0;
@@ -301,7 +306,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
     for (i = 0; i < maxPoints; i++) {
       zone.orus[i] = new FTVectorRec();
     }
-    zone.tags = new Flags.Curve[maxPoints];
+    zone.tags = new Set[maxPoints];
+    for (i = 0; i < maxPoints; i++) {
+      zone.tags[i] = new HashSet<>();
+    }
     zone.contours = new int[maxContours];
     zone.max_points = maxPoints;
     zone.max_contours = maxContours;
@@ -574,23 +582,34 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
   }
 
   /* ==================== getTags ================================== */
-  public Flags.Curve[] getTags() {
+  public Set<Flags.Curve>[] getTags() {
     return tags;
   }
 
   /* ==================== getTag ================================== */
-  public Flags.Curve getTag(int tag_idx) {
+  public Set<Flags.Curve> getTag(int tag_idx) {
     return tags[tags_idx + tag_idx];
   }
 
   /* ==================== setTags ================================== */
-  public void setTags(Flags.Curve[] tags) {
+  public void setTags(Set<Flags.Curve>[] tags) {
     this.tags = tags;
   }
 
-  /* ==================== setTags ================================== */
+  /* ==================== setTag ================================== */
   public void setTag(int tag_idx, Flags.Curve tag) {
-    this.tags[tags_idx + tag_idx] = tag;
+    this.tags[tags_idx + tag_idx].clear();
+    this.tags[tags_idx + tag_idx].add(tag);
+  }
+
+  /* ==================== addTag ================================== */
+  public void addTag(int tag_idx, Flags.Curve tag) {
+    this.tags[tags_idx + tag_idx].add(tag);
+  }
+
+  /* ==================== addTag ================================== */
+  public void removeTag(int tag_idx, Flags.Curve tag) {
+    this.tags[tags_idx + tag_idx].remove(tag);
   }
 
   /* ==================== getTags_idx ================================== */

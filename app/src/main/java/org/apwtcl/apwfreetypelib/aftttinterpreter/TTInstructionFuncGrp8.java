@@ -65,7 +65,7 @@ public class TTInstructionFuncGrp8 extends FTDebug {
    * =====================================================================
    */
   public void FLIPPT() {
-    short point;
+    int point;
 
     if (cur.top < cur.graphics_state.loop) {
       if (cur.pedantic_hinting) {
@@ -84,7 +84,11 @@ public class TTInstructionFuncGrp8 extends FTDebug {
           return;
         }
       } else {
-        cur.pts.getTags()[point] = Flags.Curve.getTableTag(cur.pts.getTags()[point].getVal() ^ Flags.Curve.ON.getVal());
+        if (cur.pts.getTag(point).contains(Flags.Curve.ON)) {
+          cur.pts.removeTag(point, Flags.Curve.ON);
+        } else {
+          cur.pts.addTag(point, Flags.Curve.ON);
+        }
       }
       cur.graphics_state.loop--;
     }
@@ -100,20 +104,20 @@ public class TTInstructionFuncGrp8 extends FTDebug {
    * =====================================================================
    */
   public void FLIPRGON() {
-    short I;
-    short K;
-    short L;
+    int idx;
+    int end_idx;
+    int start_idx;
 
-    K = (short)cur.stack[cur.stack_idx + 1];
-    L = (short)cur.stack[cur.stack_idx + 0];
-    if (TTUtil.BOUNDS(K, cur.pts.getN_points()) || TTUtil.BOUNDS(L, cur.pts.getN_points())) {
+    end_idx = cur.stack[cur.stack_idx + 1];
+    start_idx = cur.stack[cur.stack_idx];
+    if (TTUtil.BOUNDS(end_idx, cur.pts.getN_points()) || TTUtil.BOUNDS(start_idx, cur.pts.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
       return;
     }
-    for (I = L; I <= K; I++) {
-      cur.pts.getTags()[I] = Flags.Curve.getTableTag(cur.pts.getTags()[I].getVal() | Flags.Curve.ON.getVal());
+    for (idx = start_idx; idx <= end_idx; idx++) {
+      cur.pts.addTag(idx, Flags.Curve.ON);
     }
   }
 
@@ -124,20 +128,20 @@ public class TTInstructionFuncGrp8 extends FTDebug {
    * =====================================================================
    */
   public void FLIPRGOFF() {
-    short I;
-    short K;
-    short L;
+    int idx;
+    int end_idx;
+    int start_idx;
 
-    K = (short)cur.stack[cur.stack_idx + 1];
-    L = (short)cur.stack[cur.stack_idx + 0];
-    if (TTUtil.BOUNDS(K, cur.pts.getN_points()) || TTUtil.BOUNDS(L, cur.pts.getN_points())) {
+    end_idx = cur.stack[cur.stack_idx + 1];
+    start_idx = cur.stack[cur.stack_idx];
+    if (TTUtil.BOUNDS(end_idx, cur.pts.getN_points()) || TTUtil.BOUNDS(start_idx, cur.pts.getN_points())) {
       if (cur.pedantic_hinting) {
         cur.error = FTError.ErrorTag.INTERP_INVALID_REFERENCE;
       }
       return;
     }
-    for (I = L; I <= K; I++) {
-      cur.pts.getTags()[I] = Flags.Curve.getTableTag(cur.pts.getTags()[I].getVal() & ~Flags.Curve.ON.getVal());
+    for (idx = start_idx; idx <= end_idx; idx++) {
+      cur.pts.removeTag(idx, Flags.Curve.ON);
     }
   }
 

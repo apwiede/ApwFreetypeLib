@@ -330,6 +330,11 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
     return tags;
   }
 
+  /* ==================== getTags ================================== */
+  public byte getTag(int tag_idx) {
+    return tags[tag_idx];
+  }
+
   /* ==================== setTags ================================== */
   public void setTags(byte[] tags) {
     this.tags = tags;

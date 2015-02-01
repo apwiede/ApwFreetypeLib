@@ -264,7 +264,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("SPvTL: %d, %d", cur.stack[cur.
     day = cur.zp1.getCurPoint_y(a1) - cur.zp1.getCurPoint_y(a0);
     dx = cur.zp0.getCurPoint_x(b0) - cur.zp1.getCurPoint_x(a0);
     dy = cur.zp0.getCurPoint_y(b0) - cur.zp1.getCurPoint_y(a0);
-    cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | (Flags.Curve.TOUCH_X.getVal() | Flags.Curve.TOUCH_Y.getVal()));
+    cur.zp2.addTag(point, Flags.Curve.TOUCH_X);
+    cur.zp2.addTag(point, Flags.Curve.TOUCH_Y);
     discriminant = FTCalc.FT_MulDiv(dax, -dby, 0x40) + FTCalc.FT_MulDiv(day, dbx, 0x40);
     dotproduct = FTCalc.FT_MulDiv(dax, dbx, 0x40) + FTCalc.FT_MulDiv(day, dby, 0x40);
       /* The discriminant above is actually a cross product of vectors     */

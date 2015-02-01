@@ -62,10 +62,10 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveX");
 //    FTGlyphLoaderRec._showLoaderZone("DirectMoveX");
 Debug(0, DebugTag.DBG_INTERP, TAG, "zone: "+zone.toDebugString()+"!");
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X: point: %d x: %d distance: %d\n", point, zone.getCurPoint_x(point), distance));
-    zone.setCurPoint_y(point, zone.getCurPoint_y(point) + distance);
+    zone.setCurPoint_x(point, zone.getCurPoint_x(point) + distance);
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_X2: cur_idx: %d point: %d x: %d distance: %d\n",
         zone.getCur_idx(), point, zone.getCurPoint_x(point), distance));
-    zone.getTags()[point] = Flags.Curve.getTableTag(zone.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
+    zone.addTag(point, Flags.Curve.TOUCH_X);
   }
 
   /* =====================================================================

@@ -686,7 +686,11 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("stack_idx: %d top: %d stack[st
             return FTError.ErrorTag.INTERP_EXECUTION_TOO_LONG;
           }
         }
-//Debug(0, DBG_INTERP, TAG, String.format("ll4: %d %d", cur.IP, cur.codeSize));
+if (numInstructions > 6000) {
+  Debug(0, DebugTag.DBG_INTERP, TAG, String.format("ll4: %d %d", IP, codeSize));
+  zp0.showLoaderZone("ZP0", this);
+  zp2.showLoaderZone("ZP1", this);
+}
 //        showLoaderZone();
         if (IP >= codeSize) {
           if (callTop > 0) {

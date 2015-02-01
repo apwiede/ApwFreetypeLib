@@ -340,9 +340,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
         if (exec.code == null) {
           return FTError.ErrorTag.UNEXPECTED_NULL_VALUE;
         }
-        for(int j = 0; j < 30 && j < exec.code.length; j++) {
-          Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("j: %d 0x%02x ", j, exec.code[j].getVal())+exec.code[j]);
-        }
         error = ttface.Interpreter(exec);
       }
     } else {

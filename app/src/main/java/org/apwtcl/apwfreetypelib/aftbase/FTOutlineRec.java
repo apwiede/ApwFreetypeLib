@@ -64,6 +64,7 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /*                                                                       */
   /* ===================================================================== */
 
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
@@ -73,6 +74,8 @@ import org.apwtcl.apwfreetypelib.aftutil.FTMatrixRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
+
+import java.util.Set;
 
 public class FTOutlineRec extends FTDebug {
   private static int oid = 0;
@@ -84,7 +87,7 @@ public class FTOutlineRec extends FTDebug {
   protected int n_points = 0;            /* number of points in the glyph  */
   protected FTVectorRec[] points = null; /* the outline's points           */
   protected int points_idx = 0;
-  protected Flags.Curve[] tags = null;   /* the points flags               */
+  protected Set<Flags.Curve>[] tags = null;   /* the points flags               */
   protected int tags_idx = 0;
   protected int[] contours = null;       /* the contour end points         */
   protected int contours_idx = 0;
@@ -326,7 +329,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("FTOutlineGetCBox end:: xMin: %
     int tagsIdx;
     int n;        /* index of contour in outline     */
     int first = 0; /* index of first point in contour */
-    Flags.Curve tag;       /* current point's state           */
+    Set<Flags.Curve> tag;       /* current point's state           */
     int shift;
     int delta;
     boolean doConic = true;
@@ -363,15 +366,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("v_last.x: %d, v_last.y: %d", v
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("v_start: %d %d v_last: %d %d", v_start.getX(), v_start.getY(), v_last.getX(), v_last.getY()));
       pointIdx = first;
       tagsIdx = first;
-      tag = Flags.Curve.getTableTag(tags[tagsIdx].getVal() & 3);
+      tag = tags[tagsIdx];
       /* A contour cannot start with a cubic control point! */
-      if (tag == Flags.Curve.CUBIC) {
+      if (tag.contains(Flags.Curve.CUBIC)) {
         return FTError.ErrorTag.RENDER_INVALID_OUTLINE;
       }
       /* check first point to determine origin */
-      if (tag == Flags.Curve.CONIC) {
+      if (tag.contains(Flags.Curve.CONIC)) {
         /* first point is conic control.  Yes, this happens. */
-        if ((tags[last].getVal() & 3) == Flags.Curve.ON.getVal()) {
+        if (tags[last].contains(Flags.Curve.ON)) {
           /* start at last point if it is on the curve */
           v_start.setX(v_last.getX());
           v_start.setY(v_last.getY());
@@ -403,35 +406,33 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("decompose1: pointIdx: %d, limi
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==2 v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
         pointIdx++;
         tagsIdx++;
-        tag = Flags.Curve.getTableTag(tags[tagsIdx].getVal() & 3);
-        switch (tag)
-        {
-        case ON:  /* emit a single line_to */
-          {
-            FTVectorRec vec = new FTVectorRec();
+        tag = tags[tagsIdx];
+        if (tag.contains(Flags.Curve.ON)) {
+          /* emit a single line_to */
+          FTVectorRec vec = new FTVectorRec();
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
-            vec.setX((((points[pointIdx].getX())) << shift) - delta);
-            vec.setY(((points[pointIdx].getY()) << shift) - delta);
-            FTTrace.Trace(7, TAG, String.format("  line to (%.2f, %.2f)\n",
-                        vec.getX() / 64.0, vec.getY() / 64.0));
-            error = func_interface.lineTo(vec, user);
-            if (error != FTError.ErrorTag.ERR_OK) {
-              FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
-              return error;
-            }
-            continue;
+          vec.setX((((points[pointIdx].getX())) << shift) - delta);
+          vec.setY(((points[pointIdx].getY()) << shift) - delta);
+          FTTrace.Trace(7, TAG, String.format("  line to (%.2f, %.2f)\n",
+                vec.getX() / 64.0, vec.getY() / 64.0));
+          error = func_interface.lineTo(vec, user);
+          if (error != FTError.ErrorTag.ERR_OK) {
+            FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
+            return error;
           }
-        case CONIC:  /* consume conic arcs */
-Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CONIC");
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+          continue;
+        }
+        if (tag.contains(Flags.Curve.CONIC)) {  /* consume conic arcs */
+          Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CONIC");
+          Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
           v_control.setX(((points[pointIdx].getX()) << shift) - delta);
           v_control.setY(((points[pointIdx].getY()) << shift) - delta);
           doConic = true;
           while (doConic) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("decompose doConic: pointIdx: %d,  limit: %d", pointIdx, limit));
+            Debug(0, DebugTag.DBG_RENDER, TAG, String.format("decompose doConic: pointIdx: %d,  limit: %d", pointIdx, limit));
             doConic = false;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+            Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
             doContinue = false;
             if (pointIdx < limit) {
               FTVectorRec vec = new FTVectorRec();
@@ -439,17 +440,17 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3b v_start.x: %d, v_start.y:
 
               pointIdx++;
               tagsIdx++;
-              tag = Flags.Curve.getTableTag(tags[tagsIdx].getVal() & 3);
+              tag = tags[tagsIdx];
               vec.setX(((points[pointIdx].getX()) << shift) - delta);
               vec.setY(((points[pointIdx].getY()) << shift) - delta);
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("tag: %d, tagIdx: %d, pointIdx: %d, limit: %d, vec.x: %d, vec.y: %d", tag, tagsIdx, pointIdx, limit, vec.getX(), vec.getY()));
-              if (tag == Flags.Curve.ON) {
-                FTTrace.Trace(0, TAG, String.format("  1 conic to (%.2f, %.2f)"+
-                          " with control (%.2f, %.2f)",
-                          vec.getX() / 64.0, vec.getY() / 64.0,
-                          v_control.getX() / 64.0, v_control.getY() / 64.0));
+              Debug(0, DebugTag.DBG_RENDER, TAG, String.format("tag: %d, tagIdx: %d, pointIdx: %d, limit: %d, vec.x: %d, vec.y: %d", tag, tagsIdx, pointIdx, limit, vec.getX(), vec.getY()));
+              if (tag.contains(Flags.Curve.ON)) {
+                FTTrace.Trace(0, TAG, String.format("  1 conic to (%.2f, %.2f)" +
+                        " with control (%.2f, %.2f)",
+                    vec.getX() / 64.0, vec.getY() / 64.0,
+                    v_control.getX() / 64.0, v_control.getY() / 64.0));
                 error = func_interface.conicTo(v_control, vec, user);
-Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
+                Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
                 if (error != FTError.ErrorTag.ERR_OK) {
                   FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
                   return error;
@@ -457,17 +458,17 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
                 doContinue = true;
                 break;
               }
-              if (tag != Flags.Curve.CONIC) {
+              if (!tag.contains(Flags.Curve.CONIC)) {
                 return FTError.ErrorTag.RENDER_INVALID_OUTLINE;
               }
               v_middle.setX((v_control.getX() + vec.getX()) / 2);
               v_middle.setY((v_control.getY() + vec.getY()) / 2);
-              FTTrace.Trace(7, TAG, String.format("  2 conic to (%.2f, %.2f)"+
-                        " with control (%.2f, %.2f)",
-                        v_middle.getX() / 64.0, v_middle.getY() / 64.0,
-                        v_control.getX() / 64.0, v_control.getY() / 64.0));
+              FTTrace.Trace(7, TAG, String.format("  2 conic to (%.2f, %.2f)" +
+                      " with control (%.2f, %.2f)",
+                  v_middle.getX() / 64.0, v_middle.getY() / 64.0,
+                  v_control.getX() / 64.0, v_control.getY() / 64.0));
               error = func_interface.conicTo(v_control, v_middle, user);
- Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose3: after call conic_to");
+              Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose3: after call conic_to");
               if (error != FTError.ErrorTag.ERR_OK) {
                 FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
                 return error;
@@ -475,32 +476,32 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
               v_control.setX(vec.getX());
               v_control.setY(vec.getY());
               doConic = true;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+              Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
             }
           }
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+          Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
           if (doContinue) {
             continue;
           }
-          FTTrace.Trace(8, TAG, String.format(" 3 conic to (%.2f, %.2f)"+
-                      " with control (%.2f, %.2f)",
-                      v_start.getX() / 64.0, v_start.getY() / 64.0,
-                      v_control.getX() / 64.0, v_control.getY() / 64.0));
+          FTTrace.Trace(8, TAG, String.format(" 3 conic to (%.2f, %.2f)" +
+                  " with control (%.2f, %.2f)",
+              v_start.getX() / 64.0, v_start.getY() / 64.0,
+              v_control.getX() / 64.0, v_control.getY() / 64.0));
           error = func_interface.conicTo(v_control, v_start, user);
           if (error != FTError.ErrorTag.ERR_OK) {
             FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
             return error;
           }
           isClosed = true;
-          break;
-        default:  /* FT_CURVE_TAG_CUBIC */
+        } else {
+          /* FT_CURVE_TAG_CUBIC */
           {
             FTVectorRec vec1 = new FTVectorRec();
             FTVectorRec vec2 = new FTVectorRec();
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CUBIC");
             if (pointIdx + 1 > limit ||
-                 (tags[tagsIdx + 1].getVal() & 3) != Flags.Curve.CUBIC.getVal()) {
+                 (!tags[tagsIdx + 1].contains(Flags.Curve.CUBIC))) {
               return FTError.ErrorTag.RENDER_INVALID_OUTLINE;
             }
             pointIdx += 2;
@@ -620,22 +621,38 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 v_start.x: %d, v_start.y: 
   }
 
   /* ==================== getTag ================================== */
-  public Flags.Curve getTag(int idx) {
+  public Set<Flags.Curve> getTag(int idx) {
     return tags[tags_idx+idx];
   }
 
   /* ==================== setTag ================================== */
   public void setTag(int idx, Flags.Curve tag) {
+    tags[tags_idx+idx].clear();
+    tags[tags_idx+idx].add(tag);
+  }
+
+  /* ==================== setTag ================================== */
+  public void setTag(int idx, Set<Flags.Curve> tag) {
     tags[tags_idx+idx] = tag;
   }
 
+  /* ==================== addTag ================================== */
+  public void addTag(int idx, Flags.Curve tag) {
+    tags[tags_idx+idx].add(tag);
+  }
+
+  /* ==================== removeTag ================================== */
+  public void removeTag(int idx, Flags.Curve tag) {
+    tags[tags_idx+idx].remove(tag);
+  }
+
   /* ==================== getTags ================================== */
-  public Flags.Curve[] getTags() {
+  public Set<Flags.Curve>[] getTags() {
     return tags;
   }
 
   /* ==================== setTags ================================== */
-  public void setTags(Flags.Curve[] tags) {
+  public void setTags(Set<Flags.Curve>[] tags) {
     this.tags = tags;
   }
 

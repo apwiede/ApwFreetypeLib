@@ -252,13 +252,13 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     if (cur.graphics_state.freeVector.getX() != 0) {
       cur.zp2.setCurPoint_x(point, (cur.zp2.getCurPoint_x(point) + dx));
       if (touch) {
-        cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | Flags.Curve.TOUCH_X.getVal());
+        cur.zp2.addTag(point, Flags.Curve.TOUCH_X);
       }
     }
     if (cur.graphics_state.freeVector.getY() != 0) {
       cur.zp2.setCurPoint_y(point, (cur.zp2.getCurPoint_y(point) + dy));
       if (touch) {
-        cur.zp2.getTags()[point] = Flags.Curve.getTableTag(cur.zp2.getTags()[point].getVal() | Flags.Curve.TOUCH_Y.getVal());
+        cur.zp2.addTag(point, Flags.Curve.TOUCH_Y);
       }
     }
   }
@@ -300,13 +300,10 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       useX = false;
       mask = Flags.Curve.TOUCH_Y;
       V.setOrg(cur.pts.getOrg());
-//        V.org_idx = cur.pts.org_idx + 1;
       V.setOrg_idx(cur.pts.getOrg_idx());
       V.setCur(cur.pts.getCur());
-//        V.cur_idx = cur.pts.cur_idx + 1;
       V.setCur_idx(cur.pts.getCur_idx());
       V.setOrus(cur.pts.getOrus());
-//        V.orus_idx = cur.pts.orus_idx + 1;
       V.setOrus_idx(cur.pts.getOrus_idx());
     }
     V.setMax_points(cur.pts.getN_points());
@@ -318,7 +315,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       if (TTUtil.BOUNDS(end_point, cur.pts.getN_points())) {
         end_point = cur.pts.getN_points() - 1;
       }
-      while (point <= end_point && (cur.pts.getTags()[point].getVal() & mask.getVal()) == 0) {
+      while (point <= end_point && !cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)) {
         point++;
       }
       worker_ref = new FTReference<>();
@@ -328,7 +325,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
         cur_touched   = point;
         point++;
         while (point <= end_point) {
-          if ((cur.pts.getTags()[point].getVal() & mask.getVal()) != 0) {
+          if (cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)) {
             _iup_worker_interpolate(worker_ref, cur_touched + 1, point - 1, cur_touched, point, useX);
             cur_touched = point;
           }
@@ -582,13 +579,13 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
       cur.new_top = cur.stack_idx;
       return;
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("twilight: %b, rp1: %d", twilight, cur.graphics_state.rp1));
+    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("twilight: %b, rp1: ", twilight)+cur.graphics_state.rp1);
     if (twilight) {
       orus_base = cur.zp0.getOrgPoint(cur.graphics_state.rp1);
     } else {
       orus_base = cur.zp0.getOrus()[cur.zp0.getOrus_idx() + cur.graphics_state.rp1];
       Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus.x: %d, orus.y: %d", orus_base.getX(),orus_base.getY()));
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus2.x: %d, orus2.y: %d", cur.zp0.getOrusPoint_x(1), cur.zp0.getOrusPoint(1)));
+      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("orus2.x: %d, orus2.y: %d", cur.zp0.getOrusPoint_x(1), cur.zp0.getOrusPoint_y(1)));
     }
     cur_base = cur.zp0.getCurPoint(cur.graphics_state.rp1);
       /* XXX: There are some glyphs in some braindead but popular */

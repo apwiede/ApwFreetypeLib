@@ -66,7 +66,7 @@ public class TTProjectXFunc extends TTProjectFuncBase {
   /* ==================== project ===================================== */
   @Override
   public int project(int dx, int dy) {
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("ProjectX: dx: %d, dy: %d", dx, dy));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("ProjectX: dx: %d, dy: %d", dx, dy));
     return dx;
   }
 

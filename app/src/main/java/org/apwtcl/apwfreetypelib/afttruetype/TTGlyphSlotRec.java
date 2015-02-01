@@ -95,7 +95,7 @@ public class TTGlyphSlotRec extends FTGlyphSlotRec {
       return error;
     }
     loader = new TTLoaderRec();
-    error = loader.tt_loader_init(ttsize, this, Flags.Load.getTableTag(load_flags), false);
+    error = loader.tt_loader_init(ttsize, this, Flags.Load.makeTableTagSet(load_flags), false);
     if (error != FTError.ErrorTag.ERR_OK) {
       return error;
     }

@@ -73,7 +73,7 @@ public class TTRoundToGridFunc extends TTRoundFuncBase {
   @Override
   public int round(int distance, int compensation) {
     int val;
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("RoundToGrid: distance: %d, compensation: %d", distance, compensation));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("RoundToGrid: distance: %d, compensation: %d", distance, compensation));
 
     if (distance >= 0) {
       val = distance + compensation + 32;

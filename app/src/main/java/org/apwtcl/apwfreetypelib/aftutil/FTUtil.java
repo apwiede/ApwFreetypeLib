@@ -17,9 +17,9 @@ import android.util.Log;
 
 import org.apwtcl.apwfreetypelib.aftbase.FTCharMapRec;
 import org.apwtcl.apwfreetypelib.aftbase.Flags;
-import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
-import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
+
+import java.util.HashSet;
+import java.util.Set;
 
   /* ===================================================================== */
   /*    FTUtil                                                          */
@@ -143,12 +143,12 @@ public class FTUtil extends FTDebug {
           }
           break;
         case CURVE:
-          Flags.Curve[] curve_array = (Flags.Curve[]) obj;
+          Set<Flags.Curve>[] curve_array = (Set<Flags.Curve>[]) obj;
           if (curve_array == null) {
             // easy just allocate
-            curve_array = new Flags.Curve[newCount];
+            curve_array = new Set[newCount];
             for (i = 0; i < newCount; i++) {
-              curve_array[i] = Flags.Curve.CONIC;
+              curve_array[i] = new HashSet<>();
             }
             obj = curve_array;
           } else {
@@ -156,20 +156,20 @@ public class FTUtil extends FTDebug {
               // nothing to do
             } else {
               if (curCount == 0) {
-                curve_array = new Flags.Curve[newCount];
+                curve_array = new Set[newCount];
                 for (j = 0; j < newCount; j++) {
-                  curve_array[j] = Flags.Curve.CONIC;
+                  curve_array[j] = new HashSet<>();
                 }
                 obj = curve_array;
               } else {
-                Flags.Curve[] tmp2;
+                Set<Flags.Curve>[] tmp2;
                 tmp2 = java.util.Arrays.copyOf(curve_array, curCount);
-                curve_array = new Flags.Curve[newCount];
+                curve_array = new Set[newCount];
                 for (k = 0; k < curCount; k++) {
                   curve_array[k] = tmp2[k];
                 }
                 for (k = curCount; k < newCount; k++) {
-                  curve_array[k] = Flags.Curve.CONIC;
+                  curve_array[k] = new HashSet<>();
                 }
                 obj = curve_array;
               }

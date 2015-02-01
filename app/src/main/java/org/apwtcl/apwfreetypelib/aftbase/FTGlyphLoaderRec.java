@@ -21,6 +21,8 @@ import org.apwtcl.apwfreetypelib.afttruetype.TTSizeRec;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTOpCode;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.Set;
+
   /* ===================================================================== */
   /*    FTGlyphLoaderRec                                                   */
   /*                                                                       */
@@ -366,7 +368,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_RENEW_ARRAY: base.outline.points: "+b
         base.setPoints((FTVectorRec[]) FTUtil.FT_RENEW_ARRAY(base.getPoints(), FTUtilFlags.ArrayType.FT_VECTOR, old_max, new_max));
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "after FT_RENEW_ARRAY: base.outline.points: "+base.getPoints()+"!");
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_RENEW_ARRAY: base.outline.tags: "+base.getTags());
-        base.setTags((Flags.Curve[])FTUtil.FT_RENEW_ARRAY(base.getTags(), FTUtilFlags.ArrayType.CURVE, old_max, new_max));
+        base.setTags((Set<Flags.Curve>[])FTUtil.FT_RENEW_ARRAY(base.getTags(), FTUtilFlags.ArrayType.CURVE, old_max, new_max));
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "after FT_RENEW_ARRAY: base.outline.tags: "+base.getTags());
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_RENEW_ARRAY base.extra_points: "+base.getExtra_points()+"!use_extra: "+use_extra+"!");
         if (use_extra) {

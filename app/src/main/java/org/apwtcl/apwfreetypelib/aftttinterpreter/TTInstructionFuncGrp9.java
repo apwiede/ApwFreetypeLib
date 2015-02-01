@@ -63,7 +63,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
    * =====================================================================
    */
   public void MIRP() {
-    short point;
+    int point;
     int cvtEntry;
     int cvt_dist;
     int distance;
@@ -72,12 +72,14 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     int control_value_cutin;
     int minimum_distance;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Ins_MIRP: cur.GS.rp0: %d, cur.GS.rp1: %d", cur.graphics_state.rp0, cur.graphics_state.rp1));
+//cur.zp0.showLoaderZone("zp0", cur);
+//cur.zp1.showLoaderZone("zp1", cur);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MIRP: cur.GS.rp0: %d, cur.GS.rp1: %d", cur.graphics_state.rp0, cur.graphics_state.rp1));
     minimum_distance = cur.graphics_state.minimum_distance;
     control_value_cutin = cur.graphics_state.control_value_cutin;
-    point = (short)cur.stack[cur.stack_idx + 0];
+    point = cur.stack[cur.stack_idx];
     cvtEntry = cur.stack[cur.stack_idx + 1] + 1;
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Ins_MIRP: minimum_distance: %d, control_value_cutin: %d, point: %d, cvtEntry: %d", minimum_distance, control_value_cutin, point, cvtEntry));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("MIRP: minimum_distance: %d, control_value_cutin: %d, point: %d, cvtEntry: %d", minimum_distance, control_value_cutin, point, cvtEntry));
       /* XXX: UNDOCUMENTED! cvt[-1] = 0 always */
     if (TTUtil.BOUNDS(point, cur.zp1.getN_points()) ||
         TTUtil.BOUNDSL(cvtEntry, cur.cvtSize + 1) ||
@@ -97,7 +99,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
     } else {
       cvt_dist = cur.render_funcs.curr_cvt_func.readCvt(cvtEntry - 1);
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cvtEntry: %d, cvt_dist: %d", cvtEntry, cvt_dist));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cvtEntry: %d, cvt_dist: %d", cvtEntry, cvt_dist));
       /* single width test */
     if (FTCalc.FT_ABS(cvt_dist - cur.graphics_state.single_width_value) < cur.graphics_state.single_width_cutin) {
       if (cvt_dist >= 0) {
@@ -106,7 +108,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
         cvt_dist = -cur.graphics_state.single_width_value;
       }
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cvt_dist: %d, cur.GS.gep0: %d, cur.GS.gep1: %d", cvt_dist, cur.graphics_state.gep0, cur.graphics_state.gep1));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("cvt_dist: %d, cur.GS.gep0: %d, cur.GS.gep1: %d", cvt_dist, cur.graphics_state.gep0, cur.graphics_state.gep1));
       /* UNDOCUMENTED!  The MS rasterizer does that with */
       /* twilight points (confirmed by Greg Hitchcock)   */
     if (cur.graphics_state.gep1 == 0) {

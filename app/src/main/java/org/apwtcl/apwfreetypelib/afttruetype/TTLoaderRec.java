@@ -38,6 +38,9 @@ import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+
   /* ===================================================================== */
   /*    TTLoaderRec                                                          */
   /*                                                                       */
@@ -53,7 +56,7 @@ public class TTLoaderRec extends FTDebug {
   private FTSizeRec size = null;
   private FTGlyphSlotRec glyph = null;
   private TTGlyphLoaderRec gloader = null;
-  private Flags.Load load_flags = Flags.Load.DEFAULT;
+  private Set<Flags.Load> load_flags = new HashSet<>();
   private int glyph_index = 0;
   private FTStreamRec stream = null;
   private int byte_len = 0;
@@ -132,15 +135,15 @@ public class TTLoaderRec extends FTDebug {
    * tt_loader_init
    * =====================================================================
    */
-  public FTError.ErrorTag tt_loader_init(TTSizeRec size, FTGlyphSlotRec glyph, Flags.Load load_flags, boolean glyf_table_only) {
+  public FTError.ErrorTag tt_loader_init(TTSizeRec size, FTGlyphSlotRec glyph, Set<Flags.Load> load_flags, boolean glyf_table_only) {
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_loader_init");
     TTFaceRec ttface;
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    boolean pedantic = (load_flags.getVal() & Flags.Load.PEDANTIC.getVal()) != 0;
+    FTError.ErrorTag error;
+    boolean pedantic = load_flags.contains(Flags.Load.PEDANTIC);
 
     ttface = (TTFaceRec)glyph.getFace();
     /* load execution context */
-    if ((load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0 && !glyf_table_only) {
+    if (!load_flags.contains(Flags.Load.NO_HINTING) && !glyf_table_only) {
       TTExecContextRec exec;
       boolean grayscale;
       boolean reexecute = false;
@@ -159,7 +162,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "fill TTSizeRec\n");
       if (exec == null) {
         return FTError.ErrorTag.GLYPH_COULD_NOT_FIND_CONTEXT;
       }
-      grayscale = (((load_flags.getVal() >> 16) & 15) != FTTags.RenderMode.MONO.getVal());
+//      grayscale = (((load_flags.getVal() >> 16) & 15) != FTTags.RenderMode.MONO.getVal());
+      grayscale = !load_flags.contains(Flags.Load.COLOR);
       exec.TTLoadContext(ttface, size);
       {
         /* a change from mono to grayscale rendering (and vice versa) */
@@ -180,13 +184,13 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "fill TTSizeRec\n");
       }
       /* see whether the cvt program has disabled hinting */
       if ((exec.graphics_state.getInstruct_control() & 1) != 0) {
-        load_flags = Flags.Load.getTableTag(load_flags.getVal() | Flags.Load.NO_HINTING.getVal());
+        load_flags.add(Flags.Load.NO_HINTING);
       }
       /* load default graphics state -- if needed */
       if ((exec.graphics_state.getInstruct_control() & 2) != 0) {
         exec.graphics_state = new TTDefaultGraphicsStateClass();
       }
-      exec.pedantic_hinting = (load_flags.getVal() & Flags.Load.PEDANTIC.getVal()) != 0;
+      exec.pedantic_hinting = load_flags.contains(Flags.Load.PEDANTIC);
       this.exec = exec;
       this.base.setExec(exec);
       this.zone.setExec(exec);
@@ -312,7 +316,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "load_truetype_glyph index: "+gindex+"!")
       return error;
     }
     glyph_index = gindex;
-    if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+    if (!load_flags.contains(Flags.Load.NO_SCALE)) {
       x_scale = size.getMetrics().getX_scale();
       y_scale = size.getMetrics().getY_scale();
     } else {
@@ -362,8 +366,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp1: loader.bbo
       pp3.setY(top_bearing + bbox.getyMax());
       pp4.setX(0);
       pp4.setY(pp3.getY() - vadvance);
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d %d %d %d %d", pp1.getX(), pp2.getX(), pp3.getY(), pp4.getY(), (load_flags.getVal() & Flags.Load.NO_SCALE.getVal())));
-      if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d %d %d %d", pp1.getX(), pp2.getX(), pp3.getY(), pp4.getY())+load_flags.contains(Flags.Load.NO_SCALE));
+      if (!load_flags.contains(Flags.Load.NO_SCALE)) {
         pp1.setX(TTUtil.FTMulFix(pp1.getX(), x_scale));
         pp2.setX(TTUtil.FTMulFix(pp2.getX(), x_scale));
         pp3.setY(TTUtil.FTMulFix(pp3.getY(), y_scale));
@@ -437,8 +441,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp3: loader.pp1
         ttface.forgetGlyphFrame(this);
         opened_frame = false;
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp4: loader.pp1.x: %d, loader.pp1.y: %d, loader.pp2.x: %d, loader.pp2.y: %d, loader.pp3.x: %d, loader.pp3.y: %d, loader.pp4.x: %d, loader.pp4.y: %d\n", pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pp3.getX(), pp3.getY(), pp4.getX(), pp4.getY()));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("LOAD_NO_SCALE: %d", (load_flags.getVal() & Flags.Load.NO_SCALE.getVal())));
-        if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "LOAD_NO_SCALE: "+load_flags.contains(Flags.Load.NO_SCALE));
+        if (!load_flags.contains(Flags.Load.NO_SCALE)) {
           pp1.setX(TTUtil.FTMulFix(pp1.getX(), x_scale));
           pp2.setX(TTUtil.FTMulFix(pp2.getX(), x_scale));
           pp3.setY(TTUtil.FTMulFix(pp3.getY(), y_scale));
@@ -448,7 +452,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
         /* if the flag FT_LOAD_NO_RECURSE is set, we return the subglyph */
         /* `as is' in the glyph slot (the client application will be     */
         /* responsible for interpreting these data)...                   */
-        if ((load_flags.getVal() & Flags.Load.NO_RECURSE.getVal()) != 0) {
+        if (load_flags.contains(Flags.Load.NO_RECURSE)) {
           gloader.GlyphLoaderAdd();
           glyph.setFormat(FTTags.GlyphFormat.COMPOSITE);
           if (opened_frame) {
@@ -515,7 +519,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
           byte_len = old_byte_len;
           /* process the glyph */
           this.ins_pos = ins_pos;
-          if (((load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) != 0) &&
+          if (load_flags.contains(Flags.Load.NO_HINTING) &&
                   ((subglyph.getFlags().getVal() & Flags.LoadType.WE_HAVE_INSTR.getVal()) != 0) && (num_points > start_point)) {
             TTProcessCompositeGlyph(start_point, start_contour);
           } 
@@ -550,7 +554,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
 //loader.gloader.current.outline.points[loader.gloader.current.outline.points_idx + i].y));
     }
     y_scale = 0x10000;
-    if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+    if (!load_flags.contains(Flags.Load.NO_SCALE)) {
       y_scale = ttsize.getMetrics().getY_scale();
     }
     if (glyph.getFormat().getVal() != FTTags.GlyphFormat.COMPOSITE.getVal()) {
@@ -569,7 +573,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
     glyph.getMetrics().setHoriAdvance(pp2.getX() - pp1.getX());
       /* adjust advance width to the value contained in the hdmx table */
     if (ttface.getPostscript().getIsFixedPitch() != 0 &&
-        (load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
+        (!load_flags.contains(Flags.Load.NO_HINTING))) {
       int widthpIdx;
 
       widthpIdx = TTLoad.tt_face_get_device_metrics(ttface, ttsize.getMetrics().getX_ppem(), glyph_index);
@@ -615,7 +619,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader_set_pp5: loader.pp1
       }
       glyph.setLinearVertAdvance(advance);
         /* scale the metrics */
-      if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+      if (!load_flags.contains(Flags.Load.NO_SCALE)) {
         top = FTCalc.FTMulFix(top, y_scale);
         advance = FTCalc.FTMulFix(advance, y_scale);
       }
@@ -711,7 +715,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
       }
       exec.is_composite = is_composite;
       exec.pts.copy(zone);
-      debug = ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0 && ((TTSizeRec)size).isDebug());
+      debug = (!load_flags.contains(Flags.Load.NO_SCALE) && ((TTSizeRec)size).isDebug());
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "call TTRunContext");
 if (gloader.getBase() != null) {
   gloader.getBase().showGloaderGlyph("base before call TTRunContext");
@@ -725,8 +729,14 @@ zone.showLoaderZone("before call TTRunContext", exec);
         return error;
       }
         /* store drop-out mode in bits 5-7; set bit 2 also as a marker */
-      current_outline.getTags()[0] = Flags.Curve.getTableTag(current_outline.getTags()[0].getVal() |
-          (exec.graphics_state.getScan_type() << 5) | Flags.Curve.HAS_SCANMODE.getVal());
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "scantype: 0x"+Integer.toHexString(exec.graphics_state.getScan_type()));
+      current_outline.addTag(0, Flags.Curve.HAS_SCANMODE);
+      if ((exec.graphics_state.getScan_type() & 1) != 0) {
+        current_outline.addTag(0, Flags.Curve.TOUCH_X);
+      }
+      if ((exec.graphics_state.getScan_type() & 2) != 0) {
+        current_outline.addTag(0, Flags.Curve.TOUCH_Y);
+      }
     }
       /* save glyph phantom points */
     if (!preserve_pps) {
@@ -758,13 +768,12 @@ zone.showLoaderZone("before call TTRunContext", exec);
     gloader.getCurrent().setPoint(n_points, pp1);
     gloader.getCurrent().setPoint(n_points + 1, pp2);
     gloader.getCurrent().setPoint(n_points + 2, pp3);
-    gloader.getCurrent().setPoint(n_points + 3, pp4);
     gloader.getCurrent().setTag(n_points, Flags.Curve.CONIC);
     gloader.getCurrent().setTag(n_points + 1, Flags.Curve.CONIC);
     gloader.getCurrent().setTag(n_points + 2, Flags.Curve.CONIC);
     gloader.getCurrent().setTag(n_points + 3, Flags.Curve.CONIC);
     n_points += 4;
-    if ((load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
+    if (!load_flags.contains(Flags.Load.NO_HINTING)) {
       zone.tt_prepare_zone(gloader.getCurrent(), 0, 0);
       for (int i = 0; i < (zone.getN_points() + 4); i++) {
         zone.setOrusPoint(i, new FTVectorRec());
@@ -780,7 +789,7 @@ zone.showLoaderZone("before call TTRunContext", exec);
       boolean do_scale = false;
       {
           /* scale the glyph */
-        if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+        if (!load_flags.contains(Flags.Load.NO_SCALE)) {
           x_scale = size.getMetrics().getX_scale();
           y_scale = size.getMetrics().getY_scale();
           do_scale = true;
@@ -797,7 +806,7 @@ zone.showLoaderZone("before call TTRunContext", exec);
         pp4 = gloader.getCurrent().getPoint(n_points - 1);
       }
     }
-    if ((load_flags.getVal() & Flags.Load.NO_HINTING.getVal()) == 0) {
+    if (!load_flags.contains(Flags.Load.NO_HINTING)) {
       zone.setN_points(zone.getN_points() + 4);
       error = HintGlyph(false);
     }
@@ -865,7 +874,7 @@ zone.showLoaderZone("before call TTRunContext", exec);
         x = TTUtil.FTMulFix(x, mac_xscale);
         y = TTUtil.FTMulFix(y, mac_yscale);
       }
-      if ((load_flags.getVal() & Flags.Load.NO_SCALE.getVal()) == 0) {
+      if (!load_flags.contains(Flags.Load.NO_SCALE)) {
         int x_scale = size.getMetrics().getX_scale();
         int y_scale = size.getMetrics().getY_scale();
         x = TTUtil.FTMulFix(x, x_scale);
@@ -963,7 +972,7 @@ zone.showLoaderZone("before call TTRunContext", exec);
       /* Some points are likely touched during execution of  */
       /* instructions on components.  So let's untouch them. */
     for (i = start_point; i < zone.getN_points(); i++) {
-      zone.setTag(i, Flags.Curve.getTableTag(zone.getTag(i).getVal() & ~Flags.Curve.TOUCH_BOTH.getVal()));
+      zone.removeTag(i, Flags.Curve.TOUCH_BOTH);
     }
     zone.setN_points(zone.getN_points() + 4);
     return HintGlyph(true);
@@ -1010,12 +1019,28 @@ zone.showLoaderZone("before call TTRunContext", exec);
   }
 
   /* ==================== getLoad_flags ================================== */
-  public Flags.Load getLoad_flags() {
+  public Set<Flags.Load> getLoad_flags() {
     return load_flags;
   }
 
+  /* ==================== addLoad_flag ================================== */
+  public void setLoad_flag(Flags.Load load_flag) {
+    this.load_flags.clear();
+    this.load_flags.add(load_flag);
+  }
+
+  /* ==================== addLoad_flag ================================== */
+  public void addLoad_flag(Flags.Load load_flag) {
+    this.load_flags.add(load_flag);
+  }
+
+  /* ==================== removeLoad_flag ================================== */
+  public void removeLoad_flag(Flags.Load load_flag) {
+    this.load_flags.remove(load_flag);
+  }
+
   /* ==================== setLoad_flags ================================== */
-  public void setLoad_flags(Flags.Load load_flags) {
+  public void setLoad_flags(Set<Flags.Load> load_flags) {
     this.load_flags = load_flags;
   }
 
