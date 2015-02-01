@@ -15,6 +15,10 @@ package org.apwtcl.apwfreetypelib.aftbase;
 
 import android.util.Log;
 
+import org.apwtcl.apwfreetypelib.afttruetype.TTFaceRec;
+import org.apwtcl.apwfreetypelib.afttruetype.TTLoaderRec;
+import org.apwtcl.apwfreetypelib.afttruetype.TTSizeRec;
+import org.apwtcl.apwfreetypelib.aftttinterpreter.TTOpCode;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
   /* ===================================================================== */
@@ -472,7 +476,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FTGlyphLoaderCheckContours
     }
     return error;
   }
-
   /* ==================== getMax_points ================================== */
   public int getMax_points() {
     return max_points;

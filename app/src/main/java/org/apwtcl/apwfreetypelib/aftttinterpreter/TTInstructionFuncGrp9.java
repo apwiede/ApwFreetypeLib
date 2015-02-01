@@ -114,7 +114,7 @@ public class TTInstructionFuncGrp9 extends FTDebug {
       cur.zp1.setOrgPoint_y(point, (cur.zp0.getOrgPoint_y(cur.graphics_state.rp0) + TTUtil.TTMulFix14(cvt_dist, cur.graphics_state.freeVector.getY())));
       cur.zp1.setCurPoint(point, cur.zp1.getOrgPoint(point));
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("dualproj: point: %d, GS.rp0: %d, zp1.org[point].x: %d, zp1.org[point].y: %d, zp0.org[GS.rp0].x: %d, zp0.org[GS.rp0].y: %d", point, cur.graphics_state.rp0, cur.zp1.getOrgPoint_x(point), cur.zp1.getOrgPoint_y(point), cur.zp0.getOrgPoint_x(cur.graphics_state.rp0), cur.zp0.getOrgPoint_y(cur.graphics_state.rp0)));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("dualproj: point: %d, GS.rp0: %d, zp1.org[point].x: %d, zp1.org[point].y: %d, zp0.org[GS.rp0].x: %d, zp0.org[GS.rp0].y: %d", point, cur.graphics_state.rp0, cur.zp1.getOrgPoint_x(point), cur.zp1.getOrgPoint_y(point), cur.zp0.getOrgPoint_x(cur.graphics_state.rp0), cur.zp0.getOrgPoint_y(cur.graphics_state.rp0)));
     org_dist = cur.funcDualproj(cur.zp1.getOrgPoint_x(point) - cur.zp0.getOrgPoint_x(cur.graphics_state.rp0),
         cur.zp1.getOrgPoint_y(point) - cur.zp0.getOrgPoint_y(cur.graphics_state.rp0));
     cur_dist = cur.funcProject(cur.zp1.getCurPoint_x(point) - cur.zp0.getCurPoint_x(cur.graphics_state.rp0),

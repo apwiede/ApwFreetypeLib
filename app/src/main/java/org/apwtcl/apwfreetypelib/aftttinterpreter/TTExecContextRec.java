@@ -462,7 +462,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTClearCodeRange");
    * =====================================================================
    */
   public FTError.ErrorTag TTGotoCodeRange(TTInterpTags.CodeRange range, int IP) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTGotoCodeRange: "+range);
+Debug(-1, DebugTag.DBG_LOAD_GLYPH, TAG, "TTGotoCodeRange: "+range);
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     if (range.getVal() < TTInterpTags.CodeRange.FONT.getVal() || range.getVal() > TTInterpTags.CodeRange.GLYPH.getVal()) {
@@ -484,67 +484,66 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTGotoCodeRange: "+range);
     code = codeRangeTable[range.getVal() - 1].base;
     cvt_code = codeRangeTable[range.getVal() - 1].short_base;
     codeSize = codeRangeTable[range.getVal() - 1].size;
-Debug(2, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
+Debug(-1, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TTGotoCodeRange: size: %d", codeSize));
     this.IP = IP;
     curRange = range;
     return error;
   }
 
   /* ==================== funcRound ===================================== */
-  protected int funcRound(int distance, int compensation) {     /* current rounding function */
-    Log.e(TAG, "funcRound not yet implemented");
+  /* current rounding function */
+  protected int funcRound(int distance, int compensation) {
     return render_funcs.curr_round_func.round(distance, compensation);
   }
 
   /* ==================== funcProject ===================================== */
-  protected int funcProject (int dx, int dy) {   /* current projection function */
-    Log.e(TAG, "funcProject not yet fully implemented");
+  /* current projection function */
+  protected int funcProject (int dx, int dy) {
     return render_funcs.curr_project_func.project(dx, dy);
   }
 
   /* ==================== funcDualproj ===================================== */
-  protected int funcDualproj(int dx, int dy) {  /* current dual proj. function */
-    Log.e(TAG, "funcDualproj not yet fully implemented");
+  /* current dual proj. function */
+  protected int funcDualproj(int dx, int dy) {
     return render_funcs.curr_project_func.dualproject(dx, dy);
   }
 
   /* ==================== funcFreeProj ===================================== */
-  protected FTError.ErrorTag funcFreeProj() {  /* current freedom proj. func  */
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+  /* current freedom proj. func  */
+  protected FTError.ErrorTag funcFreeProj() {
+    FTError.ErrorTag error = FTError.ErrorTag.UNEXPECTED_NULL_VALUE;
 
     Log.e(TAG, "funcFreeProj not yet implemented");
     return error;
   }
 
   /* ==================== funcMove ===================================== */
-  protected void funcMove(TTGlyphZoneRec zone, int point, int distance) {      /* current point move function */
-    Log.e(TAG, "funcMove not yet implemented");
+  /* current point move function */
+  protected void funcMove(TTGlyphZoneRec zone, int point, int distance) {
     render_funcs.curr_move_func.move(zone, point, distance);
   }
 
   /* ==================== funcMoveOrig ===================================== */
-  protected void funcMoveOrig(TTGlyphZoneRec zone, int point, int distance) { /* move original position function */
-    Log.e(TAG, "funcMoveOrig not yet fully implemented");
+  /* move original position function */
+  protected void funcMoveOrig(TTGlyphZoneRec zone, int point, int distance) {
     render_funcs.curr_move_func.moveOrig(zone, point, distance);
   }
 
   /* ==================== funcReadCvt ===================================== */
-  protected int funcReadCvt(int idx) {   /* read a cvt entry              */
-    Log.e(TAG, "funcReadCvt not yet fully implemented");
+  /* read a cvt entry              */
+  protected int funcReadCvt(int idx) {
     return render_funcs.curr_cvt_func.readCvt(idx);
   }
 
   /* ==================== funcWriteCvt ===================================== */
-  protected void funcWriteCvt(int idx, int value) { /* write a cvt entry (in pixels) */
-    Log.e(TAG, "funcWriteCvt not yet fully implemented");
+  /* write a cvt entry (in pixels) */
+  protected void funcWriteCvt(int idx, int value) {
     render_funcs.curr_cvt_func.writeCvt(idx, value);
   }
 
   /* ==================== funcMoveCvt ===================================== */
-  protected FTError.ErrorTag funcMoveCvt(int val1, int val2) {  /* incr a cvt entry (in pixels)  */
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    Log.e(TAG, "funcMoveCvt not yet implemented");
+  /* incr a cvt entry (in pixels)  */
+  protected FTError.ErrorTag funcMoveCvt(int val1, int val2) {
     return render_funcs.curr_cvt_func.moveCvt(val1, val2);
   }
 

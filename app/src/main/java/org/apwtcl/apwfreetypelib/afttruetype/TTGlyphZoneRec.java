@@ -588,6 +588,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "zone org: " + load.getExtra_points() + "
     this.tags = tags;
   }
 
+  /* ==================== setTags ================================== */
+  public void setTag(int tag_idx, Flags.Curve tag) {
+    this.tags[tags_idx + tag_idx] = tag;
+  }
+
   /* ==================== getTags_idx ================================== */
   public int getTags_idx() {
     return tags_idx;
