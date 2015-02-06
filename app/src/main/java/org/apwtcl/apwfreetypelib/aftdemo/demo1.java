@@ -84,14 +84,14 @@ public class demo1 extends FTDebug {
 
       FTCGCacheClassRec sbits_cache = new FTCBasicSCacheClass();    /* the glyph small bitmaps cache */
       error = manager.RegisterCache(sbits_cache);
-      Debug(0, DebugTag.DBG_INIT, TAG, "sbits_cache: " + sbits_cache.toDebugString());
+Debug(0, DebugTag.DBG_INIT, TAG, "sbits_cache: " + sbits_cache.toDebugString());
       if (error != FTError.ErrorTag.ERR_OK) {
         Log.e(TAG, "could not initialize small bitmaps cache");
         return;
       }
 
       FTCGCacheClassRec image_cache = new FTCBasicICacheClass();    /* the glyph image cache         */
-      Debug(0, DebugTag.DBG_INIT, TAG, "image_cache: " + image_cache.toDebugString());
+Debug(0, DebugTag.DBG_INIT, TAG, "image_cache: " + image_cache.toDebugString());
       error = manager.RegisterCache(image_cache);
       if (error != FTError.ErrorTag.ERR_OK) {
         Log.e(TAG, "could not initialize glyph image cache");

@@ -129,7 +129,7 @@ Debug(9, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("i: %d contour: %d", i, cur
         if (loader.getExec().glyphIns[i] == null) {
           Log.e(TAG, String.format("loader.getExec().glyphIns[%d] is null!", i));
         } else {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("ins: %d 0x%02x: ", i, loader.getExec().glyphIns[i].getVal()) + loader.getExec().glyphIns[i]);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("glyphInstruction: %d 0x%02x: ", i, loader.getExec().glyphIns[i].getVal()) + loader.getExec().glyphIns[i]);
         }
       }
 //        FT_MEM_COPY( loader.exec.glyphIns, p, (FT_Long)n_ins );
@@ -139,7 +139,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("ins: %d 0x%02x: ", i, load
     flag_idx = 0;
     flag_limit = n_points;
     while (flag_idx < flag_limit) {
-      current.setTag(flag_idx, Flags.Curve.makeTableTagSet(ttglyph.getTag(flag_idx)));
+      current.setTag(flag_idx, Flags.Curve.makeTableTagSet(TTTags.GlyphFlags.GlyphFlagsSetToInt(ttglyph.getTag(flag_idx))));
       flag_idx++;
     }
 for(int t = 0; t < flag_idx; t++) {

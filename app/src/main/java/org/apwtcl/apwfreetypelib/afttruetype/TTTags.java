@@ -17,6 +17,9 @@ import android.util.SparseArray;
 
 import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class TTTags {
 
   /* =========================================================================
@@ -1127,7 +1130,7 @@ public class TTTags {
   }
 
   public enum GlyphFlags {
-    Unknown(0x0, "TT_CMAP_UNKNOWN_FORMAT"),
+    Unknown(0x0, "TT_GLYPH_FLAGS_UNKNOWN"),
     ON_CURVE(0x1, "TT_GLYPH_FLAGS_ON_CURVE"),
     X_SHORT(0x2, "TT_GLYPH_FLAGS_X_SHORT"),
     Y_SHORT(0x4, "TT_GLYPH_FLAGS_Y_SHORT"),
@@ -1144,6 +1147,15 @@ public class TTTags {
         initMapping();
       }
       return tagToGlyphFlagsMapping.get(i);
+    }
+    public static Set<GlyphFlags> makeTableTagSet(int value) {
+      Set<GlyphFlags> flags = new HashSet<>();
+      for (GlyphFlags t : values()) {
+        if ((value & t.getVal()) != 0) {
+          flags.add(t);
+        }
+      }
+      return flags;
     }
     private static void initMapping() {
       tagToGlyphFlagsMapping = new SparseArray<GlyphFlags>();
@@ -1168,6 +1180,24 @@ public class TTTags {
     private GlyphFlags(int val, String str) {
       this.val = val;
       this.str = str;
+    }
+    public static String GlyphFlagsSetToString(Set<GlyphFlags> flags) {
+      StringBuffer str = new StringBuffer();
+      for (GlyphFlags t : values()) {
+        if (flags.contains(t)) {
+          str.append(" "+t.toString());
+        }
+      }
+      return str.toString();
+    }
+    public static int GlyphFlagsSetToInt(Set<GlyphFlags> flags) {
+      int val = 0;
+      for (GlyphFlags t : values()) {
+        if (flags.contains(t)) {
+          val += t.getVal();
+        }
+      }
+      return val;
     }
     public int getVal() {
       return val;

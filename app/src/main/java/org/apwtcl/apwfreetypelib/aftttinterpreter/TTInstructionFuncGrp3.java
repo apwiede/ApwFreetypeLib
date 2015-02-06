@@ -70,7 +70,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int delta1;
     int delta2;
 
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("_iup_worker_interpolate: p1: %d, p2: %d, ref1: %d ref2: %d", p1, p2, ref1, ref2));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("_iup_worker_interpolate: p1: %d, p2: %d, ref1: %d ref2: %d", p1, p2, ref1, ref2));
     if (p1 > p2) {
       return;
     }
@@ -107,7 +107,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       delta1 = worker.getCurPoint_y(ref1) - org1;
       delta2 = worker.getCurPoint_y(ref2) - org2;
     }
-    Debug(0, DebugTag.DBG_INTERP, TAG, String.format("org1: %d,  org2: %d, delta1: %d, delta2: %d, orus1. %d, orus2: %d", org1, org2, delta1, delta2, orus1, orus2));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("org1: %d,  org2: %d, delta1: %d, delta2: %d, orus1. %d, orus2: %d", org1, org2, delta1, delta2, orus1, orus2));
     if (orus1 == orus2) {
         /* simple shift of untouched points */
       for (i = p1; i <= p2; i++) {
@@ -123,7 +123,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
         } else {
           x += delta2;
         }
-        Debug(0, DebugTag.DBG_INTERP, TAG, String.format("i: %d curs[i].x: %d x: %d",  i, useX ? worker.getCurPoint_x(i) : worker.getCurPoint_y(i), x));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("i: %d curs[i].x: %d x: %d",  i, useX ? worker.getCurPoint_x(i) : worker.getCurPoint_y(i), x));
         if (useX) {
           worker.setCurPoint_x(i,  x);
         } else {
@@ -134,7 +134,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
       int scale = 0;
       boolean scale_valid = false;
 
-      Debug(0, DebugTag.DBG_INTERP, TAG, String.format("p1: %d, p2: %d", p1, p2));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("p1: %d, p2: %d", p1, p2));
         /* interpolation */
       for (i = p1; i <= p2; i++) {
         int x;
@@ -144,7 +144,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
         } else {
           x = worker.getOrgPoint_y(i);
         }
-        Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d org1: %d, org2: %d, delta1: %d", x, org1, org2, delta1));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d org1: %d, org2: %d, delta1: %d", x, org1, org2, delta1));
         if (x <= org1) {
           x += delta1;
         } else {
@@ -155,13 +155,13 @@ public class TTInstructionFuncGrp3 extends FTDebug {
               scale_valid = true;
               scale = FTCalc.FTDivFix(org2 + delta2 - (org1 + delta1), orus2 - orus1);
             }
-            Debug(0, DebugTag.DBG_INTERP, TAG, String.format("scale: %d, org1: %d, delta1: %d, worker.orus[i].x: %d, orus1: %d", scale, org1, delta1, useX ?  worker.getOrusPoint_x(i) :  worker.getOrusPoint_y(i), orus1));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("scale: %d, org1: %d, delta1: %d, worker.orus[i].x: %d, orus1: %d", scale, org1, delta1, useX ?  worker.getOrusPoint_x(i) :  worker.getOrusPoint_y(i), orus1));
             if (useX) {
               x = (org1 + delta1) + TTUtil.FTMulFix(worker.getOrusPoint_x(i) - orus1, scale);
             } else {
               x = (org1 + delta1) + TTUtil.FTMulFix(worker.getOrusPoint_y(i) - orus1, scale);
             }
-            Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d", x));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d", x));
           }
         }
         if (useX) {
@@ -281,7 +281,7 @@ public class TTInstructionFuncGrp3 extends FTDebug {
     int contour;       /* current contour */
     boolean useX;
 
-Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
+Debug(0, DebugTag.DBG_INTERP, TAG, "IUP opcode: "+cur.opcode);
       /* ignore empty outlines */
     if (cur.pts.getN_contours() == 0) {
       return;
@@ -310,22 +310,29 @@ Debug(0, DebugTag.DBG_INTERP, TAG, "IUP");
     contour = 0;
     point = 0;
     do {
-      end_point = cur.pts.getContours()[contour] - cur.pts.getFirst_point();
+      end_point = cur.pts.getContour(contour) - cur.pts.getFirst_point();
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("end_point: %d, contour: %d, first_point: %d", end_point, cur.pts.getContour(contour), cur.pts.getFirst_point()));
       first_point = point;
       if (TTUtil.BOUNDS(end_point, cur.pts.getN_points())) {
         end_point = cur.pts.getN_points() - 1;
       }
-      while (point <= end_point && !cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point: %d, end_point: %d", point, end_point));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag1: point: "+point+" tags: "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" mask: "+mask+" "+cur.pts.getTag(point).contains(mask)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_Y));
+      while (point <= end_point && !cur.pts.getTag(point).contains(mask)) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag2: point: "+point+" "+Flags.Curve.CurveSetToString(cur.pts.getTag(point)));
         point++;
       }
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point2: %d, end_point: %d", point, end_point));
       worker_ref = new FTReference<>();
       worker_ref.Set(V);
       if (point <= end_point) {
         first_touched = point;
         cur_touched   = point;
         point++;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point3: %d, end_point: %d, cur_touched: %d", point, end_point, cur_touched));
         while (point <= end_point) {
-          if (cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag3: point: "+point+" "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" "+mask+" "+cur.pts.getTag(point).contains(mask)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X));
+          if (cur.pts.getTag(point).contains(mask)) {
             _iup_worker_interpolate(worker_ref, cur_touched + 1, point - 1, cur_touched, point, useX);
             cur_touched = point;
           }

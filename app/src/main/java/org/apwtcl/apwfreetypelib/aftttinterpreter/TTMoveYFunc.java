@@ -59,9 +59,11 @@ public class TTMoveYFunc extends TTMoveFuncBase {
   @Override
   public void move(TTGlyphZoneRec zone, int point, int distance) {
 Debug(0, DebugTag.DBG_INTERP, TAG, "DirectMoveY");
-Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_Y: %d %d %d\n", point, zone.getCurPoint_y(point), distance));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_Y: point: %d y: %d distance: %d\n", point, zone.getCurPoint_y(point), distance));
     zone.setCurPoint_y(point, zone.getCurPoint_y(point) + distance);
     zone.addTag(point, Flags.Curve.TOUCH_Y);
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("Direct_Move_Y2: point: %d y: %d distance: %d\n", point, zone.getCurPoint_y(point), distance));
+zone.showLoaderZone("DirectMoveY", null);
   }
 
   /* =====================================================================

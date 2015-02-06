@@ -565,8 +565,8 @@ public class Flags {
     CUBIC(2, "FT_CURVE_TAG_CUBIC"),
     HAS_SCANMODE(4, "FT_CURVE_TAG_HAS_SCANMODE"),
     TOUCH_X(8, "FT_CURVE_TAG_TOUCH_X"), /* reserved for the TrueType hinter */
-    TOUCH_Y(16, "FT_CURVE_TAG_TOUCH_Y"), /* reserved for the TrueType hinter */
-    TOUCH_BOTH((Curve.TOUCH_X.getVal() | Curve.TOUCH_Y.getVal()), "FT_CURVE_TAG_TOUCH_BOTH");
+    TOUCH_Y(16, "FT_CURVE_TAG_TOUCH_Y"); /* reserved for the TrueType hinter */
+//    TOUCH_BOTH((Curve.TOUCH_X.getVal() | Curve.TOUCH_Y.getVal()), "FT_CURVE_TAG_TOUCH_BOTH");
     private int val;
     private String str;
     private static SparseArray<Curve> tagToCurveMapping;

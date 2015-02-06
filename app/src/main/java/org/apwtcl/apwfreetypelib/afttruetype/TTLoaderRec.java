@@ -765,9 +765,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "scantype: 0x"+Integer.toHexString(exec.g
 
     n_points = gloader.getCurrent().getN_points();
       /* set phantom points */
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("pp1: %d %d, pp2: %d %d, pp3: %d %d, pp4: %d %d", pp1.getX(), pp1.getY(), pp2.getX(), pp2.getY(), pp3.getX(), pp3.getY(), pp4.getX(), pp4.getY()));
     gloader.getCurrent().setPoint(n_points, pp1);
     gloader.getCurrent().setPoint(n_points + 1, pp2);
     gloader.getCurrent().setPoint(n_points + 2, pp3);
+    gloader.getCurrent().setPoint(n_points + 3, pp4);
     gloader.getCurrent().setTag(n_points, Flags.Curve.CONIC);
     gloader.getCurrent().setTag(n_points + 1, Flags.Curve.CONIC);
     gloader.getCurrent().setTag(n_points + 2, Flags.Curve.CONIC);
@@ -972,7 +974,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "scantype: 0x"+Integer.toHexString(exec.g
       /* Some points are likely touched during execution of  */
       /* instructions on components.  So let's untouch them. */
     for (i = start_point; i < zone.getN_points(); i++) {
-      zone.removeTag(i, Flags.Curve.TOUCH_BOTH);
+      zone.removeTag(i, Flags.Curve.TOUCH_X);
+      zone.removeTag(i, Flags.Curve.TOUCH_Y);
     }
     zone.setN_points(zone.getN_points() + 4);
     return HintGlyph(true);

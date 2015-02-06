@@ -32,6 +32,8 @@ import org.apwtcl.apwfreetypelib.aftutil.FTStreamRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
+import java.util.Set;
+
 public class TTGlyphSimpleRec extends TTGlyphRec {
   private static int oid = 0;
 
@@ -41,7 +43,7 @@ public class TTGlyphSimpleRec extends TTGlyphRec {
   private int[] org_contours = null; /* end points of contours */
   private int instructions_length = 0;
   private byte[] instructions = null;
-  private byte[] flags = null;
+  private Set<TTTags.GlyphFlags>[] flags = null;
   private int[] x_coordinates = null;
   private int[] y_coordinates = null;
 
@@ -49,7 +51,7 @@ public class TTGlyphSimpleRec extends TTGlyphRec {
   private int[] contours = null; /* end points of contours */
   private int num_points = 0;
   private FTVectorRec[] points = null;
-  private byte[] tags = null;
+  private Set<TTTags.GlyphFlags>[] tags = null;
 
   /* ==================== TTGlyphSimpleRec ================================== */
   public TTGlyphSimpleRec() {
@@ -90,7 +92,7 @@ public class TTGlyphSimpleRec extends TTGlyphRec {
     int vec_limit;
     int x;
     int y;
-    int tag;
+    Set<TTTags.GlyphFlags> tag;
     int delta;
 
     super.Load(stream, ttface, limit);
@@ -116,7 +118,6 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
     if(prev_contour < 0) {
       return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
     }
-    contours = new int[num_contours];
     for(contour_idx = 1; contour_idx < contour_limit; contour_idx++) {
       contours[contour_idx] = org_contours[contour_idx];
       if(contours[contour_idx] <= prev_contour) {
@@ -127,7 +128,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
     }
     num_points = 0;
     if(num_contours > 0) {
-      num_points = contours[contour_idx - 1] +1;
+      num_points = contours[contour_idx - 1] + 1;
       if(num_points < 0) {
         return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
       }
@@ -147,7 +148,8 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
     if(stream.pos() + instructions_length > limit) {
       return FTError.ErrorTag.GLYPH_TOO_MANY_HINTS;
     }
-//    if((loader.load_flags & Flags.Load.NO_AUTOHINT.getVal()) == 0) {
+//    if(!load_flags.contains(NO_AUTOHINT) {
+    // we always read the instructions!
       instructions = new byte[instructions_length];
       stream.readByteArray(instructions, instructions_length);
 //    }
@@ -156,8 +158,8 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
     flag_idx = 0;
     tag_idx = 0;
     tag_limit = num_points;
-    flags = new byte[num_points];
-    tags = new byte[num_points];
+    flags = new Set[num_points];
+    tags = new Set[num_points];
     while(tag_idx < tag_limit) {
       byte ch;
       int count;
@@ -166,8 +168,9 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
         return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
       }
       ch = (byte)(stream.readByte() & 0xFF);
-      flags[flag_idx] = ch;
-      tags[tag_idx++] = ch;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("tag: %d 0x%02x", tag_idx, ch)+TTTags.GlyphFlags.GlyphFlagsSetToString(TTTags.GlyphFlags.makeTableTagSet(ch)));
+      flags[flag_idx] = TTTags.GlyphFlags.makeTableTagSet(ch);
+      tags[tag_idx++] = TTTags.GlyphFlags.makeTableTagSet(ch);
       if((ch & TTTags.GlyphFlags.REPEAT.getVal()) != 0) {
         if(stream.pos() + 1 > limit) {
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
@@ -177,7 +180,8 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
         }
         while(count > 0) {
-          tags[tag_idx++] = ch;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("tag2: %d 0x%02x", tag_idx, ch)+TTTags.GlyphFlags.GlyphFlagsSetToString(TTTags.GlyphFlags.makeTableTagSet(ch)));
+          tags[tag_idx++] = TTTags.GlyphFlags.makeTableTagSet(ch);
           count--;
         }
 
@@ -192,8 +196,6 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "after glyph_header: glyf_offset: "+glyf_o
 Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
     /* reading the X coordinates */
     x_coordinates = new int[num_points];
-    vec_idx = 0;
-    vec_limit = num_points;
     tag_idx = 0;
     x = 0;
     if(stream.pos() > limit) {
@@ -202,16 +204,16 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
     for(vec_idx = 0; vec_idx < num_points; vec_idx++) {
       delta = 0;
       tag = tags[vec_idx];
-      if((tag & TTTags.GlyphFlags.X_SHORT.getVal()) != 0) {
+      if(tag.contains(TTTags.GlyphFlags.X_SHORT)) {
         if(stream.pos() + 1 > limit) {
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
         }
         delta = stream.readByte() & 0xFF;
-        if((tag & TTTags.GlyphFlags.X_SAME.getVal()) == 0) {
+        if(tag.contains(TTTags.GlyphFlags.X_SAME)) {
           delta = -delta;
         }
       } else {
-        if((tag & TTTags.GlyphFlags.X_SAME.getVal()) == 0) {
+        if(tag.contains(TTTags.GlyphFlags.X_SAME)) {
           if(stream.pos() + 2 > limit) {
             return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
           }
@@ -221,14 +223,13 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
       x += delta;
       x_coordinates[vec_idx] = delta;
       points[vec_idx].setX(x);
-      tags[tag_idx] = (byte)(tag & ~(TTTags.GlyphFlags.X_SHORT.getVal() | TTTags.GlyphFlags.X_SAME.getVal()));
+      tags[tag_idx].remove(TTTags.GlyphFlags.X_SHORT);
+      tags[tag_idx].remove(TTTags.GlyphFlags.X_SAME);
       tag_idx++;
     }
 
     /* reading the Y coordinates */
     y_coordinates = new int[num_points];
-    vec_idx = 0;
-    vec_limit = num_points;
     tag_idx = 0;
     y = 0;
     if(stream.pos() > limit) {
@@ -237,16 +238,16 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
     for(vec_idx = 0; vec_idx < num_points; vec_idx++) {
       delta = 0;
       tag = tags[vec_idx];
-      if((tag & TTTags.GlyphFlags.Y_SHORT.getVal()) != 0) {
+      if(tag.contains(TTTags.GlyphFlags.Y_SHORT)) {
         if(stream.pos() + 1 > limit) {
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
         }
         delta = stream.readByte() & 0xFF;
-        if((tag & TTTags.GlyphFlags.Y_SAME.getVal()) == 0) {
+        if(tag.contains(TTTags.GlyphFlags.Y_SAME)) {
           delta = -delta;
         }
       } else {
-        if((tag & TTTags.GlyphFlags.Y_SAME.getVal()) == 0) {
+        if(tag.contains(TTTags.GlyphFlags.Y_SAME)) {
           if(stream.pos() + 2 > limit) {
             return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
           }
@@ -256,12 +257,20 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
       y += delta;
       y_coordinates[vec_idx] = delta;
       points[vec_idx].setY(y);
-      tags[tag_idx] = (byte)(tag & ~(TTTags.GlyphFlags.Y_SHORT.getVal() | TTTags.GlyphFlags.Y_SAME.getVal()));
+      tags[tag_idx].remove(TTTags.GlyphFlags.Y_SHORT);
+      tags[tag_idx].remove(TTTags.GlyphFlags.Y_SAME);
+      tags[tag_idx].remove(TTTags.GlyphFlags.REPEAT);
+      tags[tag_idx].remove(TTTags.GlyphFlags.RESERVED1);
+      tags[tag_idx].remove(TTTags.GlyphFlags.RESERVED2);
       tag_idx++;
     }
 
+int j;
+for( j = 0; j < num_points; j++) {
+  Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("tag4: %d 0x%02x", j, TTTags.GlyphFlags.GlyphFlagsSetToInt(tags[j])) + TTTags.GlyphFlags.GlyphFlagsSetToString(tags[j]));
+}
     FTTrace.Trace(7, TAG, "loaded");
-    Debug(0, DebugTag.DBG_LOAD_FACE, TAG, toDebugString());
+Debug(0, DebugTag.DBG_LOAD_FACE, TAG, toDebugString());
     return error;
   }
 
@@ -296,12 +305,12 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
   }
 
   /* ==================== getFlags ================================== */
-  public byte[] getFlags() {
+  public Set<TTTags.GlyphFlags>[] getFlags() {
     return flags;
   }
 
   /* ==================== setFlags ================================== */
-  public void setFlags(byte[] flags) {
+  public void setFlags(Set<TTTags.GlyphFlags>[] flags) {
     this.flags = flags;
   }
 
@@ -326,17 +335,17 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
   }
 
   /* ==================== getTags ================================== */
-  public byte[] getTags() {
+  public Set<TTTags.GlyphFlags>[] getTags() {
     return tags;
   }
 
   /* ==================== getTags ================================== */
-  public byte getTag(int tag_idx) {
+  public  Set<TTTags.GlyphFlags>getTag(int tag_idx) {
     return tags[tag_idx];
   }
 
   /* ==================== setTags ================================== */
-  public void setTags(byte[] tags) {
+  public void setTags(Set<TTTags.GlyphFlags>[] tags) {
     this.tags = tags;
   }
 

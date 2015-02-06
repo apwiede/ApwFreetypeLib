@@ -116,8 +116,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "load_truetype_glyph");
           /* that this behaviour is independent on the value of bit 1 of */
           /* the `flags' field in the `head' table -- at least major     */
           /* applications like Acroread indicate that.                   */
-//          showLoaderZone("TTLoadGlyph");
-        Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d", loader.getPp1().getX()));
+loader.getBase().showLoaderZone("TTLoadGlyph", null);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("loader.pp1.x: %d", loader.getPp1().getX()));
         int i;
         for (i = 0; i < loader.getGloader().getCurrent().getN_points() + 4; i++) {
           Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("PP1: i: %d ipoints_idx: %d x: %d y: %d\n", i, loader.getGloader().getCurrent().getPoints_idx(), loader.getGloader().getCurrent().getPoint(i).getX(),
