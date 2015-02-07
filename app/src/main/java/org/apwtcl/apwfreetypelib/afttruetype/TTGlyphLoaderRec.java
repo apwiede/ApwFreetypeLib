@@ -146,10 +146,11 @@ for(int t = 0; t < flag_idx; t++) {
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("Tag: t: %d: 0x%02x", t, Flags.Curve.CurveSetToInt(current.getTag(t)))+Flags.Curve.CurveSetToString(current.getTag(t)));
 }
 
-      /* loading the X and y coordinates */
+      /* loading the x and y coordinates */
     vec_limit = n_points;
     for (vec_idx = 0; vec_idx < vec_limit; vec_idx++) {
-      current.getPoints()[vec_idx] = ttglyph.getPoints()[vec_idx];
+      current.setPoint_x(vec_idx, ttglyph.getPoint_x(vec_idx));
+      current.setPoint_y(vec_idx, ttglyph.getPoint_y(vec_idx));
     }
     current.setN_points(n_points);
     current.setN_contours(n_contours);

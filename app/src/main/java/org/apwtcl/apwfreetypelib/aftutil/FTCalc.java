@@ -167,7 +167,7 @@ public class FTCalc extends FTDebug {
         q = 0x7FFFFFFF;
       } else {
         /* compute result directly */
-        q = (int)((((a << 16) + (b >> 1)) / b));
+        q = ((((a << 16) + (b >> 1)) / b));
       }
       return (s < 0 ? -q : q);
     }

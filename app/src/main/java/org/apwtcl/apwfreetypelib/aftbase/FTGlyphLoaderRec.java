@@ -34,6 +34,10 @@ public class FTGlyphLoaderRec extends FTDebug {
   private int id;
   private static String TAG = "FTGlyphLoaderRec";
 
+  private static final int CONTOURS_MAX = 0xFFFF;
+  private static final int POINTS_MAX = 0xFFFF;
+
+
   protected int max_points = 0;
   protected int max_contours = 0;
   protected int max_subglyphs = 0;
@@ -361,7 +365,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("n_points: base.outline.n_p
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FTGlyphLoaderCheckPoints: renew: old: %d new: %d", old_max, new_max));
       if (new_max > old_max) {
         new_max = FTCalc.FT_PAD_CEIL(new_max, 8);
-        if (new_max > Flags.Outline.POINTS_MAX.getVal()) {
+        if (new_max > POINTS_MAX) {
           return FTError.ErrorTag.GLYPH_ARRAY_TOO_LARGE;
         }
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_RENEW_ARRAY: base.outline.points: "+base.getPoints()+"!");
@@ -398,7 +402,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("base.outline.n_contours: %
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FTGlyphLoaderCheckContours: renew: old: %d new: %d", old_max, new_max));
       if (new_max > old_max) {
         new_max = FTCalc.FT_PAD_CEIL(new_max, 4);
-        if (new_max > Flags.Outline.CONTOURS_MAX.getVal()) {
+        if (new_max > CONTOURS_MAX) {
           return FTError.ErrorTag.GLYPH_ARRAY_TOO_LARGE;
         }
         base.setContours((int[])FTUtil.FT_RENEW_ARRAY(base.getContours(), FTUtilFlags.ArrayType.INT, old_max, new_max));

@@ -1130,7 +1130,7 @@ public class TTTags {
   }
 
   public enum GlyphFlags {
-    Unknown(0x0, "TT_GLYPH_FLAGS_UNKNOWN"),
+    NO_FLAGS(0x0, "TT_GLYPH_FLAGS_NO_FLAGS"),
     ON_CURVE(0x1, "TT_GLYPH_FLAGS_ON_CURVE"),
     X_SHORT(0x2, "TT_GLYPH_FLAGS_X_SHORT"),
     Y_SHORT(0x4, "TT_GLYPH_FLAGS_Y_SHORT"),
@@ -1187,6 +1187,9 @@ public class TTTags {
         if (flags.contains(t)) {
           str.append(" "+t.toString());
         }
+      }
+      if (flags.isEmpty()) {
+        str.append(" "+NO_FLAGS);
       }
       return str.toString();
     }

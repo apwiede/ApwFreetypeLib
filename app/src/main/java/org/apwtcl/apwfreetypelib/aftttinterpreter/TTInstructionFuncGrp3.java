@@ -85,6 +85,7 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("_iup_worker_interpolate: p1: %
       orus1 = worker.getOrusPoint_y(ref1);
       orus2 = worker.getOrusPoint_y(ref2);
     }
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("_iup_worker_interpolate: orus1: %d, orus2: %d, ref1: %d ref2: %d", orus1, orus2, ref1, ref2));
     if (orus1 > orus2) {
       int tmp_o;
       int tmp_r;
@@ -153,6 +154,8 @@ Debug(0, DebugTag.DBG_INTERP, TAG, String.format("x: %d org1: %d, org2: %d, delt
           } else {
             if (!scale_valid) {
               scale_valid = true;
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("org2: %d, delta2: %d, org1: %d, delta1: %d, orus2: %d, orus1: %d", org2, delta2, org1, delta1, orus2, orus1));
+Debug(0, DebugTag.DBG_INTERP, TAG, String.format("FDF: %d, %d", org2 + delta2 - (org1 + delta1), orus2 - orus1));
               scale = FTCalc.FTDivFix(org2 + delta2 - (org1 + delta1), orus2 - orus1);
             }
 Debug(0, DebugTag.DBG_INTERP, TAG, String.format("scale: %d, org1: %d, delta1: %d, worker.orus[i].x: %d, orus1: %d", scale, org1, delta1, useX ?  worker.getOrusPoint_x(i) :  worker.getOrusPoint_y(i), orus1));
@@ -317,7 +320,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("end_point: %d, contour: %d
         end_point = cur.pts.getN_points() - 1;
       }
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point: %d, end_point: %d", point, end_point));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag1: point: "+point+" tags: "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" mask: "+mask+" "+cur.pts.getTag(point).contains(mask)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_Y));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag1: point: "+point+" tags: "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" mask: "+mask+" contains: "+cur.pts.getTag(point).contains(mask));
       while (point <= end_point && !cur.pts.getTag(point).contains(mask)) {
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag2: point: "+point+" "+Flags.Curve.CurveSetToString(cur.pts.getTag(point)));
         point++;
@@ -331,7 +334,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point2: %d, end_point: %d"
         point++;
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("point3: %d, end_point: %d, cur_touched: %d", point, end_point, cur_touched));
         while (point <= end_point) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag3: point: "+point+" "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" "+mask+" "+cur.pts.getTag(point).contains(mask)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X)+" "+cur.pts.getTag(point).contains(Flags.Curve.TOUCH_X));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tag3: point: "+point+" tags: "+Flags.Curve.CurveSetToString(cur.pts.getTag(point))+" mask: "+mask+" contains: "+cur.pts.getTag(point).contains(mask));
           if (cur.pts.getTag(point).contains(mask)) {
             _iup_worker_interpolate(worker_ref, cur_touched + 1, point - 1, cur_touched, point, useX);
             cur_touched = point;

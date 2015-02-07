@@ -209,18 +209,21 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
         }
         delta = stream.readByte() & 0xFF;
-        if(tag.contains(TTTags.GlyphFlags.X_SAME)) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  x delta_byte: %d", delta));
+        if(!tag.contains(TTTags.GlyphFlags.X_SAME)) {
           delta = -delta;
         }
       } else {
-        if(tag.contains(TTTags.GlyphFlags.X_SAME)) {
+        if(!tag.contains(TTTags.GlyphFlags.X_SAME)) {
           if(stream.pos() + 2 > limit) {
             return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
           }
           delta = (short)stream.readShort();
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  x delta_short: %d", delta));
         }
       }
       x += delta;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  x: %d, delta: %d", x, delta));
       x_coordinates[vec_idx] = delta;
       points[vec_idx].setX(x);
       tags[tag_idx].remove(TTTags.GlyphFlags.X_SHORT);
@@ -243,18 +246,21 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "pos before reading x: "+stream.pos());
           return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
         }
         delta = stream.readByte() & 0xFF;
-        if(tag.contains(TTTags.GlyphFlags.Y_SAME)) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  y delta_byte: %d", delta));
+        if(!tag.contains(TTTags.GlyphFlags.Y_SAME)) {
           delta = -delta;
         }
       } else {
-        if(tag.contains(TTTags.GlyphFlags.Y_SAME)) {
+        if(!tag.contains(TTTags.GlyphFlags.Y_SAME)) {
           if(stream.pos() + 2 > limit) {
             return FTError.ErrorTag.GLYPH_INVALID_OUTLINE;
           }
           delta = (short)stream.readShort();
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  y delta_short: %d", delta));
         }
       }
       y += delta;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("  y: %d, delta: %d", y, delta));
       y_coordinates[vec_idx] = delta;
       points[vec_idx].setY(y);
       tags[tag_idx].remove(TTTags.GlyphFlags.Y_SHORT);
@@ -352,6 +358,21 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, toDebugString());
   /* ==================== getPoints ================================== */
   public FTVectorRec[] getPoints() {
     return points;
+  }
+
+  /* ==================== getPoint ================================== */
+  public FTVectorRec getPoint(int point_idx) {
+    return points[point_idx];
+  }
+
+  /* ==================== getPoint_x ================================== */
+  public int getPoint_x(int point_idx) {
+    return points[point_idx].getX();
+  }
+
+  /* ==================== getPoint_y ================================== */
+  public int getPoint_y(int point_idx) {
+    return points[point_idx].getY();
   }
 
   /* ==================== setPoints ================================== */

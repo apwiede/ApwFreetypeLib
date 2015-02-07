@@ -127,8 +127,8 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "Load: os2 offset: "+String.format("0x%08x
     fs_selection = stream.readShort();
     us_first_char_index = stream.readShort();
     us_last_char_index = stream.readShort();
-    s_typo_ascender = stream.readShort();
-    s_typo_descender = stream.readShort();
+    s_typo_ascender = (short)stream.readShort();
+    s_typo_descender = (short)stream.readShort();
     s_typo_line_gap = stream.readShort();
     us_win_ascent = stream.readShort();
     us_win_descent = stream.readShort();

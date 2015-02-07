@@ -390,16 +390,19 @@ public class Flags {
       }
       return flags;
     }
-    public static String CurveSetToString(Set<Curve> flags) {
+    public static String LoadSetToString(Set<Load> flags) {
       StringBuffer str = new StringBuffer();
       for (Load t : values()) {
         if (flags.contains(t)) {
           str.append(" "+t.toString());
         }
       }
+      if (flags.isEmpty()) {
+        str.append(" "+DEFAULT);
+      }
       return str.toString();
     }
-    public static int CurveSetToInt(Set<Curve> flags) {
+    public static int LoadSetToInt(Set<Load> flags) {
       int val = 0;
       for (Load t : values()) {
         if (flags.contains(t)) {
@@ -532,9 +535,7 @@ public class Flags {
     SMART_DROPOUTS(0x10, "FT_OUTLINE_SMART_DROPOUTS"),
     INCLUDE_STUBS(0x20, "FT_OUTLINE_INCLUDE_STUBS"),
     HIGH_PRECISION(0x100, "FT_OUTLINE_HIGH_PRECISION"),
-    SINGLE_PASS(0x200, "FT_OUTLINE_SINGLE_PASS"),
-    CONTOURS_MAX(0xFFFF, "FT_OUTLINE_CONTOURS_MAX"),
-    POINTS_MAX(0xFFFF, "FT_OUTLINE_POINTS_MAX");
+    SINGLE_PASS(0x200, "FT_OUTLINE_SINGLE_PASS");
     private int val;
     private String str;
     private static SparseArray<Outline> tagToOutlineMapping;
@@ -602,6 +603,9 @@ public class Flags {
         if (flags.contains(t)) {
           str.append(" "+t.toString());
         }
+      }
+      if (flags.isEmpty()) {
+        str.append(" "+CONIC);
       }
       return str.toString();
     }

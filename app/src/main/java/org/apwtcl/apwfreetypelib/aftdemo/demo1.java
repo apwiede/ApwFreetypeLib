@@ -79,7 +79,7 @@ public class demo1 extends FTDebug {
       }
 
 
-      FTFaceRequester requester = new FTDemoFaceRequester();
+        FTFaceRequester requester = new FTDemoFaceRequester();
       FTCManagerRec manager = new FTCManagerRec(library, max_faces, max_sizes, requester, font_args);
 
       FTCGCacheClassRec sbits_cache = new FTCBasicSCacheClass();    /* the glyph small bitmaps cache */
