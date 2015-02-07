@@ -150,7 +150,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     int w;
     int h;
 
-    if ((face.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) == 0) {
+    if (!face.getFace_flags().contains(Flags.Face.FIXED_SIZES)) {
       return FTError.ErrorTag.GLYPH_INVALID_FACE_HANDLE;
     }
     /* FT_Bitmap_Size doesn't provide enough info... */
@@ -202,7 +202,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     bsize = face.getAvailable_sizes()[strike_index];
     metrics.setX_ppem(((bsize.x_ppem + 32) >> 6));
     metrics.setY_ppem(((bsize.y_ppem + 32) >> 6));
-    if ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0) {
+    if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
       metrics.setX_scale(FTCalc.FTDivFix(bsize.x_ppem, face.getUnits_per_EM()));
       metrics.setY_scale(FTCalc.FTDivFix(bsize.y_ppem, face.getUnits_per_EM()));
       FTReference<FTSizeMetricsRec> metrics_ref = new FTReference<FTSizeMetricsRec>();
@@ -241,7 +241,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     Debug(0, DebugTag.DBG_INIT, TAG, "FTSelectSize:");
     FTDriverClassRec clazz;
 
-    if (face == null || (face.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) == 0) {
+    if (face == null || !face.getFace_flags().contains(Flags.Face.FIXED_SIZES)) {
       return FTError.ErrorTag.GLYPH_INVALID_FACE_HANDLE;
     }
     if (strike_index < 0 || strike_index >= face.getNum_fixed_sizes()) {
@@ -314,8 +314,8 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+metrics.getAscender()+" "+me
      *
      * In the latter case, a simple size matching is done.
      */
-    if ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0 &&
-        (face.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) != 0) {
+    if (face.getFace_flags().contains(Flags.Face.SCALABLE) &&
+        face.getFace_flags().contains(Flags.Face.FIXED_SIZES)) {
       FTReference<Integer> strike_index_ref = new FTReference<>();
 //    	strike_index_Ref.Set(strike_index);
       error = MatchSize(face, req, false, strike_index_ref);

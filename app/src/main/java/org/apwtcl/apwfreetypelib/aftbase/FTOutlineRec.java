@@ -336,7 +336,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("FTOutlineGetCBox end:: xMin: %
     boolean doContinue = false;
     boolean isClosed = false;
 
-Debug(0, DebugTag.DBG_RENDER, TAG, "ftoutline FTOutlineDecompose");
+Debug(0, DebugTag.DBG_RENDER, TAG, "FTOutlineRec FTOutlineDecompose");
     if (func_interface == null) {
       return FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
     }
@@ -424,15 +424,15 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
           continue;
         }
         if (tag.contains(Flags.Curve.CONIC)) {  /* consume conic arcs */
-          Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CONIC");
-          Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CONIC");
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
           v_control.setX(((points[pointIdx].getX()) << shift) - delta);
           v_control.setY(((points[pointIdx].getY()) << shift) - delta);
           doConic = true;
           while (doConic) {
-            Debug(0, DebugTag.DBG_RENDER, TAG, String.format("decompose doConic: pointIdx: %d,  limit: %d", pointIdx, limit));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("decompose doConic: pointIdx: %d,  limit: %d", pointIdx, limit));
             doConic = false;
-            Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==3b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
             doContinue = false;
             if (pointIdx < limit) {
               FTVectorRec vec = new FTVectorRec();
@@ -443,14 +443,14 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
               tag = tags[tagsIdx];
               vec.setX(((points[pointIdx].getX()) << shift) - delta);
               vec.setY(((points[pointIdx].getY()) << shift) - delta);
-              Debug(0, DebugTag.DBG_RENDER, TAG, String.format("tag: %d, tagIdx: %d, pointIdx: %d, limit: %d, vec.x: %d, vec.y: %d", tag, tagsIdx, pointIdx, limit, vec.getX(), vec.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("tag: %s, tagIdx: %d, pointIdx: %d, limit: %d, vec.x: %d, vec.y: %d", tag, tagsIdx, pointIdx, limit, vec.getX(), vec.getY()));
               if (tag.contains(Flags.Curve.ON)) {
                 FTTrace.Trace(0, TAG, String.format("  1 conic to (%.2f, %.2f)" +
                         " with control (%.2f, %.2f)",
                     vec.getX() / 64.0, vec.getY() / 64.0,
                     v_control.getX() / 64.0, v_control.getY() / 64.0));
                 error = func_interface.conicTo(v_control, vec, user);
-                Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
+Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
                 if (error != FTError.ErrorTag.ERR_OK) {
                   FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
                   return error;
@@ -468,7 +468,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
                   v_middle.getX() / 64.0, v_middle.getY() / 64.0,
                   v_control.getX() / 64.0, v_control.getY() / 64.0));
               error = func_interface.conicTo(v_control, v_middle, user);
-              Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose3: after call conic_to");
+Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose3: after call conic_to");
               if (error != FTError.ErrorTag.ERR_OK) {
                 FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
                 return error;
@@ -476,10 +476,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
               v_control.setX(vec.getX());
               v_control.setY(vec.getY());
               doConic = true;
-              Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4a v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
             }
           }
-          Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
           if (doContinue) {
             continue;
           }

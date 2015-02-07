@@ -23,6 +23,8 @@ import android.util.Log;
 
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
+import java.util.Set;
+
 public class FTAutoHinterInterfaceClass  extends FTModuleInterface {
   private static int oid = 0;
 
@@ -75,7 +77,8 @@ public class FTAutoHinterInterfaceClass  extends FTModuleInterface {
   }
 
   /* ==================== loadGlyph ================================== */
-  public FTError.ErrorTag loadGlyph(FTModuleRec hinter, FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, int load_flags) {
+  public FTError.ErrorTag loadGlyph(FTModuleRec hinter, FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, Set<Flags.Load>
+      load_flags) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     Log.e(TAG, "loadGlyph not yet implemented");
     return error;

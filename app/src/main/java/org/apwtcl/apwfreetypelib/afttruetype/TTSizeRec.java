@@ -179,7 +179,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     face.getSize().getMetrics().RequestMetrics(face, req);
-    if ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0) {
+    if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
       error = tt_size_reset();
     }
     return error;

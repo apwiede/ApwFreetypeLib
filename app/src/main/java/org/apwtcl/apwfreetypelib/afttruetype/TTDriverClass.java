@@ -25,6 +25,8 @@ import org.apwtcl.apwfreetypelib.aftsfnt.FTSfntInterfaceClass;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTRunInstructions;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.Set;
+
 public class TTDriverClass extends FTDriverClassRec {
   private static int oid = 0;
 
@@ -134,7 +136,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "tt_face_init");
       error = FTError.ErrorTag.INTERP_UNKNOWN_FILE_FORMAT;
       return error;
     }
-    ttface.setFace_flags((ttface.getFace_flags() | Flags.Face.HINTER.getVal()));
+    ttface.addFace_flag(Flags.Face.HINTER);
       /* If we are performing a simple font format check, exit immediately. */
     if (face_index < 0) {
       return FTError.ErrorTag.ERR_OK;
@@ -153,8 +155,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "tt_face_init");
       return error;
     }
 // FIXME!!
-    ttface.setFace_flags((ttface.getFace_flags()) | Flags.Face.SCALABLE.getVal());
-    if ((ttface.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0) {
+    ttface.addFace_flag(Flags.Face.SCALABLE);
+    if (ttface.getFace_flags().contains(Flags.Face.SCALABLE)) {
       if (error == FTError.ErrorTag.ERR_OK) {
         error = ttface.loadLoca(stream);
       }
@@ -276,7 +278,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "tt_slot_init");
    *
    * =====================================================================
    */
-  public FTError.ErrorTag tt_glyph_load(TTGlyphSlotRec ttslot, TTSizeRec ttsize, int glyph_index, int load_flags) {
+  public FTError.ErrorTag tt_glyph_load(TTGlyphSlotRec ttslot, TTSizeRec ttsize, int glyph_index, Set<Flags.Load> load_flags) {
 Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "tt_glyph_load");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
@@ -295,20 +297,21 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "tt_glyph_load");
       error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
       return error;
     }
-    if ((load_flags & Flags.Load.NO_HINTING.getVal()) !=0) {
+    if (load_flags.contains(Flags.Load.NO_HINTING)) {
         /* both FT_LOAD_NO_HINTING and FT_LOAD_NO_AUTOHINT   */
         /* are necessary to disable hinting for tricky fonts */
-      if ((face.getFace_flags() & Flags.Face.TRICKY.getVal()) != 0) {
-        load_flags &= ~Flags.Load.NO_HINTING.getVal();
+      if (face.getFace_flags().contains(Flags.Face.TRICKY)) {
+        load_flags.remove(Flags.Load.NO_HINTING);
       }
-      if ((load_flags & Flags.Load.NO_AUTOHINT.getVal()) != 0) {
-        load_flags |= Flags.Load.NO_HINTING.getVal();
+      if (load_flags.contains(Flags.Load.NO_AUTOHINT)) {
+        load_flags.add(Flags.Load.NO_HINTING);
       }
     }
-    if ((load_flags & (Flags.Load.NO_RECURSE.getVal() | Flags.Load.NO_SCALE.getVal())) != 0) {
-      load_flags |= (Flags.Load.NO_BITMAP.getVal() | Flags.Load.NO_SCALE.getVal());
-      if ((face.getFace_flags() & Flags.Face.TRICKY.getVal()) == 0) {
-        load_flags |= Flags.Load.NO_HINTING.getVal();
+    if (load_flags.contains(Flags.Load.NO_RECURSE) || load_flags.contains(Flags.Load.NO_SCALE)) {
+      load_flags.add(Flags.Load.NO_BITMAP);
+      load_flags.add(Flags.Load.NO_SCALE);
+      if (!face.getFace_flags().contains(Flags.Face.TRICKY)) {
+        load_flags.add(Flags.Load.NO_HINTING);
       }
     }
       /* now load the glyph outline if necessary */
@@ -393,7 +396,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "tt_glyph_load");
 
   /* ==================== loadGlyph ===================================== */
   @Override
-  public FTError.ErrorTag loadGlyph(FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, int load_flags) {
+  public FTError.ErrorTag loadGlyph(FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, Set<Flags.Load> load_flags) {
     return  tt_glyph_load((TTGlyphSlotRec)slot, (TTSizeRec)size, glyph_index, load_flags);
   }
 

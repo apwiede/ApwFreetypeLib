@@ -14,6 +14,7 @@ import org.apwtcl.apwfreetypelib.aftbase.FTFaceRequester;
 import org.apwtcl.apwfreetypelib.aftbase.FTLibraryRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTSizeRec;
 import org.apwtcl.apwfreetypelib.aftbase.FTStrokerRec;
+import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.aftcache.FTCBasicICacheClass;
 import org.apwtcl.apwfreetypelib.aftcache.FTCBasicSCacheClass;
 import org.apwtcl.apwfreetypelib.aftcache.FTCCMapCacheClass;
@@ -21,6 +22,9 @@ import org.apwtcl.apwfreetypelib.aftcache.FTCGCacheClassRec;
 import org.apwtcl.apwfreetypelib.aftcache.FTCManagerRec;
 import org.apwtcl.apwfreetypelib.aftcache.FTCScalerRec;
 import org.apwtcl.apwfreetypelib.aftutil.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class demo1 extends FTDebug {
 
@@ -57,7 +61,7 @@ public class demo1 extends FTDebug {
         return;
       }
       FTFaceRec face = face_ref.Get();
-      Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FACE: " + face.toDebugString());
+Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FACE: " + face.toDebugString());
       int width = 12 * 64;
       int height = 12 * 64;
       int h_res = 72;
@@ -67,9 +71,10 @@ public class demo1 extends FTDebug {
         Log.e(TAG, "could not open face");
         return;
       }
-      Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "SIZE: " + face.getSize().toDebugString());
+Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "SIZE: " + face.getSize().toDebugString());
 
-      int load_flags = 0;
+      Set<Flags.Load> load_flags = new HashSet<>();
+      load_flags.add(Flags.Load.RENDER);
       int glyph_index = 72;
       error = face.getGlyph().LoadGlyph(glyph_index, load_flags);
 

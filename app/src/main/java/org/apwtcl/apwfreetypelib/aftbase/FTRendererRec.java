@@ -66,17 +66,11 @@ public class FTRendererRec extends FTModuleRec {
 
   /* ==================== rasterRender ===================================== */
   public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    Log.e(TAG, "rasterRest not yet fully implemented");
     return clazz.rasterRender(raster, params);
   }
 
   /* ==================== render ===================================== */
   public FTError.ErrorTag render(FTRendererRec render, FTGlyphSlotRec slot, int render_mode, Object obj) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    Log.e(TAG, "rasterRest not yet fully implemented");
     return clazz.renderGlyph(render, slot, render_mode, (FTVectorRec)obj);
   }
 

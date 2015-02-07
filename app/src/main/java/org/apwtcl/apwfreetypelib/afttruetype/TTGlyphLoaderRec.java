@@ -139,7 +139,11 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("glyphInstruction: %d 0x%02
     flag_idx = 0;
     flag_limit = n_points;
     while (flag_idx < flag_limit) {
-      current.setTag(flag_idx, Flags.Curve.makeTableTagSet(TTTags.GlyphFlags.GlyphFlagsSetToInt(ttglyph.getTag(flag_idx))));
+      if (ttglyph.getTag(flag_idx).isEmpty()) {
+        current.setTag(flag_idx, Flags.Curve.CONIC);
+      } else {
+        current.setTag(flag_idx, Flags.Curve.makeTableTagSet(TTTags.GlyphFlags.GlyphFlagsSetToInt(ttglyph.getTag(flag_idx))));
+      }
       flag_idx++;
     }
 for(int t = 0; t < flag_idx; t++) {

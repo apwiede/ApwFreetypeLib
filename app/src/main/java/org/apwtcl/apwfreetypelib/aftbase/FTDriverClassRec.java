@@ -22,6 +22,8 @@ import android.util.Log;
 
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.Set;
+
 public class FTDriverClassRec extends FTModuleClassRec {
   private static int oid = 0;
 
@@ -103,7 +105,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTDriverClassRec constructor called!!"
   }
 
   /* ==================== loadGlyph ===================================== */
-  public FTError.ErrorTag loadGlyph(FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, int load_flags) {
+  public FTError.ErrorTag loadGlyph(FTGlyphSlotRec slot, FTSizeRec size, int glyph_index, Set<Flags.Load> load_flags) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     Log.e(TAG, "loadGlyph not yet implemented");

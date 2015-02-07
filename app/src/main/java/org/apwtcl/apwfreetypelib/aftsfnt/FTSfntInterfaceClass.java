@@ -32,6 +32,9 @@ import org.apwtcl.apwfreetypelib.afttruetype.TTFaceRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTTags;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class FTSfntInterfaceClass extends FTModuleInterface {
   private static int oid = 0;
 
@@ -396,58 +399,59 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "family_name: "+ttface.getFamily_name()+" 
       /* now set up root fields */
     {
       FTFaceRec root = ttface;
-      int flags = Flags.Face.getTableTag(root.getFace_flags()).getVal();
+      Set<Flags.Face> flags = root.getFace_flags();
 
         /* =================================================================
          * Compute face flags.
          * =================================================================
          */
       if (has_outline == true) {
-        flags = flags | Flags.Face.SCALABLE.getVal();   /* scalable outlines */
+        flags.add(Flags.Face.SCALABLE);   /* scalable outlines */
       }
         /* The sfnt driver only supports bitmap fonts natively, thus we */
         /* don't set FT_FACE_FLAG_HINTER.                               */
-      flags = flags | Flags.Face.SFNT.getVal() | /* SFNT file format  */
-          Flags.Face.HORIZONTAL.getVal(); /* horizontal data   */
+      flags.add(Flags.Face.SFNT);       /* SFNT file format  */
+      flags.add(Flags.Face.HORIZONTAL); /* horizontal data   */
         /* fixed width font? */
       if (ttface.getPostscript().getIsFixedPitch() != 0) {
-        flags = flags | Flags.Face.FIXED_WIDTH.getVal();
+        flags.add(Flags.Face.FIXED_WIDTH);
       }
         /* vertical information? */
       if (ttface.isVertical_info()) {
-        flags = flags | Flags.Face.VERTICAL.getVal();
+        flags.add(Flags.Face.VERTICAL);
       }
         /* kerning available ? */
-      if ((ttface.getFace_flags() & Flags.Face.KERNING.getVal()) != 0) {
-        flags = flags | Flags.Face.KERNING.getVal();
+      if (ttface.getFace_flags().contains(Flags.Face.KERNING)) {
+        flags.add(Flags.Face.KERNING);
       }
       root.setFace_flags(flags);
         /* =================================================================
          * Compute style flags.
          * =================================================================
          */
-      int style_flags = Flags.FontStyle.NONE.getVal();
+      Set<Flags.Face> style_flags = new HashSet<>();
+      // Flags.FontStyle.NONE.getVal();
       if (has_outline == true && ttface.getOs2().getVersion() != 0xFFFF) {
           /* We have an OS/2 table; use the `fsSelection' field.  Bit 9 */
           /* indicates an oblique font face.  This flag has been        */
           /* introduced in version 1.5 of the OpenType specification.   */
         if ((ttface.getOs2().getFsSelection() & 512) != 0) {      /* bit 9 */
-          style_flags = flags | Flags.FontStyle.ITALIC.getVal();
+          style_flags.add(Flags.Face.getTableTag(Flags.FontStyle.ITALIC.getVal()));
         } else {
           if ((ttface.getOs2().getFsSelection() & 1) != 0) {   /* bit 0 */
-            style_flags = flags | Flags.FontStyle.ITALIC.getVal();
+            style_flags.add(Flags.Face.getTableTag(Flags.FontStyle.ITALIC.getVal()));
           }
         }
         if ((ttface.getOs2().getFsSelection() & 32) != 0) {    /* bit 5 */
-          style_flags = flags | Flags.FontStyle.BOLD.getVal();
+          style_flags.add(Flags.Face.getTableTag(Flags.FontStyle.BOLD.getVal()));
         }
       } else {
           /* this is an old Mac font, use the header field */
         if ((ttface.getHeader().getMacStyle() & 1) != 0) {
-          style_flags = flags | Flags.FontStyle.BOLD.getVal();
+          style_flags.add(Flags.Face.getTableTag(Flags.FontStyle.BOLD.getVal()));
         }
         if ((ttface.getHeader().getMacStyle() & 2) != 0) {
-          style_flags = flags | Flags.FontStyle.ITALIC.getVal();
+          style_flags.add(Flags.Face.getTableTag(Flags.FontStyle.ITALIC.getVal()));
         }
       }
       root.setStyle_flags(style_flags);
@@ -476,15 +480,15 @@ Log.e(TAG, "root.charmaps["+m+"] is null!!");
       }
         /* a font with no bitmaps and no outlines is scalable; */
         /* it has only empty glyphs then                       */
-      if ((root.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) != 0 &&
-          (root.getFace_flags() & Flags.Face.SCALABLE.getVal()) == 0) {
-        root.setFace_flags(root.getFace_flags() | Flags.Face.SCALABLE.getVal());
+      if (root.getFace_flags().contains(Flags.Face.FIXED_SIZES) &&
+          !root.getFace_flags().contains(Flags.Face.SCALABLE)) {
+        root.addFace_flag(Flags.Face.SCALABLE);
       }
         /* =================================================================
          *  Set up metrics.
          * =================================================================
          */
-      if ((root.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0) {
+      if (root.getFace_flags().contains(Flags.Face.SCALABLE)) {
           /* XXX What about if outline header is missing */
           /*     (e.g. sfnt wrapped bitmap)?             */
         root.getBbox().setxMin(ttface.getHeader().getXMin());

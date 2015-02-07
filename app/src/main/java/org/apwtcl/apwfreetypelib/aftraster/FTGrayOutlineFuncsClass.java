@@ -76,6 +76,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: 
       /* start to a new position */
     x = RasterUtil.UPSCALE(to.getX());
     y = RasterUtil.UPSCALE(to.getY());
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to2: x(UPSCALE): %d, y(UPSCALE): %d", x, y));
     gray_start_cell(worker, RasterUtil.TRUNC(x), RasterUtil.TRUNC(y));
     worker.setX(x);
     worker.setY(y);
@@ -91,9 +92,9 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_move_to: to.x: %d, to.y: 
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to call gray_render_line");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to call gray_render_line");
     gray_render_line(worker, RasterUtil.UPSCALE(to.getX()), RasterUtil.UPSCALE(to.getY()));
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to after call gray_render_line");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_line_to after call gray_render_line");
     return error;
   }
 
@@ -917,7 +918,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox2: %d %d %d %d", worker.ge
     worker.setMin_ey(worker.getMin_ey() >> 6);
     worker.setMax_ex((worker.getMax_ex() + 63) >> 6);
     worker.setMax_ey((worker.getMax_ey() + 63) >> 6);
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_comput_cbox end: %d %d %d %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox end: min_ex: %d min_ey: %d max_ex: %d max_ey: %d", worker.getMin_ex(), worker.getMin_ey(), worker.getMax_ex(), worker.getMax_ey()));
     worker.setOutline(outline);
   }
 

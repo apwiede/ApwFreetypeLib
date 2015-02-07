@@ -175,7 +175,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTRequestMetrics:");
     FTSizeMetricsRec metrics;
 
     metrics = face.getSize().metrics;
-    if ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0) {
+    if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
       int w = 0;
       int h = 0;
       int scaled_w = 0;

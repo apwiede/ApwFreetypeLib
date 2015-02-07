@@ -24,45 +24,46 @@ import org.apwtcl.apwfreetypelib.aftbase.*;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
 public class FTSmoothRendererClass extends FTRendererClassRec {
-    private static int oid = 0;
+  private static int oid = 0;
 
-    private int id;
-    private static String TAG = "FTSmoothRendererClass";
+  private int id;
+  private static String TAG = "FTSmoothRendererClass";
 
   FTGrayOutlineFuncsClass func_interface = null;
 
-    /* ==================== FTSmoothRendererClass ================================== */
-    public FTSmoothRendererClass() {
-      super();
-      oid++;
-      id = oid;
+  /* ==================== FTSmoothRendererClass ================================== */
+  public FTSmoothRendererClass() {
+    super();
+    oid++;
+    id = oid;
 
-      module_flags = Flags.Module.RENDERER.getVal();  /* a renderer */
-      module_type = FTTags.ModuleType.FT_RENDERER;
-      module_name = "smooth";     /* driver name */
-      module_version = 0x10000;   /* driver version 1.0 */
-      module_requires = 0x20000;  /* driver requires FreeType 2.0 or higher */
-      module_interface = null;    /* module specific interface */
-      glyph_format = FTTags.GlyphFormat.OUTLINE;
-      raster_type = FTTags.RasterType.Black;
+    module_flags = Flags.Module.RENDERER.getVal();  /* a renderer */
+    module_type = FTTags.ModuleType.FT_RENDERER;
+    module_name = "smooth";     /* driver name */
+    module_version = 0x10000;   /* driver version 1.0 */
+    module_requires = 0x20000;  /* driver requires FreeType 2.0 or higher */
+    module_interface = null;    /* module specific interface */
+    glyph_format = FTTags.GlyphFormat.OUTLINE;
+    raster_type = FTTags.RasterType.GRAY;
+    func_interface = new FTGrayOutlineFuncsClass();
 Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTMSmoothRendererClass constructor called!!");
-    }
+  }
     
-    /* ==================== mySelf ================================== */
-    public String mySelf() {
+  /* ==================== mySelf ================================== */
+  public String mySelf() {
       return TAG+"!"+id+"!";
     }
         
-    /* ==================== toString ===================================== */
-    public String toString() {
+  /* ==================== toString ===================================== */
+  public String toString() {
       return mySelf()+"!";
     }
 
-    /* ==================== toDebugString ===================================== */
-    public String toDebugString() {
-      StringBuffer str = new StringBuffer(mySelf()+"\n");
-      return str.toString();
-    }
+  /* ==================== toDebugString ===================================== */
+  public String toDebugString() {
+    StringBuffer str = new StringBuffer(mySelf()+"\n");
+    return str.toString();
+  }
 
   /* =====================================================================
    * ft_smooth_init
@@ -140,7 +141,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "ft_smooth_init");
     }
       /* allocate new one */
     pitch = width;
-    Debug(0, DebugTag.DBG_INIT, TAG, String.format("ft_smooth_render_generic: pitch: %d, width: %d, height: %d", pitch, width, height));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ft_smooth_render_generic: pitch: %d, width: %d, height: %d", pitch, width, height));
     if (hmul) {
       width = width * 3;
       pitch = FTCalc.FT_PAD_CEIL(width, 4);
@@ -488,7 +489,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count:
    * =====================================================================
    */
   private void gray_init_cells(grayTWorkerRec worker, byte[] buffer, int byte_size) {
-    Debug(0, DebugTag.DBG_RENDER, TAG, "+++ gray_init_cells");
+Debug(0, DebugTag.DBG_RENDER, TAG, "+++ gray_init_cells");
 
     worker.setBuffer(buffer);
     worker.setBuffer_size(byte_size);
@@ -508,7 +509,6 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_span y: %d, count:
    */
   private FTError.ErrorTag gray_convert_glyph_inner(grayTWorkerRec worker) {
 Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
-    func_interface = new FTGrayOutlineFuncsClass();
     FTReference<FTOutlineRec> outline_ref = new FTReference<FTOutlineRec>();
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 

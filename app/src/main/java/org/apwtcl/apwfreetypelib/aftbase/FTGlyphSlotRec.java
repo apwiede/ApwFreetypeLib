@@ -29,6 +29,8 @@ import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
+import java.util.Set;
+
 public class FTGlyphSlotRec extends FTDebug {
   private static int oid = 0;
 
@@ -267,7 +269,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
    *
    * =====================================================================
    */
-  public FTError.ErrorTag LoadGlyph(int glyph_index, int load_flags) {
+  public FTError.ErrorTag LoadGlyph(int glyph_index, Set<Flags.Load> load_flags) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTDriverRec driver = null;
     FTLibraryRec library;
@@ -286,12 +288,14 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     library = driver.library;
     hinter  = library.getAuto_hinter();
     /* resolve load flags dependencies */
-    if ((load_flags & Flags.Load.NO_RECURSE.getVal()) != 0) {
-      load_flags |= Flags.Load.NO_SCALE.getVal() | Flags.Load.IGNORE_TRANSFORM.getVal();
+    if (load_flags.contains(Flags.Load.NO_RECURSE)) {
+      load_flags.add(Flags.Load.NO_SCALE);
+      load_flags.add(Flags.Load.IGNORE_TRANSFORM);
     }
-    if ((load_flags & Flags.Load.NO_SCALE.getVal()) != 0) {
-      load_flags |= Flags.Load.NO_HINTING.getVal() | Flags.Load.NO_BITMAP.getVal();
-      load_flags &= ~Flags.Load.RENDER.getVal();
+    if (load_flags.contains(Flags.Load.NO_SCALE)) {
+      load_flags.add(Flags.Load.NO_HINTING);
+      load_flags.add(Flags.Load.NO_BITMAP);
+      load_flags.remove(Flags.Load.RENDER);
     }
     /*
      * Determine whether we need to auto-hint or not.
@@ -311,24 +315,24 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
      *   load properly.
      */
     if (hinter != null &&
-        ((load_flags & Flags.Load.NO_HINTING.getVal()) == 0) &&
-        ((load_flags & Flags.Load.NO_AUTOHINT.getVal()) == 0) &&
+        (!load_flags.contains(Flags.Load.NO_HINTING)) &&
+        (!load_flags.contains(Flags.Load.NO_AUTOHINT)) &&
         ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_SCALABLE.getVal()) != 0) &&
         ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0) &&
-        ((face.getFace_flags() & Flags.Face.TRICKY.getVal()) == 0) &&
-        (((load_flags & Flags.Load.IGNORE_TRANSFORM.getVal()) != 0) ||
+        (!face.getFace_flags().contains(Flags.Face.TRICKY)) &&
+        ((load_flags.contains(Flags.Load.IGNORE_TRANSFORM)) ||
             (face.getInternal().getTransform_matrix().getYx() == 0 && face.getInternal().getTransform_matrix().getXx() != 0) ||
             (face.getInternal().getTransform_matrix().getXx() == 0 && face.getInternal().getTransform_matrix().getYx() != 0))) {
-      if (((load_flags & Flags.Load.FORCE_AUTOHINT.getVal()) != 0) ||
+      if ((load_flags.contains(Flags.Load.FORCE_AUTOHINT)) ||
           ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_HAS_HINTER.getVal()) == 0)) {
         autohint = true;
       } else {
-        int mode = ((load_flags >> 16 ) & 15);
+        int mode = ((Flags.Load.LoadSetToInt(load_flags) >> 16 ) & 15);
         /* the check for `num_locations' assures that we actually    */
         /* test for instructions in a TTF and not in a CFF-based OTF */
         if ((mode == FTTags.RenderMode.LIGHT.getVal()) ||
             face.getInternal().isIgnore_unpatented_hinter() ||
-            ((face.getFace_flags() & Flags.Face.SFNT.getVal()) != 0 &&
+            (face.getFace_flags().contains(Flags.Face.SFNT) &&
                 ttface.getLoca_table().getNum_locations() != 0 &&
                 ttface.getMax_profile().getMaxSizeOfInstructions() == 0)) {
           autohint = true;
@@ -343,10 +347,12 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         /* XXX: This is really a temporary hack that should disappear */
         /*      promptly with FreeType 2.1!                           */
         /*                                                            */
-        if ((face.getFace_flags() & Flags.Face.FIXED_SIZES.getVal()) != 0 &&
-            ((load_flags & Flags.Load.NO_BITMAP.getVal()) == 0)) {
+        if (face.getFace_flags().contains(Flags.Face.FIXED_SIZES) &&
+            (!load_flags.contains(Flags.Load.NO_BITMAP))) {
+          Set<Flags.Load> my_load_flags = load_flags;
+          my_load_flags.add(Flags.Load.SBITS_ONLY);
           error = driver.driver_clazz.loadGlyph(this, face.getSize(),
-                 glyph_index, load_flags | Flags.Load.SBITS_ONLY.getVal());
+                 glyph_index, my_load_flags);
           if ((error != FTError.ErrorTag.ERR_OK )&& format == FTTags.GlyphFormat.BITMAP) {
             Load_Ok = true;
           }
@@ -368,10 +374,10 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       if (error != FTError.ErrorTag.ERR_OK) {
         return error;
       }
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_Load_Glyph: slot->format is outline: "+(format == FTTags.GlyphFormat.OUTLINE));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_Load_Glyph: slot->format is outline: "+(format == FTTags.GlyphFormat.OUTLINE));
       if (format == FTTags.GlyphFormat.OUTLINE) {
         /* check that the loaded outline is correct */
-        Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("CHKOUTLINE: %d", outline.n_points));
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("CHKOUTLINE: %d", outline.n_points));
         error = FTOutlineRec.FTOutlineCheck(outline);
         if (error != FTError.ErrorTag.ERR_OK) {
           return error;
@@ -379,7 +385,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       }
     }
     /* compute the advance */
-    if ((load_flags & Flags.Load.VERTICAL_LAYOUT.getVal()) != 0) {
+    if (load_flags.contains(Flags.Load.VERTICAL_LAYOUT)) {
       advance.setX(0);
       advance.setY(metrics.getVertAdvance());
     } else {
@@ -387,7 +393,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       advance.setY(0);
     }
     /* compute the linear advance in 16.16 pixels */
-    if (((load_flags & Flags.Load.LINEAR_DESIGN.getVal()) == 0) && ((face.getFace_flags() & Flags.Face.SCALABLE.getVal()) != 0)) {
+    if ((!load_flags.contains(Flags.Load.LINEAR_DESIGN)) && (face.getFace_flags().contains(Flags.Face.SCALABLE))) {
       FTSizeMetricsRec metrics = face.getSize().metrics;
 
       /* it's tricky! */
@@ -395,8 +401,8 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
       linearVertAdvance = FTCalc.FT_MulDiv(linearVertAdvance, metrics.getY_scale(), 64);
     }
 
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FT_LOAD_IGNORE_TRANSFORM: %d", (load_flags & Flags.Load.IGNORE_TRANSFORM.getVal())));
-    if ((load_flags & Flags.Load.IGNORE_TRANSFORM.getVal()) == 0) {
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FT_LOAD_IGNORE_TRANSFORM: %b", load_flags.contains(Flags.Load.IGNORE_TRANSFORM)));
+    if (!load_flags.contains(Flags.Load.IGNORE_TRANSFORM)) {
       FTFaceInternalRec internal = face.getInternal();
       FTReference<FTMatrixRec> matrix_ref = new FTReference<FTMatrixRec>();
       FTReference<FTVectorRec> delta_ref = new FTReference<FTVectorRec>();
@@ -436,11 +442,11 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     if (error == FTError.ErrorTag.ERR_OK &&
         (format != FTTags.GlyphFormat.BITMAP) &&
         (format != FTTags.GlyphFormat.COMPOSITE) &&
-        (load_flags & Flags.Load.RENDER.getVal()) != 0) {
-      int mode = ((load_flags >> 16) & 15);
+        load_flags.contains(Flags.Load.RENDER)) {
+      int mode = ((Flags.Load.LoadSetToInt(load_flags) >> 16) & 15);
 
       if ((mode == FTTags.RenderMode.NORMAL.getVal()) &&
-          (load_flags & Flags.Load.MONOCHROME.getVal()) != 0) {
+          load_flags.contains(Flags.Load.MONOCHROME)) {
         mode = FTTags.RenderMode.MONO.getVal();
       }
       error = this.FTRenderGlyph(mode);
@@ -485,7 +491,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     FTRendererRec renderer;
     FTReference<FTListNodeRec> node_ref = new FTReference<FTListNodeRec>();
 
-    Debug(0, DebugTag.DBG_RENDER, TAG, "FTRenderGlyphInternal");
+Debug(0, DebugTag.DBG_RENDER, TAG, "FTRenderGlyphInternal");
     /* if it is already a bitmap, no need to do anything */
     if (this.format == FTTags.GlyphFormat.BITMAP) {
       /* already a bitmap, don't do anything */
@@ -504,9 +510,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         node = node_ref.Get();
       }
       error = FTError.ErrorTag.GLYPH_UNIMPLEMENTED_FEATURE;
-      Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 0: "+renderer+"!");
+Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 0: "+renderer+"!");
       while (renderer != null) {
-        Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 1: "+renderer+"!"+this.bitmap+"!");
+Debug(0, DebugTag.DBG_RENDER, TAG, "renderer 1: "+renderer+"!"+this.bitmap+"!");
         error = renderer.render(renderer, this, render_mode, null);
         if (error == FTError.ErrorTag.ERR_OK || error != FTError.ErrorTag.GLYPH_CANNOT_RENDER_GLYPH) {
           break;
@@ -519,12 +525,12 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
         node_ref.Set(node);
         renderer = library.getCur_renderer().FTLookupRenderer(library, this.format, node_ref);
         if (renderer != null && renderer.clazz != null) {
-          Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
+Debug(0, DebugTag.DBG_RENDER, TAG, "renderer name: "+renderer.clazz.module_name);
         }
         node = node_ref.Get();
         update = true;
       }
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert0d: rows %d width %d pitch %d num_grays %d", this.bitmap.getRows(), this.bitmap.getWidth(), this.bitmap.getPitch(), this.bitmap.getNum_grays()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert0d: rows %d width %d pitch %d num_grays %d", this.bitmap.getRows(), this.bitmap.getWidth(), this.bitmap.getPitch(), this.bitmap.getNum_grays()));
       /* if we changed the current renderer for the glyph image format */
       /* we need to select it as the next current one                  */
       if (error == FTError.ErrorTag.ERR_OK && update && renderer != null) {

@@ -81,8 +81,8 @@ public class Flags {
 
   public enum Face {
     UNKNOWN(0, "Flags Face UNKNOWN"),
-    SCALABLE((1 <<  0), "FT_FACE_FLAG_SCALABLE"),
-    FIXED_SIZES((1 <<  1), "FT_FACE_FLAG_FIXED_SIZES"),
+    SCALABLE((1 <<  0), "FT_FACE_FLAG_SCALABLE | FT_STYLE_FLAG_ITALIC"),
+    FIXED_SIZES((1 <<  1), "FT_FACE_FLAG_FIXED_SIZES | FT_STYLE_FLAG_BOLD"),
     FIXED_WIDTH((1 <<  2), "FT_FACE_FLAG_FIXED_WIDTH"),
     SFNT((1 <<  3), "FT_FACE_FLAG_SFNT"),
     HORIZONTAL((1 <<  4), "FT_FACE_FLAG_HORIZONTAL"),
@@ -113,6 +113,36 @@ public class Flags {
     private Face(int val, String str) {
       this.val = val;
       this.str = str;
+    }
+    public static Set<Face> makeTableTagSet(int value) {
+      Set<Face> flags = new HashSet<>();
+      for (Face t : values()) {
+        if ((value & t.getVal()) != 0) {
+          flags.add(t);
+        }
+      }
+      return flags;
+    }
+    public static String FaceSetToString(Set<Load> flags) {
+      StringBuffer str = new StringBuffer();
+      for (Face t : values()) {
+        if (flags.contains(t)) {
+          str.append(" "+t.toString());
+        }
+      }
+      if (flags.isEmpty()) {
+        str.append(" "+UNKNOWN);
+      }
+      return str.toString();
+    }
+    public static int FaceSetToInt(Set<Load> flags) {
+      int val = 0;
+      for (Face t : values()) {
+        if (flags.contains(t)) {
+          val += t.getVal();
+        }
+      }
+      return val;
     }
     public int getVal() {
       return val;

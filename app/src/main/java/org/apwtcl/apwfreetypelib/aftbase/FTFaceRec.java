@@ -18,6 +18,8 @@ import org.apwtcl.apwfreetypelib.afttruetype.TTFaceRec;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
   /* ===================================================================== */
   /*    FTFaceRec                                                          */
@@ -172,8 +174,8 @@ public class FTFaceRec extends FTDebug {
 
   private int num_faces = 0;
   private int face_index = 0;
-  private int face_flags = Flags.Face.UNKNOWN.getVal();
-  private int style_flags = Flags.FontStyle.NONE.getVal();
+  private Set<Flags.Face> face_flags;
+  private Set<Flags.Face> style_flags;
   private int num_glyphs = 0;
   private String family_name = null;
   private String style_name = null;
@@ -206,7 +208,9 @@ public class FTFaceRec extends FTDebug {
   public FTFaceRec() {
     oid++;
     id = oid;
-      
+
+    face_flags = new HashSet<>();
+    style_flags = new HashSet<>();
     bbox = new FTBBoxRec();
     sizes_list = new FTListRec();
     internal = new FTFaceInternalRec();
@@ -254,7 +258,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     FTOpenArgsRec args = new FTOpenArgsRec();
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FTNewFace: pathname: "+pathname+"!");
+    Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FTNewFace: pathname: " + pathname + "!");
     /* test for valid `library' and `face_ref' delayed to FT_Open_Face() */
     if (pathname == null) {
       Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "FTNewFace1 inv arg");
@@ -448,7 +452,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     FTTrace.Trace(7, TAG, "FT_Open_Face: New face object, adding to list stream: "+stream+"!");
       /* set the FT_FACE_FLAG_EXTERNAL_STREAM bit for FT_Done_Face */
     if (is_external_stream) {
-      face.face_flags = face.face_flags | Flags.Face.EXTERNAL_STREAM.getVal();
+      face.face_flags.add(Flags.Face.EXTERNAL_STREAM);
     }
       /* add the face object to its driver's list */
     node = new FTListNodeRec();
@@ -482,15 +486,15 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
       }
     }
       /* some checks */
-    if ((face.face_flags & Flags.Face.SCALABLE.getVal()) != 0) {
+    if (face.face_flags.contains(Flags.Face.SCALABLE)) {
       if (face.height < 0) {
         face.height = -face.height;
       }
-      if ((face.face_flags & Flags.Face.VERTICAL.getVal()) != 0) {
+      if (face.face_flags.contains(Flags.Face.VERTICAL)) {
         face.max_advance_height = face.height;
       }
     }
-    if ((face.face_flags & Flags.Face.FIXED_SIZES.getVal()) != 0) {
+    if (face.face_flags.contains(Flags.Face.FIXED_SIZES)) {
       int i;
 
       for (i = 0; i < face.num_fixed_sizes; i++) {
@@ -547,22 +551,32 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
   }
 
   /* ==================== getFace_flags ================================== */
-  public int getFace_flags() {
+  public Set<Flags.Face> getFace_flags() {
     return face_flags;
   }
 
   /* ==================== setFace_flags ================================== */
-  public void setFace_flags(int face_flags) {
+  public void setFace_flags(Set<Flags.Face> face_flags) {
     this.face_flags = face_flags;
   }
 
+  /* ==================== addFace_flag ================================== */
+  public void addFace_flag(Flags.Face face_flag) {
+    this.face_flags.add(face_flag);
+  }
+
+  /* ==================== removeFace_flag ================================== */
+  public void removeFace_flag(Flags.Face face_flag) {
+    this.face_flags.remove(face_flag);
+  }
+
   /* ==================== getStyle_flags ================================== */
-  public int getStyle_flags() {
+  public Set<Flags.Face> getStyle_flags() {
     return style_flags;
   }
 
   /* ==================== setStyle_flags ================================== */
-  public void setStyle_flags(int style_flags) {
+  public void setStyle_flags(Set<Flags.Face> style_flags) {
     this.style_flags = style_flags;
   }
 
