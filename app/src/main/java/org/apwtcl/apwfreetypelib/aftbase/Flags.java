@@ -21,6 +21,7 @@ import java.util.Set;
 public class Flags {
 
   public enum Module {
+    UNKNOWN(0, "unknown module"),
     FONT_DRIVER(1, "this module is a font driver"),
     RENDERER(2, "this module is a renderer"),
     HINTER(4, "this module is a glyph hinter"),
@@ -48,35 +49,42 @@ public class Flags {
       this.val = val;
       this.str = str;
     }
+    public static Set<Module> makeTableTagSet(int value) {
+      Set<Module> flags = new HashSet<>();
+      for (Module t : values()) {
+        if ((value & t.getVal()) != 0) {
+          flags.add(t);
+        }
+      }
+      return flags;
+    }
+    public static String ModuleSetToString(Set<Load> flags) {
+      StringBuffer str = new StringBuffer();
+      for (Module t : values()) {
+        if (flags.contains(t)) {
+          str.append(" "+t.toString());
+        }
+      }
+      if (flags.isEmpty()) {
+        str.append(" "+UNKNOWN);
+      }
+      return str.toString();
+    }
+    public static int ModuleSetToInt(Set<Load> flags) {
+      int val = 0;
+      for (Module t : values()) {
+        if (flags.contains(t)) {
+          val += t.getVal();
+        }
+      }
+      return val;
+    }
     public int getVal() {
       return val;
     }
     public String getDescription() {
       return str;
     }
-
-    public static boolean isFontDriver(int flags) {
-      return (flags &  Flags.Module.FONT_DRIVER.getVal()) != 0;
-    }
-    public static boolean isRenderer(int flags) {
-      return (flags &  Flags.Module.RENDERER.getVal()) != 0;
-    }
-    public static boolean isHinter(int flags) {
-      return (flags &  Flags.Module.HINTER.getVal()) != 0;
-    }
-    public static boolean isDriverStyler(int flags) {
-      return (flags &  Flags.Module.DRIVER_STYLER.getVal()) != 0;
-    }
-    public static boolean isDriverScalable(int flags) {
-      return (flags &  Flags.Module.DRIVER_SCALABLE.getVal()) != 0;
-    }
-    public static boolean isDriverNoOutlines(int flags) {
-      return (flags &  Flags.Module.DRIVER_NO_OUTLINES.getVal()) != 0;
-    }
-    public static boolean driverHasHinter(int flags) {
-      return (flags &  Flags.Module.DRIVER_HAS_HINTER.getVal()) != 0;
-    }
-
   }
 
   public enum Face {

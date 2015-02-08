@@ -25,6 +25,7 @@ import org.apwtcl.apwfreetypelib.aftsfnt.FTSfntInterfaceClass;
 import org.apwtcl.apwfreetypelib.aftttinterpreter.TTRunInstructions;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class TTDriverClass extends FTDriverClassRec {
@@ -40,9 +41,10 @@ public class TTDriverClass extends FTDriverClassRec {
     id = oid;
 
 Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "TTDriverClass constructor called!!");
-    module_flags = (Flags.Module.FONT_DRIVER.getVal() |
-         Flags.Module.DRIVER_SCALABLE.getVal() |
-         Flags.Module.DRIVER_HAS_HINTER.getVal());  /* a font driver */
+    module_flags = new HashSet<>();
+    module_flags.add(Flags.Module.FONT_DRIVER);
+    module_flags.add(Flags.Module.DRIVER_SCALABLE);
+    module_flags.add(Flags.Module.DRIVER_HAS_HINTER);  /* a font driver */
     module_type = FTTags.ModuleType.TT_DRIVER;
     module_name = "truetype";   /* driver name */
     module_version = 0x10000;   /* driver version 1.0 */

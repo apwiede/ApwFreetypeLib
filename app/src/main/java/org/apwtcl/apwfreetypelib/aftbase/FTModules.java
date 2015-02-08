@@ -16,11 +16,13 @@ package org.apwtcl.apwfreetypelib.aftbase;
 import android.util.Log;
 import android.util.SparseArray;
 
+import org.apwtcl.apwfreetypelib.aftraster.FTGrayOutlineClass;
 import org.apwtcl.apwfreetypelib.aftraster.FTRaster1RendererClass;
 import org.apwtcl.apwfreetypelib.aftraster.FTSmoothRendererClass;
 import org.apwtcl.apwfreetypelib.aftsfnt.SfntModuleClass;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDriverClass;
 import org.apwtcl.apwfreetypelib.afttruetype.TTDriverRec;
+import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphLoaderRec;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.FTReference;
@@ -185,19 +187,19 @@ FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG,  "nn: "+nn+"!"+module.module_
     module.module_clazz = module_clazz;
     /* check whether the module is a renderer - this must be performed */
     /* before the normal module initialization                         */
-    int flags = module.module_clazz.module_flags;
-    if (Flags.Module.isRenderer(flags)) {
+    Set<Flags.Module> flags = module.module_clazz.module_flags;
+    if (flags.contains(Flags.Module.RENDERER)) {
 FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT,  TAG, "FTAddModule module is renderer: "+module.module_clazz.module_name+" "+Flags.Module.RENDERER);
         // add to the renderers list
 FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG, "REND1: "+module.module_clazz.module_name);
       error = renderer.addRenderer();
       if (error != FTError.ErrorTag.ERR_OK) {
-        if (Flags.Module.isFontDriver(flags)) {
-          if (Flags.Module.isDriverNoOutlines(flags)) {
+        if (flags.contains(Flags.Module.FONT_DRIVER)) {
+          if (flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) {
             driver.getGlyph_loader().FTGlyphLoaderDone();
           }
         }
-        if (Flags.Module.isRenderer(flags)) {
+        if (flags.contains(Flags.Module.RENDERER)) {
           if (renderer.clazz != null && renderer.glyph_format == FTTags.GlyphFormat.OUTLINE &&
                renderer.raster != null) {
             renderer.clazz.rasterDone(renderer.raster);
@@ -208,18 +210,29 @@ FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG, "REND1: "+module.module_clazz
       }
     }
     // is the module a auto-hinter?
-    if (Flags.Module.isHinter(flags)) {
+    if (flags.contains(Flags.Module.HINTER)) {
       library.setAuto_hinter(module);
     }
     // if the module is a font driver
-    if (Flags.Module.isFontDriver(flags)) {
+    if (flags.contains(Flags.Module.FONT_DRIVER)) {
 FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FT_Add_Module module is font driver: "+module.module_clazz.module_name+" "+Flags.Module.FONT_DRIVER);
       // allocate glyph loader if needed
       driver.setDriver_clazz((FTDriverClassRec)module.module_clazz);
-      int driver_flags = driver.module_clazz.module_flags;
-      if (! Flags.Module.isDriverNoOutlines(driver_flags)) {
+      Set<Flags.Module> driver_flags = driver.module_clazz.module_flags;
+      if (! driver_flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) {
 FTDebug.Debug(0,  FTDebug.DebugTag.DBG_INIT,  TAG, "FT_Add_Module module uses outlines: "+module.module_clazz.module_name+" "+Flags.Module.FONT_DRIVER);
-        driver.setGlyph_loader(new FTGlyphLoaderRec());
+        switch (driver.getDriver_clazz().module_type) {
+          case TT_DRIVER:
+            FTGlyphLoaderRec loader = new TTGlyphLoaderRec();
+            loader.getBase().setOutline(new FTGrayOutlineClass());
+            loader.getCurrent().setOutline(new FTGrayOutlineClass());
+            // FIXME!!!
+            driver.setGlyph_loader(loader);
+            break;
+          default:
+            error = FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
+            return error;
+        }
       }
     }
 FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FT_Add_Module call module_init for module: "+module.module_clazz.module_name);
@@ -230,13 +243,13 @@ FTDebug.Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FT_Add_Module call module_init
       library.setNum_modules(library.getNum_modules() + 1);
       return error;
     }
-    if (Flags.Module.isFontDriver(flags)) {
+    if (flags.contains(Flags.Module.FONT_DRIVER)) {
       driver.module_clazz = module.module_clazz;
-      if (!Flags.Module.isDriverNoOutlines(flags)) {
+      if (!flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) {
         driver.getGlyph_loader().FTGlyphLoaderDone();
       }
     }
-    if (Flags.Module.isRenderer(flags)) {
+    if (flags.contains(Flags.Module.RENDERER)) {
       renderer.module_clazz = module.module_clazz;
       if (renderer.clazz != null && renderer.glyph_format == FTTags.GlyphFormat.OUTLINE &&
            renderer.raster != null) {

@@ -80,7 +80,7 @@ public class grayTWorkerRec extends FTDebug {
     oid++;
     id = oid;
     target = new FTBitmapRec();
-    outline = new FTOutlineRec();
+    outline = new FTGrayOutlineClass();
     clip_box = new FTBBoxRec();
     for (i = 0; i < FTSpanRec.FT_MAX_GRAY_SPANS; i++) {
       gray_spans[i] = new FTSpanRec();

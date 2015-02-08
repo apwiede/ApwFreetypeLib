@@ -359,7 +359,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
     if (FTUtilFlags.StreamOpen.isDriver(args.getFlags()) && args.getDriver() != null) {
       driver = (TTDriverRec)args.getDriver();
       /* not all modules are drivers, so check... */
-      if ((driver.getDriver_clazz().module_flags & Flags.Module.FONT_DRIVER.getVal()) != 0) {
+      if (driver.getDriver_clazz().module_flags.contains(Flags.Module.FONT_DRIVER)) {
         int num_params = 0;
         FTParameterRec[] params =null ;
 
@@ -393,7 +393,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTFaceRec constructor: "+mySelf()+"!");
       for (module_idx = 0; module_idx < limit; module_idx++) {
         cur = library.getModule(module_idx);
           /* not all modules are font drivers, so check... */
-        if ((cur.module_clazz.module_flags & Flags.Module.FONT_DRIVER.getVal()) != 0) {
+        if (cur.module_clazz.module_flags.contains(Flags.Module.FONT_DRIVER)) {
           int num_params = 0;
           FTParameterRec params[] = null;
 

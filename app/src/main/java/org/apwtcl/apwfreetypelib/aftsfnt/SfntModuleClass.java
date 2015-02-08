@@ -28,6 +28,8 @@ import org.apwtcl.apwfreetypelib.aftbase.FTTags;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 
+import java.util.HashSet;
+
 public class SfntModuleClass extends FTModuleClassRec {
   private static int oid = 0;
 
@@ -40,7 +42,7 @@ public class SfntModuleClass extends FTModuleClassRec {
     oid++;
     id = oid;
 
-    module_flags = 0;  /* not a font driver or renderer */
+    module_flags = new HashSet<>(); /* not a font driver or renderer */
     module_type = FTTags.ModuleType.FT_MODULE;
     module_name = "sfnt";        /* driver name */
     module_version = 0x10000;   /* driver version 1.0 */

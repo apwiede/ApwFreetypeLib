@@ -241,7 +241,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("FTGlyphLoaderAdd3: n_point
    */
   public void GlyphLoaderRewind() {
     base.setN_points(0);
-    base.n_contours = 0;
+    base.setN_contours(0);
     base.setNum_subglyphs(0);
     current.copy(base);
   }

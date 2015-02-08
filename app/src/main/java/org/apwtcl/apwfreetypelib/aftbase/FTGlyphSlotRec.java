@@ -18,6 +18,7 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /*                                                                       */
   /* ===================================================================== */
 
+import org.apwtcl.apwfreetypelib.aftraster.FTGrayOutlineClass;
 import org.apwtcl.apwfreetypelib.afttruetype.TTFaceRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphLoaderRec;
 import org.apwtcl.apwfreetypelib.afttruetype.TTGlyphSlotRec;
@@ -58,6 +59,8 @@ public class FTGlyphSlotRec extends FTDebug {
   protected Object other = null;
   protected FTSlotInternalRec internal = null;
 
+  protected FTTags.RasterType raster_type;
+
   /* ==================== FTGlyphSlotRec ================================== */
   public FTGlyphSlotRec() {
     oid++;
@@ -66,7 +69,7 @@ public class FTGlyphSlotRec extends FTDebug {
     metrics = new FTGlyphMetricsRec();
     advance = new FTVectorRec();
     bitmap = new FTBitmapRec();
-    outline = new FTOutlineRec();
+//    outline = new FTOutlineRec();
     subglyphs = new FTSubGlyphRec[5];
     internal = new FTSlotInternalRec();
   }
@@ -108,12 +111,12 @@ public class FTGlyphSlotRec extends FTDebug {
 
     library = driver.library;
     internal = new FTSlotInternalRec();
-    if ((driver.module_clazz.module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0L) {
+    if (!driver.module_clazz.module_flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) {
       FTReference<FTGlyphLoaderRec> loader_ref = new FTReference<FTGlyphLoaderRec>();
       loader_ref.Set(internal.getLoader());
       switch(face.getDriver().getDriver_clazz().module_type) {
         case TT_DRIVER:
-          internal.setLoader(new TTGlyphLoaderRec());
+          internal.setLoader(face.getDriver().getGlyph_loader());
           break;
         default:
           return FTError.ErrorTag.INTERP_INVALID_ARGUMENT;
@@ -186,7 +189,7 @@ public class FTGlyphSlotRec extends FTDebug {
     Debug(0, DebugTag.DBG_INIT, TAG, "ft_glyphslot_done");
     if (internal != null) {
       /* free glyph loader */
-      if ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0L) {
+      if (!driver.getDriver_clazz().module_flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) {
         internal.getLoader().FTGlyphLoaderDone();
         internal.setLoader(null);
       }
@@ -317,14 +320,14 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewGlyphSlot inv arg");
     if (hinter != null &&
         (!load_flags.contains(Flags.Load.NO_HINTING)) &&
         (!load_flags.contains(Flags.Load.NO_AUTOHINT)) &&
-        ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_SCALABLE.getVal()) != 0) &&
-        ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_NO_OUTLINES.getVal()) == 0) &&
+        (driver.getDriver_clazz().module_flags.contains(Flags.Module.DRIVER_SCALABLE)) &&
+        (!driver.getDriver_clazz().module_flags.contains(Flags.Module.DRIVER_NO_OUTLINES)) &&
         (!face.getFace_flags().contains(Flags.Face.TRICKY)) &&
         ((load_flags.contains(Flags.Load.IGNORE_TRANSFORM)) ||
             (face.getInternal().getTransform_matrix().getYx() == 0 && face.getInternal().getTransform_matrix().getXx() != 0) ||
             (face.getInternal().getTransform_matrix().getXx() == 0 && face.getInternal().getTransform_matrix().getYx() != 0))) {
       if ((load_flags.contains(Flags.Load.FORCE_AUTOHINT)) ||
-          ((driver.getDriver_clazz().module_flags & Flags.Module.DRIVER_HAS_HINTER.getVal()) == 0)) {
+          (!driver.getDriver_clazz().module_flags.contains(Flags.Module.DRIVER_HAS_HINTER))) {
         autohint = true;
       } else {
         int mode = ((Flags.Load.LoadSetToInt(load_flags) >> 16 ) & 15);

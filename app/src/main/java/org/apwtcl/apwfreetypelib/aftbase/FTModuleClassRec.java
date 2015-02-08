@@ -25,13 +25,16 @@ import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
 import org.apwtcl.apwfreetypelib.aftutil.TTUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class FTModuleClassRec extends FTDebug {
   private static int oid = 0;
 
   private int id;
   private static String TAG = "FTModuleClassRec";
 
-  protected int module_flags;
+  protected Set<Flags.Module> module_flags;
   protected FTTags.ModuleType module_type;
   protected String module_name;
   protected int module_version;
@@ -44,7 +47,7 @@ public class FTModuleClassRec extends FTDebug {
     id = oid;
 
 Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTModuleClassRec constructor called!!");
-    module_flags = 0;
+    module_flags = new HashSet<>();
     module_type = FTTags.ModuleType.UNKNOWN;
     module_name = null;
     module_version = 1;
@@ -64,7 +67,7 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTModuleClassRec constructor called!!"
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    str.append("..module_flags: "+Integer.toHexString(module_flags)+'\n');
+    str.append("..module_flags: "+module_flags+'\n');
     str.append("..module_type: "+module_type.getDescription()+'\n');
     str.append("..module_name: "+module_name+'\n');
     str.append("..module_version: "+module_version+'\n');
@@ -85,12 +88,12 @@ Debug(0, FTDebug.DebugTag.DBG_INIT, TAG, "FTModuleClassRec constructor called!!"
   }
 
   /* ==================== getModule_flags ================================== */
-  public int getModule_flags() {
+  public Set<Flags.Module> getModule_flags() {
     return module_flags;
   }
 
   /* ==================== setModule_flags ================================== */
-  public void setModule_flags(int module_flags) {
+  public void setModule_flags(Set<Flags.Module> module_flags) {
     this.module_flags = module_flags;
   }
 

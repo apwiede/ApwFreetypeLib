@@ -18,9 +18,13 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /*                                                                       */
   /* ===================================================================== */
 
+import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 
-public class FTGlyphLoadRec extends FTOutlineRec {
+import java.util.Set;
+
+//public class FTGlyphLoadRec extends FTOutlineRec {
+public class FTGlyphLoadRec extends FTDebug {
   private static int oid = 0;
 
   private int id;
@@ -33,6 +37,7 @@ public class FTGlyphLoadRec extends FTOutlineRec {
   private int num_subglyphs = 0;              /* number of subglyphs       */
   private FTSubGlyphRec[] subglyphs = null;   /* subglyphs                 */
   private int subglyphs_idx;
+  private FTOutlineRec outline = null;
 
   /* ==================== FTGlyphLoadRec ================================== */
   public FTGlyphLoadRec() {
@@ -62,8 +67,7 @@ public class FTGlyphLoadRec extends FTOutlineRec {
  
   /* ==================== copy ===================================== */
   public int copy( FTGlyphLoadRec from ) {
-//FIXME ned to copy the fields here !!!
-//    outline.copy(from.outline);
+    outline.copy(from.outline);
     extra_points = from.extra_points;
     extra_points2 = from.extra_points2;
     num_subglyphs = from.num_subglyphs;
@@ -79,8 +83,8 @@ public class FTGlyphLoadRec extends FTOutlineRec {
     int j;
 
     Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str);
-    if (points != null) {
-      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "loaderLoad.outline.points: "+points+"!"+points_idx);
+    if (outline.points != null) {
+      Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "loaderLoad.outline.points: "+outline.points+"!"+outline.points_idx);
     }
     if (extra_points != null) {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "loaderLoad.extra_points: "+extra_points+"!"+extra_points_idx);
@@ -89,11 +93,11 @@ public class FTGlyphLoadRec extends FTOutlineRec {
       Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "loaderLoad.extra_points2: "+extra_points2+"!"+extra_points2_idx);
     }
     Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "Show loaderLoad");
-    for (j = 0; j < n_points; j++) {
-      if (points != null) {
-        if (points_idx + j < points.length) {
-          if (getPoint(j) != null) {
-            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" outl: %d %5d %5d", j, getPoint(j).getX(), getPoint(j).getY()));
+    for (j = 0; j < outline.n_points; j++) {
+      if (outline.points != null) {
+        if (outline.points_idx + j < outline.points.length) {
+          if (outline.getPoint(j) != null) {
+            Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format(" outl: %d %5d %5d", j, outline.getPoint(j).getX(), outline.getPoint(j).getY()));
           }
         }
       }
@@ -202,6 +206,182 @@ public class FTGlyphLoadRec extends FTOutlineRec {
   /* ==================== setSubglyphs_idx ===================================== */
   public void setSubglyphs_idx(int subglyphs_idx) {
     this.subglyphs_idx = subglyphs_idx;
+  }
+
+  /* ==================== getN_contours ================================== */
+  public int getN_contours() {
+    return outline.n_contours;
+  }
+
+  /* ==================== setN_contours ================================== */
+  public void setN_contours(int n_contours) {
+    outline.n_contours = n_contours;
+  }
+
+  /* ==================== getN_points ================================== */
+  public int getN_points() {
+    return outline.n_points;
+  }
+
+  /* ==================== setN_points ================================== */
+  public void setN_points(int n_points) {
+    outline.n_points = n_points;
+  }
+
+  /* ==================== getPoint ================================== */
+  public FTVectorRec getPoint(int idx) {
+    return outline.points[outline.points_idx+idx];
+  }
+
+  /* ==================== getPoint_x ================================== */
+  public int getPoint_x(int idx) {
+    return outline.points[outline.points_idx+idx].getX();
+  }
+
+  /* ==================== getPoint_y ================================== */
+  public int getPoint_y(int idx) {
+    return outline.points[outline.points_idx+idx].getY();
+  }
+
+  /* ==================== setPoint_x ================================== */
+  public void setPoint_x(int idx, int val) {
+    outline.points[outline.points_idx+idx].setX(val);
+  }
+
+  /* ==================== setPoint_y ================================== */
+  public void setPoint_y(int idx, int val) {
+    outline.points[outline.points_idx+idx].setY(val);
+  }
+
+  /* ==================== setPoint ================================== */
+  public void setPoint(int idx, FTVectorRec point) {
+    outline.points[outline.points_idx+idx] = point;
+  }
+
+  /* ==================== getPoints ================================== */
+  public FTVectorRec[] getPoints() {
+    return outline.points;
+  }
+
+  /* ==================== setPoints ================================== */
+  public void setPoints(FTVectorRec[] points) {
+    outline.points = points;
+  }
+
+  /* ==================== getTag ================================== */
+  public Set<Flags.Curve> getTag(int idx) {
+    return outline.tags[outline.tags_idx+idx];
+  }
+
+  /* ==================== setTag ================================== */
+  public void setTag(int idx, Flags.Curve tag) {
+    outline.tags[outline.tags_idx+idx].clear();
+    outline.tags[outline.tags_idx+idx].add(tag);
+  }
+
+  /* ==================== setTag ================================== */
+  public void setTag(int idx, Set<Flags.Curve> tag) {
+    outline.tags[outline.tags_idx+idx] = tag;
+  }
+
+  /* ==================== addTag ================================== */
+  public void addTag(int idx, Flags.Curve tag) {
+    outline.tags[outline.tags_idx+idx].add(tag);
+  }
+
+  /* ==================== removeTag ================================== */
+  public void removeTag(int idx, Flags.Curve tag) {
+    outline.tags[outline.tags_idx+idx].remove(tag);
+  }
+
+  /* ==================== getTags ================================== */
+  public Set<Flags.Curve>[] getTags() {
+    return outline.tags;
+  }
+
+  /* ==================== setTags ================================== */
+  public void setTags(Set<Flags.Curve>[] tags) {
+    outline.tags = tags;
+  }
+
+  /* ==================== getContour ================================== */
+  public int getContour(int idx) {
+    return outline.contours[outline.contours_idx+idx];
+  }
+
+  /* ==================== setContours ================================== */
+  public void setContour(int idx, int contour) {
+    outline.contours[outline.contours_idx+idx] = contour;
+  }
+
+  /* ==================== getContours ================================== */
+  public int[] getContours() {
+    return outline.contours;
+  }
+
+  /* ==================== setContours ================================== */
+  public void setContours(int[] contours) {
+    outline.contours = contours;
+  }
+
+  /* ==================== getFlags ================================== */
+  public int getFlags() {
+    return outline.flags;
+  }
+
+  /* ==================== setFlags ================================== */
+  public void setFlags(int flags) {
+    outline.flags = flags;
+  }
+
+  /* ==================== getPoints_idx ================================== */
+  public int getPoints_idx() {
+    return outline.points_idx;
+  }
+
+  /* ==================== setPoints_idx ================================== */
+  public void setPoints_idx(int points_idx) {
+    outline.points_idx = points_idx;
+  }
+
+  /* ==================== getTags_idx ================================== */
+  public int getTags_idx() {
+    return outline.tags_idx;
+  }
+
+  /* ==================== setTags_idx ================================== */
+  public void setTags_idx(int tags_idx) {
+    outline.tags_idx = tags_idx;
+  }
+
+  /* ==================== getContours_idx ================================== */
+  public int getContours_idx() {
+    return outline.contours_idx;
+  }
+
+  /* ==================== setContours_idx ================================== */
+  public void setContours_idx(int contours_idx) {
+    outline.contours_idx = contours_idx;
+  }
+
+  /* ==================== getShift ===================================== */
+  public int getShift() {
+    return outline.shift;
+  }
+
+  /* ==================== getDelta ===================================== */
+  public int getDelta() {
+    return outline.delta;
+  }
+
+  /* ==================== getOutline ===================================== */
+  public FTOutlineRec getOutline() {
+    return outline;
+  }
+
+  /* ==================== setOutline ===================================== */
+  public void setOutline(FTOutlineRec outline) {
+    this.outline = outline;
   }
 
 }

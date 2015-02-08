@@ -23,6 +23,8 @@ import android.util.Log;
 import org.apwtcl.apwfreetypelib.aftbase.*;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.HashSet;
+
 public class FTSmoothRendererClass extends FTRendererClassRec {
   private static int oid = 0;
 
@@ -35,7 +37,8 @@ public class FTSmoothRendererClass extends FTRendererClassRec {
     oid++;
     id = oid;
 
-    module_flags = Flags.Module.RENDERER.getVal();  /* a renderer */
+    module_flags = new HashSet<>();
+    module_flags.add(Flags.Module.RENDERER);  /* a renderer */
     module_type = FTTags.ModuleType.FT_RENDERER;
     module_name = "smooth";     /* driver name */
     module_version = 0x10000;   /* driver version 1.0 */
@@ -347,7 +350,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ft_smooth_render_generic: pitc
   @Override
   public FTError.ErrorTag rasterNew(FTReference<FTRasterRec> raster_ref) {
 Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;;
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     grayTRasterRec raster = new grayTRasterRec();
     raster_ref.Set(raster);
     return error;
@@ -357,9 +360,11 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
   /* ==================== rasterReset ===================================== */
   @Override
   public FTError.ErrorTag rasterReset(FTRasterRec raster, byte[] raster_pool, int raster_pool_size) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;;
-    ((grayTRasterRec)raster).getWorker().gray_raster_reset((grayTRasterRec)raster, raster_pool, raster_pool_size);
-    ((grayTRasterRec)raster).setBand_size(((grayTRasterRec)raster).getWorker().getBand_size());
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    grayTRasterRec traster = (grayTRasterRec)raster;
+
+    traster.getWorker().gray_raster_reset(traster, raster_pool, raster_pool_size);
+    traster.setBand_size(traster.getWorker().getBand_size());
     return error;
   }
 
@@ -373,13 +378,17 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
   /* ==================== rasterRender ===================================== */
   @Override
   public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
-    return ((grayTRasterRec)raster).getWorker().gray_raster_render(((grayTRasterRec)raster), params);
+    grayTRasterRec traster = (grayTRasterRec)raster;
+
+    return traster.getWorker().gray_raster_render(traster, params);
   }
 
   /* ==================== rasterDone ===================================== */
   @Override
   public FTError.ErrorTag rasterDone(FTRasterRec raster) {
-    return ((grayTRasterRec)raster).getWorker().gray_raster_done();
+    grayTRasterRec traster = (grayTRasterRec)raster;
+
+    return traster.getWorker().gray_raster_done();
   }
 
 }

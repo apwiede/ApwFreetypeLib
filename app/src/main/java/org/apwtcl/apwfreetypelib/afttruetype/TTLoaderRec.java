@@ -707,7 +707,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("origin: %d", origin));
     if (n_ins > 0) {
       boolean debug;
       FTGlyphLoaderRec gloader = this.gloader;
-      FTOutlineRec current_outline = gloader.getCurrent();
+      FTOutlineRec current_outline = gloader.getCurrent().getOutline();
 
       error = exec.TTSetCodeRange(TTInterpTags.CodeRange.GLYPH, exec.glyphIns, null, n_ins);
       if (error != FTError.ErrorTag.ERR_OK) {

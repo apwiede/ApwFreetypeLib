@@ -23,6 +23,8 @@ import android.util.Log;
 import org.apwtcl.apwfreetypelib.aftbase.*;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
+import java.util.HashSet;
+
 public class FTRaster1RendererClass extends FTRendererClassRec {
     private static int oid = 0;
 
@@ -35,7 +37,8 @@ public class FTRaster1RendererClass extends FTRendererClassRec {
       oid++;
       id = oid;
 
-      module_flags = Flags.Module.RENDERER.getVal();  /* a renderer */
+      module_flags = new HashSet<>();
+      module_flags.add(Flags.Module.RENDERER);  /* a renderer */
       module_type = FTTags.ModuleType.FT_RENDERER;
       module_name = "raster1";     /* driver name */
       module_version = 0x10000;   /* driver version 1.0 */

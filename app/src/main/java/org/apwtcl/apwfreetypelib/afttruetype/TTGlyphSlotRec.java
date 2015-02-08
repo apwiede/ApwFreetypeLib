@@ -19,6 +19,7 @@ package org.apwtcl.apwfreetypelib.afttruetype;
   /* ===================================================================== */
 
 import org.apwtcl.apwfreetypelib.aftbase.*;
+import org.apwtcl.apwfreetypelib.aftraster.FTGrayOutlineClass;
 import org.apwtcl.apwfreetypelib.aftutil.*;
 
 import java.util.Set;
@@ -34,6 +35,8 @@ public class TTGlyphSlotRec extends FTGlyphSlotRec {
     super();
     oid++;
     id = oid;
+    raster_type = FTTags.RasterType.GRAY;
+    outline = new FTGrayOutlineClass();
   }
     
   /* ==================== mySelf ================================== */
@@ -83,10 +86,8 @@ public class TTGlyphSlotRec extends FTGlyphSlotRec {
   public FTError.ErrorTag TTLoadGlyph(TTSizeRec ttsize, int glyph_index, Set<Flags.Load> load_flags) {
     FTError.ErrorTag error;
     TTLoaderRec loader;
-    FTReference<FTOutlineRec> outline_ref = new FTReference<FTOutlineRec>();
 
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TT_Load_Glyph: glyph_index: %d size: " + ttsize, glyph_index));
-    error = FTError.ErrorTag.ERR_OK;
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("TT_Load_Glyph: glyph_index: %d size: " + ttsize, glyph_index));
       /* if FT_LOAD_NO_SCALE is not set, `ttmetrics' must be valid */
     if (!load_flags.contains(Flags.Load.NO_SCALE) && ttsize.getTtmetrics().isValid() == false) {
       error = FTError.ErrorTag.LOAD_INVALID_SIZE_HANDLE;
@@ -112,7 +113,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "load_truetype_glyph");
         num_subglyphs = loader.getGloader().getBase().getNum_subglyphs();
         subglyphs = loader.getGloader().getBase().getSubglyphs();
       } else {
-        outline = loader.getGloader().getBase();
+        outline = loader.getGloader().getBase().getOutline();
         outline.setFlags(outline.getFlags() & ~Flags.Outline.SINGLE_PASS.getVal());
           /* Translate array so that (0,0) is the glyph's origin.  Note  */
           /* that this behaviour is independent on the value of bit 1 of */
