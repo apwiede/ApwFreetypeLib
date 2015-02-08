@@ -31,6 +31,7 @@ public class grayTRasterRec extends FTRasterRec {
   public grayTRasterRec() {
     oid++;
     id = oid;
+    worker = new grayTWorkerRec();
   }
     
   /* ==================== grayTRaster ================================== */

@@ -346,6 +346,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FTOutlineRec FTOutlineDecompose");
     for (n = 0; n < n_contours; n++) {
       int last;  /* index of last point in contour */
 
+      isClosed = false;
       FTTrace.Trace(7, TAG, String.format("ftoutline FT_Outline_Decompose: Outline %d of %d", n, n_contours));
       last = contours[n];
       if (last < 0) {
@@ -481,9 +482,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4a v_start.x: %d, v_start.y:
           }
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
           if (doContinue) {
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("doContinue point: %d, limit: %d", pointIdx, limit));
             continue;
           }
-          FTTrace.Trace(8, TAG, String.format(" 3 conic to (%.2f, %.2f)" +
+          FTTrace.Trace(7, TAG, String.format(" 3 conic to (%.2f, %.2f)" +
                   " with control (%.2f, %.2f)",
               v_start.getX() / 64.0, v_start.getY() / 64.0,
               v_control.getX() / 64.0, v_control.getY() / 64.0));
@@ -493,6 +495,8 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==4b v_start.x: %d, v_start.y:
             return error;
           }
           isClosed = true;
+Debug(0, DebugTag.DBG_RENDER, TAG, "goto Close");
+          break;
         } else {
           /* FT_CURVE_TAG_CUBIC */
           {
@@ -542,7 +546,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CUBIC");
           }
         }
       }
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 v_start.x: %d, v_start.y: %d", v_start.getX(), v_start.getY()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 after while(pointIdx < limit) isClosed: %b v_start.x: %d, v_start.y: %d", isClosed, v_start.getX(), v_start.getY()));
       if (! isClosed) {
         /* close the contour with a line segment */
         FTTrace.Trace(7, TAG, String.format(" 2 line to (%.2f, %.2f)",
