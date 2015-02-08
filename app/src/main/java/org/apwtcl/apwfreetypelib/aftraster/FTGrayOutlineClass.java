@@ -18,26 +18,20 @@ package org.apwtcl.apwfreetypelib.aftraster;
   /*                                                                       */
   /* ===================================================================== */
 
-import android.util.Log;
-
-import org.apwtcl.apwfreetypelib.aftbase.FTOutlineFuncs;
 import org.apwtcl.apwfreetypelib.aftbase.FTOutlineRec;
-import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
-import org.apwtcl.apwfreetypelib.aftutil.RasterUtil;
 
-public class FTGrayOutlineFuncsClass extends FTOutlineFuncs {
+public class FTGrayOutlineClass extends FTOutlineRec {
   private static int oid = 0;
 
   private int id;
-  private static String TAG = "FTGrayOutlineFuncsClass";
+  private static String TAG = "FTGrayOutlineClass";
 
   public static int PIXEL_BITS = 8;
 
-  /* ==================== FTGrayOutlineFuncsClass ================================== */
-  public FTGrayOutlineFuncsClass() {
+  /* ==================== FTGrayOutlineClass ================================== */
+  public FTGrayOutlineClass() {
     oid++;
     id = oid;
     shift = 0;

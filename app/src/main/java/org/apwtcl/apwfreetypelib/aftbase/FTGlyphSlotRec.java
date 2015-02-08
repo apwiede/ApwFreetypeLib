@@ -378,7 +378,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FT_Load_Glyph: slot->format is outline: 
       if (format == FTTags.GlyphFormat.OUTLINE) {
         /* check that the loaded outline is correct */
 Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, String.format("CHKOUTLINE: %d", outline.n_points));
-        error = FTOutlineRec.FTOutlineCheck(outline);
+        error = outline.FTOutlineCheck();
         if (error != FTError.ErrorTag.ERR_OK) {
           return error;
         }

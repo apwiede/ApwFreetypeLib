@@ -65,6 +65,7 @@ package org.apwtcl.apwfreetypelib.aftbase;
   /* ===================================================================== */
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.SparseArray;
 
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
@@ -92,6 +93,9 @@ public class FTOutlineRec extends FTDebug {
   protected int[] contours = null;       /* the contour end points         */
   protected int contours_idx = 0;
   protected int flags = 0;               /* outline masks                  */
+
+  protected int shift = 0;
+  protected int delta = 0;
 
   /* ==================== FTOutlineRec ================================== */
   public FTOutlineRec() {
@@ -148,41 +152,37 @@ public class FTOutlineRec extends FTDebug {
    *
    * =====================================================================
    */
-  public static FTError.ErrorTag FTOutlineCheck(FTOutlineRec outline) {
+  public FTError.ErrorTag FTOutlineCheck() {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    int end0;
+    int end;
+    int n;
 
-    if (outline != null) {
-      int n_points = outline.n_points;
-      int n_contours = outline.n_contours;
-      int end0, end;
-      int n;
-
-      /* empty glyph? */
-      if (n_points == 0 && n_contours == 0) {
-        return error;
-      }
-      /* check point and contour counts */
-      if (n_points <= 0 || n_contours <= 0) {
-        error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
-        return error;
-      }
-      end0 = end = -1;
-      for (n = 0; n < n_contours; n++) {
-        end = outline.contours[n];
-        /* note that we don't accept empty contours */
-        if (end <= end0 || end >= n_points) {
-          error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
-          return error;
-        }
-        end0 = end;
-      }
-      if (end != n_points - 1) {
-        error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
-        return error;
-      }
-      /* XXX: check the tags array */
+    /* empty glyph? */
+    if (n_points == 0 && n_contours == 0) {
       return error;
     }
+    /* check point and contour counts */
+     if (n_points <= 0 || n_contours <= 0) {
+      error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
+      return error;
+    }
+    end0 = -1;
+    end = -1;
+    for (n = 0; n < n_contours; n++) {
+      end = contours[n];
+      /* note that we don't accept empty contours */
+      if (end <= end0 || end >= n_points) {
+        error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
+        return error;
+      }
+      end0 = end;
+    }
+    if (end != n_points - 1) {
+      error = FTError.ErrorTag.LOAD_INVALID_ARGUMENT;
+      return error;
+    }
+    /* XXX: check the tags array */
     return error;
   }
 
@@ -319,7 +319,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("FTOutlineGetCBox end:: xMin: %
    *
    * =====================================================================
    */
-  public FTError.ErrorTag FTOutlineDecompose(FTOutlineFuncs func_interface, Object user) {
+  public FTError.ErrorTag FTOutlineDecompose(Object user) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTVectorRec v_last;
     FTVectorRec v_control = new FTVectorRec();
@@ -330,18 +330,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("FTOutlineGetCBox end:: xMin: %
     int n;        /* index of contour in outline     */
     int first = 0; /* index of first point in contour */
     Set<Flags.Curve> tag;       /* current point's state           */
-    int shift;
-    int delta;
     boolean doConic = true;
     boolean doContinue = false;
     boolean isClosed = false;
 
 Debug(0, DebugTag.DBG_RENDER, TAG, "FTOutlineRec FTOutlineDecompose");
-    if (func_interface == null) {
-      return FTError.ErrorTag.RENDER_INVALID_ARGUMENT;
-    }
-    shift = func_interface.getShift();
-    delta = func_interface.getDelta();
     first = 0;
     for (n = 0; n < n_contours; n++) {
       int last;  /* index of last point in contour */
@@ -395,7 +388,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("v_start: %d %d v_last: %d %d",
 Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose:");
       FTTrace.Trace(7, TAG, String.format("  move to (%.2f, %.2f)",
                   v_start.getX() / 64.0, v_start.getY() / 64.0));
-      error = func_interface.moveTo(v_start, user);
+      error = moveTo(v_start, user);
       FTTrace.Trace(7, TAG, String.format("  move to after (%.2f, %.2f)",
           v_start.getX() / 64.0, v_start.getY() / 64.0));
       if (error != FTError.ErrorTag.ERR_OK) {
@@ -417,7 +410,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_ON");
           vec.setY(((points[pointIdx].getY()) << shift) - delta);
           FTTrace.Trace(7, TAG, String.format("  line to (%.2f, %.2f)\n",
                 vec.getX() / 64.0, vec.getY() / 64.0));
-          error = func_interface.lineTo(vec, user);
+          error = lineTo(vec, user);
           if (error != FTError.ErrorTag.ERR_OK) {
             FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
             return error;
@@ -450,7 +443,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("tag: %s, tagIdx: %d, pointIdx:
                         " with control (%.2f, %.2f)",
                     vec.getX() / 64.0, vec.getY() / 64.0,
                     v_control.getX() / 64.0, v_control.getY() / 64.0));
-                error = func_interface.conicTo(v_control, vec, user);
+                error = conicTo(v_control, vec, user);
 Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
                 if (error != FTError.ErrorTag.ERR_OK) {
                   FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
@@ -468,7 +461,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose2: after call conic_to");
                       " with control (%.2f, %.2f)",
                   v_middle.getX() / 64.0, v_middle.getY() / 64.0,
                   v_control.getX() / 64.0, v_control.getY() / 64.0));
-              error = func_interface.conicTo(v_control, v_middle, user);
+              error = conicTo(v_control, v_middle, user);
 Debug(0, DebugTag.DBG_RENDER, TAG, "Decompose3: after call conic_to");
               if (error != FTError.ErrorTag.ERR_OK) {
                 FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
@@ -489,7 +482,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("doContinue point: %d, limit: %
                   " with control (%.2f, %.2f)",
               v_start.getX() / 64.0, v_start.getY() / 64.0,
               v_control.getX() / 64.0, v_control.getY() / 64.0));
-          error = func_interface.conicTo(v_control, v_start, user);
+          error = conicTo(v_control, v_start, user);
           if (error != FTError.ErrorTag.ERR_OK) {
             FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
             return error;
@@ -524,7 +517,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CUBIC");
                           vec.getX() / 64.0, vec.getY() / 64.0,
                           vec1.getX() / 64.0, vec1.getY() / 64.0,
                           vec2.getX() / 64.0, vec2.getY() / 64.0));
-              error = func_interface.cubicTo(vec1, vec2, vec, user);
+              error = cubicTo(vec1, vec2, vec, user);
               if (error != FTError.ErrorTag.ERR_OK) {
                 FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
                 return error;
@@ -536,7 +529,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "FT_CURVE_TAG_CUBIC");
                         v_start.getX() / 64.0, v_start.getY() / 64.0,
                         vec1.getX() / 64.0, vec1.getY() / 64.0,
                         vec2.getX() / 64.0, vec2.getY() / 64.0));
-            error = func_interface.cubicTo(vec1, vec2, v_start, user);
+            error = cubicTo(vec1, vec2, v_start, user);
             if (error != FTError.ErrorTag.ERR_OK) {
               FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
               return error;
@@ -551,7 +544,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 after while(pointIdx < lim
         /* close the contour with a line segment */
         FTTrace.Trace(7, TAG, String.format(" 2 line to (%.2f, %.2f)",
                   v_start.getX() / 64.0, v_start.getY() / 64.0));
-        error = func_interface.lineTo(v_start, user);
+        error = lineTo(v_start, user);
       }
       if (error != FTError.ErrorTag.ERR_OK) {
         FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
@@ -562,6 +555,38 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 after while(pointIdx < lim
 
     FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Done %d", n));
     return FTError.ErrorTag.ERR_OK;
+  }
+
+  /* ==================== moveTo ===================================== */
+  public FTError.ErrorTag moveTo(FTVectorRec point, Object user) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    Log.e(TAG, "moveTo not yet implemented");
+    return error;
+  }
+
+  /* ==================== lineTo ===================================== */
+  public FTError.ErrorTag lineTo(FTVectorRec point, Object user) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    Log.e(TAG, "lineTo not yet implemented");
+    return error;
+  }
+
+  /* ==================== conicTo ===================================== */
+  public FTError.ErrorTag conicTo(FTVectorRec control, FTVectorRec point, Object user) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    Log.e(TAG, "conicTo not yet implemented");
+    return error;
+  }
+
+  /* ==================== cubicTo ===================================== */
+  public FTError.ErrorTag cubicTo(FTVectorRec control1, FTVectorRec control2, FTVectorRec point, Object user) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    Log.e(TAG, "cubicTo not yet implemented");
+    return error;
   }
 
   /* ==================== getN_contours ================================== */
@@ -718,6 +743,16 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("==5 after while(pointIdx < lim
   /* ==================== setContours_idx ================================== */
   public void setContours_idx(int contours_idx) {
     this.contours_idx = contours_idx;
+  }
+
+  /* ==================== getShift ===================================== */
+  public int getShift() {
+    return shift;
+  }
+
+  /* ==================== getDelta ===================================== */
+  public int getDelta() {
+    return delta;
   }
 
 }

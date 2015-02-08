@@ -27,7 +27,6 @@ import org.apwtcl.apwfreetypelib.aftbase.Flags;
 import org.apwtcl.apwfreetypelib.aftutil.FTCalc;
 import org.apwtcl.apwfreetypelib.aftutil.FTDebug;
 import org.apwtcl.apwfreetypelib.aftutil.FTError;
-import org.apwtcl.apwfreetypelib.aftutil.FTReference;
 import org.apwtcl.apwfreetypelib.aftutil.FTTrace;
 import org.apwtcl.apwfreetypelib.aftutil.FTVectorRec;
 import org.apwtcl.apwfreetypelib.aftutil.RasterUtil;
@@ -73,7 +72,6 @@ public class grayTWorkerRec extends FTDebug {
   private int buffer_size;
   private TCellRec[] ycells;
   private int ycount;
-  private FTGrayOutlineFuncsClass outline_funcs = null;
 
   /* ==================== grayTWorker ================================== */
   public grayTWorkerRec() {
@@ -90,7 +88,6 @@ public class grayTWorkerRec extends FTDebug {
     for (i = 0; i < MaxBezier * 3 + 1; i++) {
       bez_stack[i] = new FTVectorRec();
     }
-    outline_funcs = new FTGrayOutlineFuncsClass();
   }
     
   /* ==================== mySelf ================================== */
@@ -326,7 +323,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph_inner");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
 //      if (ft_setjmp(ras.jump_buffer) == 0) {
-    error = outline.FTOutlineDecompose(outline_funcs, this);
+    error = outline.FTOutlineDecompose(this);
     gray_record_cell();
 //      } else {
 //        error = FT_THROW( Memory_Overflow );
@@ -349,7 +346,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_hline: x: %d, y: %d, area
       /*                                                           */
       /* the coverage percentage is area/(PIXEL_BITS*PIXEL_BITS*2) */
       /*                                                           */
-    coverage = (area >> (FTGrayOutlineFuncsClass.PIXEL_BITS * 2 + 1 - 8));
+    coverage = (area >> (FTGrayOutlineClass.PIXEL_BITS * 2 + 1 - 8));
                                                       /* use range 0..256 */
     if (coverage < 0) {
       coverage = -coverage;
