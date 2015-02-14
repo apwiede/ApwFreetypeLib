@@ -363,7 +363,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     grayTRasterRec traster = (grayTRasterRec)raster;
 
-    traster.getWorker().gray_raster_reset(traster, raster_pool, raster_pool_size);
+    traster.gray_raster_reset(traster.getWorker(), raster_pool, raster_pool_size);
     traster.setBand_size(traster.getWorker().getBand_size());
     return error;
   }
@@ -380,7 +380,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
   public FTError.ErrorTag rasterRender(FTRasterRec raster, FTRasterParamsRec params) {
     grayTRasterRec traster = (grayTRasterRec)raster;
 
-    return traster.getWorker().gray_raster_render(traster, params);
+    return traster.gray_raster_render(params);
   }
 
   /* ==================== rasterDone ===================================== */
@@ -388,7 +388,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "gray_raster_new");
   public FTError.ErrorTag rasterDone(FTRasterRec raster) {
     grayTRasterRec traster = (grayTRasterRec)raster;
 
-    return traster.getWorker().gray_raster_done();
+    return traster.gray_raster_done();
   }
 
 }
