@@ -90,7 +90,7 @@ public class MD5CTX extends FTDebug {
    * =====================================================================
    */
   private long I(long x, long y, long z) {
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("I fcn: x: 0x%08x, y: 0x%08x, z: 0x%08x, val: 0x%08x", x, y, z, (y ^ (x | ~z))));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("I fcn: x: 0x%08x, y: 0x%08x, z: 0x%08x, val: 0x%08x", x, y, z, (y ^ (x | ~z))));
     return (y ^ (x | ~z));
   }
 
@@ -198,7 +198,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("I fcn: x: 0x%08x, y: 0x%08x, z
     long saved_c;
     long saved_d;
 
-Debug(0, DebugTag.DBG_RENDER, TAG, "BODY:");
+Debug(0, DebugTag.DBG_MD5, TAG, "BODY:");
     ptr = this.buffer;
     this.a = this.a & 0xFFFFFFFFL;
     this.b = this.b & 0xFFFFFFFFL;
@@ -208,10 +208,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "BODY:");
     b = this.b;
     c = this.c;
     d = this.d;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.a: 0x%08x", a));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.b: 0x%08x", b));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.c: 0x%08x", c));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.d: 0x%08x", d));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("ctx.a: 0x%08x", a));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("ctx.b: 0x%08x", b));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("ctx.c: 0x%08x", c));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("ctx.d: 0x%08x", d));
     do {
       saved_a = a;
       saved_b = b;
@@ -326,10 +326,10 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.d: 0x%08x", d));
     this.b = b;
     this.c = c;
     this.d = d;
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.a: 0x%08x", a));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.b: 0x%08x", b));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.c: 0x%08x", c));
-Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.d: 0x%08x", d));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("end ctx.a: 0x%08x", a));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("end ctx.b: 0x%08x", b));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("end ctx.c: 0x%08x", c));
+Debug(0, DebugTag.DBG_MD5, TAG, String.format("end ctx.d: 0x%08x", d));
     return ptr_idx;
   }
 
@@ -391,7 +391,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.d: 0x%08x", d));
     	size &= 0x3f;
     }
     for (i = 0; i < size; i++) {
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("ctx.buffer[i]: %d 0x%02x", i, this.buffer[i]));
+      Debug(0, DebugTag.DBG_MD5, TAG, String.format("ctx.buffer[i]: %d 0x%02x", i, this.buffer[i]));
     }
     for (i = 0; i < size; i++) {
       this.buffer[i] = data[data_idx++];
@@ -449,7 +449,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("end ctx.d: 0x%08x", d));
     result[14] = (byte)(this.d >> 16);
     result[15] = (byte)(this.d >> 24);
 for(int j = 0; j < 16; j++) {
-  Debug(0, DebugTag.DBG_RENDER, TAG, String.format("MD5 j: %d 0x%02x", j, result[j] & 0xFF));
+  Debug(2, DebugTag.DBG_MD5, TAG, String.format("MD5 j: %d 0x%02x", j, result[j] & 0xFF));
 }
   }
 

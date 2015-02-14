@@ -126,85 +126,6 @@ public class FTBitmapRec extends FTDebug {
     return str.toString();
   }
 
-  /* ==================== getRows ================================== */
-  public int getRows() {
-    return rows;
-  }
-
-  /* ==================== setRows ================================== */
-  public void setRows(int rows) {
-    this.rows = rows;
-  }
-
-  /* ==================== getWidth ================================== */
-  public int getWidth() {
-    return width;
-  }
-
-  /* ==================== setWidth ================================== */
-  public void setWidth(int width) {
-    this.width = width;
-  }
-
-  /* ==================== getPitch ================================== */
-  public int getPitch() {
-    return pitch;
-  }
-
-  /* ==================== setPitch ================================== */
-  public void setPitch(int pitch) {
-    this.pitch = pitch;
-  }
-
-  /* ==================== getBuffer ================================== */
-  public byte[] getBuffer() {
-    return buffer;
-  }
-
-  /* ==================== setBuffer ================================== */
-  public void setBuffer(byte[] buffer) {
-    this.buffer = buffer;
-  }
-
-  /* ==================== getNum_grays ================================== */
-  public int getNum_grays() {
-    return num_grays;
-  }
-
-  /* ==================== setNum_grays ================================== */
-  public void setNum_grays(int num_grays) {
-    this.num_grays = num_grays;
-  }
-
-  /* ==================== getPixel_mode ================================== */
-  public FTTags.PixelMode getPixel_mode() {
-    return pixel_mode;
-  }
-
-  /* ==================== setPixel_mode ================================== */
-  public void setPixel_mode(FTTags.PixelMode pixel_mode) {
-    this.pixel_mode = pixel_mode;
-  }
-
-  /* ==================== getPalette_mode ================================== */
-  public byte getPalette_mode() {
-    return palette_mode;
-  }
-
-  /* ==================== setPalette_mode ================================== */
-  public void setPalette_mode(byte palette_mode) {
-    this.palette_mode = palette_mode;
-  }
-
-  /* ==================== getPalette ================================== */
-  public Object getPalette() {
-    return palette;
-  }
-
-  /* ==================== setPalette ================================== */
-  public void setPalette(Object palette) {
-    this.palette = palette;
-  }
 
   /* =====================================================================
    * Convert
@@ -220,7 +141,7 @@ public class FTBitmapRec extends FTDebug {
     if (library == null) {
       return FTError.ErrorTag.GLYPH_INVALID_LIBRARY_HANDLE;
     }
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "Bitmap slot buffer:");
+Debug(0, DebugTag.DBG_RENDER, TAG, "Bitmap slot buffer:");
 idx = 0;
 for (row = 0; row < rows; row++) {
   str.delete(0, str.length());
@@ -229,7 +150,7 @@ for (row = 0; row < rows; row++) {
     str.append(String.format(" 0x%02x", buffer[idx]));
     idx++;
   }
-  Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, str.toString());
+  Debug(0, DebugTag.DBG_RENDER, TAG, str.toString());
 }
     switch (pixel_mode) {
       case MONO:
@@ -447,7 +368,6 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "CONVERT 6");
    * =====================================================================
    */
   public FTError.ErrorTag Done(FTLibraryRec library) {
-    Log.w(TAG, "FTBitmapDone: not yet implemented\n");
     if (library == null) {
       return FTError.ErrorTag.RENDER_INVALID_LIBRARY_HANDLE;
     }
@@ -470,6 +390,86 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "CONVERT 6");
     Log.w(TAG, "ft_gray_for_premultiplied_srgb_bgra: not yet implemented!!\n");
     byte[] ss = ss_ref.Get();
     return ss[ss_idx];
+  }
+
+  /* ==================== getRows ================================== */
+  public int getRows() {
+    return rows;
+  }
+
+  /* ==================== setRows ================================== */
+  public void setRows(int rows) {
+    this.rows = rows;
+  }
+
+  /* ==================== getWidth ================================== */
+  public int getWidth() {
+    return width;
+  }
+
+  /* ==================== setWidth ================================== */
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  /* ==================== getPitch ================================== */
+  public int getPitch() {
+    return pitch;
+  }
+
+  /* ==================== setPitch ================================== */
+  public void setPitch(int pitch) {
+    this.pitch = pitch;
+  }
+
+  /* ==================== getBuffer ================================== */
+  public byte[] getBuffer() {
+    return buffer;
+  }
+
+  /* ==================== setBuffer ================================== */
+  public void setBuffer(byte[] buffer) {
+    this.buffer = buffer;
+  }
+
+  /* ==================== getNum_grays ================================== */
+  public int getNum_grays() {
+    return num_grays;
+  }
+
+  /* ==================== setNum_grays ================================== */
+  public void setNum_grays(int num_grays) {
+    this.num_grays = num_grays;
+  }
+
+  /* ==================== getPixel_mode ================================== */
+  public FTTags.PixelMode getPixel_mode() {
+    return pixel_mode;
+  }
+
+  /* ==================== setPixel_mode ================================== */
+  public void setPixel_mode(FTTags.PixelMode pixel_mode) {
+    this.pixel_mode = pixel_mode;
+  }
+
+  /* ==================== getPalette_mode ================================== */
+  public byte getPalette_mode() {
+    return palette_mode;
+  }
+
+  /* ==================== setPalette_mode ================================== */
+  public void setPalette_mode(byte palette_mode) {
+    this.palette_mode = palette_mode;
+  }
+
+  /* ==================== getPalette ================================== */
+  public Object getPalette() {
+    return palette;
+  }
+
+  /* ==================== setPalette ================================== */
+  public void setPalette(Object palette) {
+    this.palette = palette;
   }
 
 }

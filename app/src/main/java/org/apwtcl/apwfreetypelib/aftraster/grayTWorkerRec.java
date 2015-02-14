@@ -447,7 +447,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_sweep");
       for ( ; cell != null; cell = cell.getNext()) {
         int area;
 
-//System.out.println(String.format("cell->next: %d", cell.next == null ? -1 : cell.next.self_idx));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cell->next: %d", cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
 Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_sweep 1: cell.x: %d x: %d,  yindex: %d, cover: %x", cell.getX(), x, yindex, cover));
         if (cell.getX() > x && cover != 0) {
           gray_hline(x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), cell.getX() - x );
@@ -529,7 +529,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
     count_ex = max_ex - min_ex;
     count_ey = max_ey - min_ey;
       /* set up vertical bands */
-    num_bands = (max_ey - min_ey / band_size);
+    num_bands = ((max_ey - min_ey) / band_size);
     if (num_bands == 0) {
       num_bands = 1;
     }
@@ -540,6 +540,7 @@ Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
     min = min_ey;
     max_y = max_ey;
     for (n = 0; n < num_bands; n++, min = max) {
+Debug(0, DebugTag.DBG_RENDER, TAG, "num_bands: n: "+n+" "+num_bands);
       max = min + band_size;
       if (n == num_bands - 1 || max > max_y) {
         max = max_y;

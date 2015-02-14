@@ -36,7 +36,10 @@ public class FTDebug extends Object {
     DBG_LIBRARY(6, 0, true, "DBG_LIBRARY"),
     DBG_LOAD_FACE(7, 0, true, "DBG_LOAD_FACE"),
     DBG_LOAD_GLYPH(8, 2, true, "DBG_LOAD_GLYPH"),
-    DBG_RENDER(9, 0, true, "DBG_RENDER");
+    DBG_RENDER(9, 0, true, "DBG_RENDER"),
+    DBG_DECOMPOSE(10, 0, true, "DBG_DECOMPOSE"),
+    DBG_SWEEP(11, 0, true, "DBG_SWEEP"),
+    DBG_MD5(12, 2, true, "DBG_MD5");
 
     private int val;
     private int level;

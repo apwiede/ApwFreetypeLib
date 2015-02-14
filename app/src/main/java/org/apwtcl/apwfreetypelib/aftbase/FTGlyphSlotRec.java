@@ -544,15 +544,11 @@ Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert0d: rows 
     {
       FTBitmapRec bitmap = new FTBitmapRec();
       FTError.ErrorTag err;
-      FTReference<FTBitmapRec> bitmap_ref = new FTReference<FTBitmapRec>();
+      StringBuffer str;
 
-      bitmap_ref.Set(bitmap);
-      StringBuffer str = new StringBuffer("");
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert: rows %d width %d pitch %d num_grays %d", bitmap.getRows(), bitmap.getWidth(), bitmap.getPitch(), bitmap.getNum_grays()));
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert slot: rows %d width %d pitch %d num_grays %d", this.bitmap.getRows(), this.bitmap.getWidth(), this.bitmap.getPitch(), this.bitmap.getNum_grays()));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("before BITMAP convert: rows %d width %d pitch %d num_grays %d", bitmap.getRows(), bitmap.getWidth(), bitmap.getPitch(), bitmap.getNum_grays()));
       err = this.bitmap.Convert(library, bitmap, 1);
       Debug(0, DebugTag.DBG_RENDER, TAG, String.format("after BITMAP convert: rows %d width %d pitch %d num_grays %d", bitmap.getRows(), bitmap.getWidth(), bitmap.getPitch(), bitmap.getNum_grays()));
-      bitmap = bitmap_ref.Get();
       int r;
       int c;
 //Debug(0, DebugTag.DBG_RENDER, TAG, String.format("++ Bitmapconv char: %c %d rows: %d width: %d",
