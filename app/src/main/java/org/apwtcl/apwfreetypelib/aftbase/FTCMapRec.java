@@ -60,31 +60,13 @@ public class FTCMapRec extends FTCharMapRec {
     return str.toString();
   }
 
-  /* ==================== setCharmap ================================== */
-  public void setCharmap(FTCharMapRec charmap) {
-    this.face = charmap.getFace();
-    this.encoding = charmap.getEncoding();
-    this.platform_id = charmap.getPlatformId();
-    this.encoding_id = charmap.getEncodingId();
-  }
-
-  /* ==================== setClazz ================================== */
-  public void setClazz(FTCMapClassRec clazz) {
-    this.clazz = clazz;
-  }
-
-  /* ==================== getClazz ================================== */
-  public FTCMapClassRec getClazz() {
-    return clazz;
-  }
-
   /* ==================== FTCMapNew ===================================== */
   public static FTError.ErrorTag FTCMapNew(FTCMapClassRec clazz, FTCharMapRec charmap, FTReference<FTCMapRec> cmap_ref) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTFaceRec face;
     FTCMapRec cmap = null;
 
-Log.e(TAG, "FTCMapNew: format"+clazz.format);
+Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "FTCMapNew: format"+clazz.format);
     if (clazz == null || charmap == null || charmap.getFace() == null) {
       return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
     }
@@ -113,26 +95,43 @@ Log.e(TAG, "FTCMapNew: format"+clazz.format);
       Log.e(TAG, String.format("funny TTCMapClassType: %d", clazz.format));
     }
     cmap.setCharmap(charmap);
-    cmap.setClazz(clazz);
-
     cmap.clazz = clazz;
+
     error = clazz.initCMap(cmap);
-      if (error != FTError.ErrorTag.ERR_OK) {
+    if (error != FTError.ErrorTag.ERR_OK) {
 //FIXME!!      ft_cmap_done_internal(cmap);
-        cmap = null;
-        if (cmap_ref != null) {
-          cmap_ref.Set(cmap);
-        }
-        return error;
-      }
-      /* add it to our list of charmaps */
-      face.charmaps = (FTCharMapRec[])FTUtil.FT_RENEW_ARRAY(face.charmaps, FTUtilFlags.ArrayType.CHARMAPS, face.getNum_charmaps(), face.getNum_charmaps() + 1);
-      face.charmaps[face.getNum_charmaps()] = (FTCharMapRec)cmap;
-      face.setNum_charmaps((face.getNum_faces() + 1));
+      cmap = null;
       if (cmap_ref != null) {
         cmap_ref.Set(cmap);
       }
+      return error;
+    }
+    /* add it to our list of charmaps */
+    face.charmaps = (FTCharMapRec[])FTUtil.FT_RENEW_ARRAY(face.charmaps, FTUtilFlags.ArrayType.CHARMAPS, face.getNum_charmaps(), face.getNum_charmaps() + 1);
+    face.charmaps[face.getNum_charmaps()] = cmap;
+    face.setNum_charmaps((face.getNum_charmaps() + 1));
+    if (cmap_ref != null) {
+      cmap_ref.Set(cmap);
+    }
     return error;
   }
- 
+
+  /* ==================== setCharmap ================================== */
+  public void setCharmap(FTCharMapRec charmap) {
+    this.face = charmap.getFace();
+    this.encoding = charmap.getEncoding();
+    this.platform_id = charmap.getPlatformId();
+    this.encoding_id = charmap.getEncodingId();
+  }
+
+  /* ==================== setClazz ================================== */
+  public void setClazz(FTCMapClassRec clazz) {
+    this.clazz = clazz;
+  }
+
+  /* ==================== getClazz ================================== */
+  public FTCMapClassRec getClazz() {
+    return clazz;
+  }
+
 }

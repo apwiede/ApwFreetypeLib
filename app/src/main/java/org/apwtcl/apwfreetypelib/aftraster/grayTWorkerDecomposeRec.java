@@ -43,74 +43,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    return str.toString();
-  }
-
-  /* =====================================================================
-   *    gray_move_to
-   *
-   * =====================================================================
-   */
-  public FTError.ErrorTag gray_move_to(FTVectorRec to) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    int x;
-    int y;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
-
-      /* record current cell, if any */
-    gray_record_cell();
-      /* start to a new position */
-    x = RasterUtil.UPSCALE(to.getX());
-    y = RasterUtil.UPSCALE(to.getY());
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to2: x(UPSCALE): %d, y(UPSCALE): %d", x, y));
-    gray_start_cell(RasterUtil.TRUNC(x), RasterUtil.TRUNC(y));
-    this.x = x;
-    this.y = y;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to end: worker.x: %d(%d)(%f), worker.y: %d(%d)(%f)", this.x, this.x/4, this.x/256.0, this.y, this.y/4, this.y/256.0));
-    return error;
-  }
-
-  /* =====================================================================
-   *    gray_line_to
-   *
-   * =====================================================================
-   */
-  public FTError.ErrorTag gray_line_to(FTVectorRec to) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_line_to call gray_render_line");
-    gray_render_line(RasterUtil.UPSCALE(to.getX()), RasterUtil.UPSCALE(to.getY()));
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_line_to after call gray_render_line");
-    return error;
-  }
-
-  /* =====================================================================
-   *    gray_conic_to
-   *
-   * =====================================================================
-   */
-  public FTError.ErrorTag gray_conic_to(FTVectorRec control, FTVectorRec to) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_conic_to");
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    gray_render_conic(control, to);
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_conic_to end");
-    return error;
-  }
-
-  /* =====================================================================
-   *    gray_cubic_to
-   *
-   * =====================================================================
-   */
-  public FTError.ErrorTag gray_cubic_to(FTVectorRec control1, FTVectorRec control2, FTVectorRec to) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_cubic_to");
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-
-    gray_render_cubic(control1, control2, to);
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_cubic_to end");
-    return error;
+    return super.toDebugString()+str.toString();
   }
 
   /* =====================================================================
@@ -119,7 +52,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private TCellRec gray_find_cell() {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("  gray_find_cell: ras.ex: %d, ras.ey: %d, ras.count_ex: %d, ras.num_cells: %d", this.ex, this.ey, count_ex, num_cells));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("  gray_find_cell: ras.ex: %d, ras.ey: %d, ras.count_ex: %d, ras.num_cells: %d", this.ex, this.ey, count_ex, num_cells));
     int pcellIdx;
     int cellIdx;
     TCellRec cell = null;
@@ -147,7 +80,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
               cell.getSelf_idx(), cell.getX(), cell.getArea() & 0xFFFFFF, cell.getCover() & 0xFFFFFF));
         }
       }
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, str.toString());
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, str.toString());
     }
 
     pcellIdx = ey;
@@ -176,7 +109,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     }
     cell = cells[num_cells];
     num_cells = num_cells + 1;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("new cell: x: %d, worker.ex: %d, worker.ey: %d", x, ex, ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("new cell: x: %d, worker.ex: %d, worker.ey: %d", x, ex, ey));
     cell.setSelf_idx(num_cells - 1);
     cell.setX(x);
     cell.setArea(0);
@@ -188,12 +121,12 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     } else {
       if (isYcell) {
         cell.setNext(ycells[pcellIdx].getNext());
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
         ycells[pcellIdx].setNext(cell);
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("isYcell: cell idx: %d cell next idx: %d ", cell.getSelf_idx(), cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("isYcell: cell idx: %d cell next idx: %d ", cell.getSelf_idx(), cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
       } else {
         cell.setNext(cells[cellIdx].getNext());
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("cellIdx. %d pcellIdx: %d",  cellIdx, pcellIdx));
         cells[cellIdx].setNext(cell);
       }
     }
@@ -206,7 +139,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private void gray_start_cell(int ex, int ey) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_start_cell: ex: %d, ey: %d, worker.max_ex: %d, worker.min_ex: %d", ex, ey, max_ex, min_ex));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_start_cell: ex: %d, ey: %d, worker.max_ex: %d, worker.min_ex: %d", ex, ey, max_ex, min_ex));
 
     if (ex > max_ex) {
       ex = max_ex;
@@ -220,7 +153,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     this.ey = ey - min_ey;
     last_ey = RasterUtil.SUBPIXELS(ey);
     invalid = false;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_start_cell2: worker.x: %d, worker.y: %d, worker.ex: %d, worker.ex: %d, worker.getlast_ey: %d", this.x, this.y, this.ex, this.ey, last_ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_start_cell2: worker.x: %d, worker.y: %d, worker.ex: %d, worker.ex: %d, worker.getlast_ey: %d", this.x, this.y, this.ex, this.ey, last_ey));
     gray_set_cell(ex, ey);
   }
 
@@ -231,14 +164,14 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   public void gray_record_cell() {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_record_cell: ras.invalid: %b, ras.area: %x, ras.cover: %x\n", invalid, area, cover));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_record_cell: ras.invalid: %b, ras.area: %x, ras.cover: %x\n", invalid, area, cover));
 
     if (!invalid && (area | cover) != 0) {
       TCellRec cell = gray_find_cell();
 
       cell.setArea(cell.getArea() + area);
       cell.setCover(cell.getCover() + cover);
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.getArea(), cell.getCover(), area, cover));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_record_cell2: cell.area: %x, cell.cover: %x worker.area: %x, worker.cover: %x\n", cell.getArea(), cell.getCover(), area, cover));
     }
   }
 
@@ -258,7 +191,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private void gray_set_cell(int ex, int ey) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell: ex: %d, ey: %d, invalid: %b, worker.ex: %d, worker.ey: %d", ex, ey, invalid, this.ex, this.ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell: ex: %d, ey: %d, invalid: %b, worker.ex: %d, worker.ey: %d", ex, ey, invalid, this.ex, this.ey));
       /* All cells that are on the left of the clipping region go to the */
       /* min_ex - 1 horizontal position.                                 */
     ey -= min_ey;
@@ -274,7 +207,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
         /* record the current one if it is valid */
       if (!invalid) {
         gray_record_cell();
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell after call gray_record_cell"));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell after call gray_record_cell"));
       }
       area = 0;
       cover = 0;
@@ -282,8 +215,8 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     this.ex = ex;
     this.ey = ey;
     invalid = (ey >= count_ey || ex >= count_ex);
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell2: invalid: %b, worker.area: %d, worker.cover: %d, worker.ex: %d, worker.ey: %d, worker.x: %d, worker.y: %d", invalid, area, cover, this.ex, this.ey, this.x, this.y));
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell end"));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell2: invalid: %b, worker.area: %d, worker.cover: %d, worker.ex: %d, worker.ey: %d, worker.x: %d, worker.y: %d", invalid, area, cover, this.ex, this.ey, this.x, this.y));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_set_cell end"));
   }
 
   /* =====================================================================
@@ -292,8 +225,8 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private void gray_render_scanline(int ey, int x1, int y1, int x2, int y2) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline0 x1: %d(%d)(%.2f) y1: %d(%d)(%.2f), x2: %d(%d)(%.2f), y2: %d(%d)(%.2f)", x1, x1/4, x1/256.0, y1, y1/4, y1/256.0, x2, x2/4, x2/256.0, y2, y2/4, y2/256.0));
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline1 worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline0 x1: %d(%d)(%.2f) y1: %d(%d)(%.2f), x2: %d(%d)(%.2f), y2: %d(%d)(%.2f), ey: %d", x1, x1/4, x1/256.0, y1, y1/4, y1/256.0, x2, x2/4, x2/256.0, y2, y2/4, y2/256.0, ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline1 worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
     int ex1;
     int ex2;
     int fx1;
@@ -312,7 +245,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     fx2 = x2 - RasterUtil.SUBPIXELS(ex2);
       /* trivial case.  Happens often */
     if (y1 == y2) {
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("call gray_set_cell ex2: %d, ey: %d", ex2, ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("call gray_set_cell ex2: %d, ey: %d", ex2, ey));
       gray_set_cell(ex2, ey);
       return;
     }
@@ -322,8 +255,8 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       delta = y2 - y1;
       area = area + ((fx1 + fx2) * delta);
       cover = cover + delta;
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline return2: worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline return2 ex1 == ex2: %d", ex2));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline return2: worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline return2 ex1 == ex2: %d", ex2));
       return;
     }
       /* ok, we'll have to render a run of adjacent cells on the same */
@@ -340,7 +273,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     }
     delta = (p / dx);
     mod   = (p % dx);
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("delta: 0x%08x, p: 0x%08x, dx: 0x%08x, mod: 0x%08x", delta, p, dx, mod));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("delta: 0x%08x, p: 0x%08x, dx: 0x%08x, mod: 0x%08x", delta, p, dx, mod));
     if (mod < 0) {
       delta--;
       mod += dx;
@@ -348,7 +281,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     area = area + ((fx1 + first) * delta);
     cover = cover + delta;
     ex1 += incr;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("call gray_set_cell2 ex1: %d, ey: %d", ex1, ey));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("call gray_set_cell2 ex1: %d, ey: %d", ex1, ey));
     gray_set_cell(ex1, ey);
     y1  += delta;
     if (ex1 != ex2) {
@@ -364,7 +297,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       }
       mod -= (int)dx;
       while (ex1 != ex2) {
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("ex1: %d ex2: %d incr: %d", ex1, ex2, incr));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("ex1: %d ex2: %d incr: %d", ex1, ex2, incr));
         delta = lift;
         mod  += rem;
         if (mod >= 0) {
@@ -373,14 +306,14 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
         }
         area = area + (RasterUtil.ONE_PIXEL() * delta);
         cover = cover + delta;
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline3: worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_scanline3: worker.area: 0x%08x, worker.cover: 0x%08x", area, cover));
         y1 += delta;
         ex1 += incr;
         gray_set_cell(ex1, ey);
       }
     }
     delta = y2 - y1;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("return end delta: %d", delta));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("return end delta: %d", delta));
     area = area  + ((fx2 + RasterUtil.ONE_PIXEL() - first) * delta);
     cover = cover + delta;
   }
@@ -407,7 +340,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     int lift;
     int incr;
 
-    Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_line: to_x: %d, to_y: %d", to_x, to_y));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_render_line: to_x: %d, to_y: %d", to_x, to_y));
     ey1 = RasterUtil.TRUNC(last_ey);
     ey2 = RasterUtil.TRUNC(to_y);     /* if (ey2 >= ras.max_ey) ey2 = ras.max_ey-1; */
     fy1 = (this.y - last_ey);
@@ -432,7 +365,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
         this.x = to_x;
         this.y = to_y;
         last_ey = RasterUtil.SUBPIXELS(ey2);
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 1");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 1");
         return;
       }
     }
@@ -442,7 +375,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       this.x = to_x;
       this.y = to_y;
       last_ey = RasterUtil.SUBPIXELS(ey2);
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 2");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 2");
       return;
     }
       /* vertical line - avoid calling gray_render_scanline */
@@ -468,7 +401,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
         this.area = this.area + area;
         this.cover = this.cover + delta;
         ey1 += incr;
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_set_cell while");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_set_cell while");
         gray_set_cell(ex, ey1);
       }
       delta = (fy2 - RasterUtil.ONE_PIXEL() + first);
@@ -477,7 +410,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       this.x = to_x;
       this.y = to_y;
       last_ey = RasterUtil.SUBPIXELS(ey2);
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 3");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line return 3");
       return;
     }
       /* ok, we have to render several scanlines */
@@ -497,7 +430,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       mod += dy;
     }
     x = this.x + delta;
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 1");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 1");
     gray_render_scanline(ey1, this.x, fy1, x, first);
     ey1 += incr;
     gray_set_cell(RasterUtil.TRUNC(x), ey1);
@@ -518,19 +451,19 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
           delta++;
         }
         x2 = x + delta;
-        Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 2");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 2");
         gray_render_scanline(ey1, x, RasterUtil.ONE_PIXEL() - first, x2, first);
         x = x2;
         ey1 += incr;
         gray_set_cell(RasterUtil.TRUNC(x), ey1);
       }
     }
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 3");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line call gray_render_scanline 3");
     gray_render_scanline(ey1, x, RasterUtil.ONE_PIXEL() - first, to_x, fy2);
     this.x = to_x;
     this.y = to_y;
     last_ey = RasterUtil.SUBPIXELS(ey2);
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line end");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_line end");
   }
 
   /* =====================================================================
@@ -539,7 +472,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private void gray_split_conic(FTVectorRec[] base, int arcIdx) {
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_split_conic");
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_split_conic arcIdx: %d", arcIdx));
     int a;
     int b;
 
@@ -577,11 +510,17 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     int arcIdx = 0;
     boolean doDraw = false;
 
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_conic");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic 1a to_x: %d(%d)(%.2f) to_y: %d(%d)(%.2f)",
+    RasterUtil.UPSCALE(to.getX()), to.getX(), to.getX()/64.0, RasterUtil.UPSCALE(to.getX()), to.getY(), to.getY()/64.0));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic 1b control_x: %d(%d)(%.2f), control_y: %d(%d)(%.2f)",
+    RasterUtil.UPSCALE(control.getX()), control.getX(), control.getX()/64.0, RasterUtil.UPSCALE(control.getY()), control.getY(), control.getY()/64.0));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic 1c x: %d(%d)(%.2f), y: %d(%d)(%.2f)",
+    this.x, RasterUtil.DOWNSCALE(this.x), this.x/256.0, this.y, RasterUtil.DOWNSCALE(this.y), this.y/256.0));
+
     levels = lev_stack;
     arc = bez_stack;
-    arc[arcIdx + 0].setX(RasterUtil.UPSCALE(to.getX()));
-    arc[arcIdx + 0].setY(RasterUtil.UPSCALE(to.getY()));
+    arc[arcIdx].setX(RasterUtil.UPSCALE(to.getX()));
+    arc[arcIdx].setY(RasterUtil.UPSCALE(to.getY()));
     arc[arcIdx + 1].setX(RasterUtil.UPSCALE(control.getX()));
     arc[arcIdx + 1].setY(RasterUtil.UPSCALE(control.getY()));
     arc[arcIdx + 2].setX(this.x);
@@ -632,19 +571,19 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
           arcIdx += 2;
           top++;
           levels[top] = levels[top - 1] = level - 1;
-          Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic !doDraw continue level: %d", level));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic !doDraw continue level: %d", level));
           continue;
         }
       }
       doDraw = false;
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic call gray_render_line top: %d", top));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic call gray_render_line top: %d", top));
 
       gray_render_line(arc[arcIdx + 0].getX(), arc[arcIdx + 0].getY());
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic call after gray_render_line top: %d", top));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic call after gray_render_line top: %d", top));
       top--;
       arcIdx -= 2;
     } while ( top >= 0 );
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic end top: %d", top));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_conic end top: %d", top));
   }
 
   /* =====================================================================
@@ -653,7 +592,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
    * =====================================================================
    */
   private void gray_split_cubic(FTVectorRec[] base, int arcIdx) {
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_split_cubic");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_split_cubic");
     int a;
     int b;
     int c;
@@ -700,7 +639,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     int y;
     boolean noSplit = false;
 
-    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_cubic");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_render_cubic");
     arc = bez_stack;
     arc[arcIdx + 0].setX(RasterUtil.UPSCALE(to.getX()));
     arc[arcIdx + 0].setY(RasterUtil.UPSCALE(to.getY()));
@@ -734,7 +673,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
       max = y;
     }
     if (RasterUtil.TRUNC(min) >= max_ey || RasterUtil.TRUNC(max) < min_ey) {
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_cubic call gray_render_line"));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_cubic call gray_render_line"));
       gray_render_line(arc[arcIdx].getX(), arc[arcIdx].getY());
       if (arc == bez_stack) {
         return;
@@ -832,7 +771,7 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
         arcIdx += 3;
         continue;
       }
-      Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_cubic 2 call gray_render_line"));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_render_cubic 2 call gray_render_line"));
       gray_render_line(arc[arcIdx + 0].getX(), arc[arcIdx + 0].getY());
       if (arc == bez_stack) {
         return;
@@ -842,6 +781,71 @@ public class grayTWorkerDecomposeRec extends grayTWorkerBaseRec {
     }
   }
 
+  /* =====================================================================
+   *    gray_move_to
+   *
+   * =====================================================================
+   */
+  public FTError.ErrorTag gray_move_to(FTVectorRec to) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    int x;
+    int y;
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
 
+      /* record current cell, if any */
+    gray_record_cell();
+      /* start to a new position */
+    x = RasterUtil.UPSCALE(to.getX());
+    y = RasterUtil.UPSCALE(to.getY());
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to2: x(UPSCALE): %d, y(UPSCALE): %d", x, y));
+    gray_start_cell(RasterUtil.TRUNC(x), RasterUtil.TRUNC(y));
+    this.x = x;
+    this.y = y;
+    Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_move_to end: worker.x: %d(%d)(%f), worker.y: %d(%d)(%f)", this.x, this.x/4, this.x/256.0, this.y, this.y/4, this.y/256.0));
+    return error;
+  }
+
+  /* =====================================================================
+   *    gray_line_to
+   *
+   * =====================================================================
+   */
+  public FTError.ErrorTag gray_line_to(FTVectorRec to) {
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("gray_line_to: to.x: %d, to.y: %d", to.getX(), to.getY()));
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_line_to call gray_render_line");
+    gray_render_line(RasterUtil.UPSCALE(to.getX()), RasterUtil.UPSCALE(to.getY()));
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_line_to after call gray_render_line");
+    return error;
+  }
+
+  /* =====================================================================
+   *    gray_conic_to
+   *
+   * =====================================================================
+   */
+  public FTError.ErrorTag gray_conic_to(FTVectorRec control, FTVectorRec to) {
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_conic_to");
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    gray_render_conic(control, to);
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_conic_to end");
+    return error;
+  }
+
+  /* =====================================================================
+   *    gray_cubic_to
+   *
+   * =====================================================================
+   */
+  public FTError.ErrorTag gray_cubic_to(FTVectorRec control1, FTVectorRec control2, FTVectorRec to) {
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_cubic_to");
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+
+    gray_render_cubic(control1, control2, to);
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "gray_cubic_to end");
+    return error;
+  }
 
 }

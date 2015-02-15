@@ -42,7 +42,7 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf()+"\n");
-    return str.toString();
+    return super.toDebugString()+str.toString();
   }
 
   /* =====================================================================
@@ -51,7 +51,7 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
    * =====================================================================
    */
   public void gray_hline(int x, int y, int area, int acount) {
-    Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("gray_hline: x: %d, y: %d, area: 0x%08x, acount: %d", x, y, area, acount));
+Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("gray_hline: x: %d, y: %d, area: 0x%08x, acount: %d", x, y, area, acount));
     int coverage = 0;
     int spanIdx = 0;
 
@@ -90,7 +90,7 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
     if (y >= 0xFFFF) {
       y = 0xFFFF;
     }
-    Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("x: %d, y: %d, coverage: %x", x, y, coverage));
+Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("x: %d, y: %d, coverage: %x", x, y, coverage));
     if (coverage != 0) {
       int count;
       FTSpanRec span = null;
@@ -136,7 +136,7 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
       gray_spans[spanIdx].setCoverage((byte)coverage);
       num_gray_spans = num_gray_spans + 1;
     }
-    Debug(0, DebugTag.DBG_SWEEP, TAG, "gray_hline END 2");
+Debug(0, DebugTag.DBG_SWEEP, TAG, "gray_hline END 2");
   }
 
   /* =====================================================================
@@ -145,7 +145,7 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
    * =====================================================================
    */
   public void gray_sweep(FTBitmapRec target) {
-    Debug(0, DebugTag.DBG_SWEEP, TAG, "gray_sweep");
+Debug(0, DebugTag.DBG_SWEEP, TAG, "gray_sweep");
     int  yindex;
 
     if (num_cells == 0) {
@@ -161,8 +161,8 @@ public class grayTWorkerSweepRec extends grayTWorkerDecomposeRec {
       for ( ; cell != null; cell = cell.getNext()) {
         int area;
 
-        Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("cell->next: %d", cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
-        Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("gray_sweep 1: cell.x: %d x: %d,  yindex: %d, cover: %x", cell.getX(), x, yindex, cover));
+Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("cell->next: %d", cell.getNext() == null ? -1 : cell.getNext().getSelf_idx()));
+Debug(0, DebugTag.DBG_SWEEP, TAG, String.format("gray_sweep 1: cell.x: %d x: %d,  yindex: %d, cover: %x", cell.getX(), x, yindex, cover));
         if (cell.getX() > x && cover != 0) {
           gray_hline(x, yindex, cover * (RasterUtil.ONE_PIXEL() * 2), cell.getX() - x );
         }

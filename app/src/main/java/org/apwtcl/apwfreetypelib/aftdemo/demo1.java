@@ -84,7 +84,7 @@ Debug(0, DebugTag.DBG_LOAD_FACE, TAG, "SIZE: " + face.getSize().toDebugString())
       }
 
 
-        FTFaceRequester requester = new FTDemoFaceRequester();
+      FTFaceRequester requester = new FTDemoFaceRequester();
       FTCManagerRec manager = new FTCManagerRec(library, max_faces, max_sizes, requester, font_args);
 
       FTCGCacheClassRec sbits_cache = new FTCBasicSCacheClass();    /* the glyph small bitmaps cache */
@@ -104,7 +104,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "image_cache: " + image_cache.toDebugString());
       }
 
       FTCGCacheClassRec cmap_cache = new FTCCMapCacheClass();     /* the charmap cache             */
-      Debug(0, DebugTag.DBG_INIT, TAG, "cmap_cache: " + cmap_cache.toDebugString());
+Debug(0, DebugTag.DBG_INIT, TAG, "cmap_cache: " + cmap_cache.toDebugString());
       error = manager.RegisterCache(cmap_cache);
       if (error != FTError.ErrorTag.ERR_OK) {
         Log.e(TAG, "could not initialize charmap cache");
@@ -118,6 +118,10 @@ Debug(0, DebugTag.DBG_INIT, TAG, "image_cache: " + image_cache.toDebugString());
       FTSizeRec size = null;
       FTCScalerRec scaler = new FTCScalerRec();
       scaler.setFace_id(font_args);
+      scaler.setWidth(768);
+      scaler.setHeight(768);
+      scaler.setX_res(72);
+      scaler.setX_res(72);
       error = manager.LookupSize(scaler, size_ref);
       if (error != FTError.ErrorTag.ERR_OK) {
         Log.e(TAG, "could not initialize size rec");
@@ -126,9 +130,13 @@ Debug(0, DebugTag.DBG_INIT, TAG, "image_cache: " + image_cache.toDebugString());
       size = size_ref.Get();
 
 //FIXME!!
-      font_args.setCmap_index(0);
-      int charcode = 'H';
+      font_args.setCmap_index(face.getCharmap().FTGetCharmapIndex());
+      int charcode = 'e';
       int gindex;
+      gindex = ((FTCCMapCacheClass) cmap_cache).FTCCMapCacheLookup(font_args, font_args.getCmap_index(), charcode);
+      System.out.println(String.format("gindex for charcode: %c 0x%02x %d", charcode, charcode, gindex));
+
+      charcode = 'H';
       gindex = ((FTCCMapCacheClass) cmap_cache).FTCCMapCacheLookup(font_args, font_args.getCmap_index(), charcode);
       System.out.println(String.format("gindex for charcode: %c 0x%02x %d", charcode, charcode, gindex));
 

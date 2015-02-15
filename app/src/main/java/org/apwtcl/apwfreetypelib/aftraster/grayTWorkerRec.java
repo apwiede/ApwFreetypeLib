@@ -45,7 +45,7 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
   /* ==================== toDebugString ===================================== */
   public String toDebugString() {
     StringBuffer str = new StringBuffer(mySelf() + "\n");
-    return str.toString();
+    return super.toDebugString()+str.toString();
   }
 
   /* =====================================================================
@@ -72,7 +72,7 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
    * =====================================================================
    */
   public FTError.ErrorTag gray_convert_glyph() {
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_convert_glyph");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     grayTBandRec[] bands = new grayTBandRec[40];
     int bandIdx = 0;
@@ -123,7 +123,7 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
     min = min_ey;
     max_y = max_ey;
     for (n = 0; n < num_bands; n++, min = max) {
-      Debug(0, DebugTag.DBG_RENDER, TAG, "num_bands: n: "+n+" "+num_bands);
+Debug(0, DebugTag.DBG_RENDER, TAG, "num_bands: n: "+n+" "+num_bands);
       max = min + band_size;
       if (n == num_bands - 1 || max > max_y) {
         max = max_y;
@@ -230,7 +230,7 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
     int vecIdx = 0;
     int limit = outline.getN_points();
 
-    Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox"));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox"));
     if (outline.getN_points() <= 0) {
       min_ex = 0;
       max_ex = 0;
@@ -242,7 +242,7 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
     max_ex = outline.getPoints()[vecIdx].getX();
     min_ey = outline.getPoints()[vecIdx].getY();
     max_ey = outline.getPoints()[vecIdx].getY();
-    Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox01: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox01: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
     vecIdx++;
     for ( ; vecIdx < limit; vecIdx++) {
       vec = outline.getPoints()[vecIdx];
@@ -261,16 +261,16 @@ public class grayTWorkerRec extends grayTWorkerSweepRec {
       if (y > max_ey) {
         max_ey = y;
       }
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox11: %d %d", x, y));
-      Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox12: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox11: %d %d", x, y));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox12: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
     }
-    Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox2: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("cbox2: %d %d %d %d", min_ex, min_ey, max_ex, max_ey));
       /* truncate the bounding box to integer pixels */
     min_ex = min_ex >> 6;
     min_ey = min_ey >> 6;
     max_ex = (max_ex + 63) >> 6;
     max_ey = (max_ey + 63) >> 6;
-    Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox end: min_ex: %d min_ey: %d max_ex: %d max_ey: %d", min_ex, min_ey, max_ex, max_ey));
+Debug(0, DebugTag.DBG_RENDER, TAG, String.format("gray_compute_cbox end: min_ex: %d min_ey: %d max_ex: %d max_ey: %d", min_ex, min_ey, max_ex, max_ey));
   }
 
 }

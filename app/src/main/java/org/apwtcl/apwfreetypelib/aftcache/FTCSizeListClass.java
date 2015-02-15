@@ -85,7 +85,7 @@ Debug(0, DebugTag.DBG_CACHE, TAG, "ftc_size_node_compare");
    */
   public FTError.ErrorTag ftc_size_node_init(FTReference<FTCMruNodeRec> obj_ref, Object key, Object data) {
     FTCSizeNodeRec size_node = (FTCSizeNodeRec)obj_ref.Get();
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    FTError.ErrorTag error;
 
 Debug(0, DebugTag.DBG_CACHE, TAG, "ftc_size_node_init");
     size_node.setScaler((FTCScalerRec)key);

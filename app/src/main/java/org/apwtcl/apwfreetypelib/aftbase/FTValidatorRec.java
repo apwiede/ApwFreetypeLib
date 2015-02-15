@@ -54,6 +54,12 @@ public class FTValidatorRec extends FTDebug {
     return str.toString();
   }
 
+  /* ==================== init ============================== */
+  public void init(FTTags.Validate level) {
+    this.level = level;
+    error = FTError.ErrorTag.ERR_OK;
+  }
+
   /* ==================== getLevel ============================== */
   public FTTags.Validate getLevel() {
     return level;
@@ -67,12 +73,6 @@ public class FTValidatorRec extends FTDebug {
   /* ==================== setError ============================== */
   public void setError(FTError.ErrorTag errror) {
     this.error = error;
-  }
-
-  /* ==================== init ============================== */
-  public void init(FTTags.Validate level) {
-    level = level;
-    error = FTError.ErrorTag.ERR_OK;
   }
 
 }

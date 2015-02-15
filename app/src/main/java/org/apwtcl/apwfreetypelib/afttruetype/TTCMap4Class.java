@@ -112,8 +112,8 @@ public class TTCMap4Class extends TTCMapClassRec {
     stream.readByteArray(id_delta, (num_segs * 2));
     id_range_offset = new byte[num_segs * 2];
     stream.readByteArray(id_range_offset, (num_segs * 2));
-//    glyph_index_array = new byte[num_segs * 2]; ???
-//    stream.readByteArray(glyph_index_array, (num_segs * 2));
+    glyph_index_array = new byte[num_segs * 2];
+    stream.readByteArray(glyph_index_array, (num_segs * 2));
     Debug(0, DebugTag.DBG_CMAP, TAG, "Cmap4Class: "+toDebugString());
     return error;
   }
@@ -305,6 +305,7 @@ public class TTCMap4Class extends TTCMapClassRec {
 
     cmap.setCur_charcode(0xFFFFFFFF);
     cmap.setCur_gindex(0);
+    cmap.setNum_ranges(num_segs);
     return error;
   }
 
@@ -498,19 +499,12 @@ public class TTCMap4Class extends TTCMapClassRec {
     int num_segs;
     int charcode = charcode_ref.Get();
     int gindex   = 0;
-    int table_idx;
 
-
-    table_idx = 0;
-    num_segs2 = (int)FTCalc.FT_PAD_FLOOR(FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx), 2);
-
+    num_segs2 = this.num_segs * 2;
     if (num_segs2 == 0) {
       return 0;
     }
-    num_segs = num_segs2 >> 1;
-      /* make compiler happy */
-    mid = num_segs;
-    end = 0xFFFF;
+    num_segs = this.num_segs;
     if (next) {
       charcode++;
     }
@@ -519,20 +513,16 @@ public class TTCMap4Class extends TTCMapClassRec {
       /* binary search */
     while (min < max) {
       mid = (min + max) >> 1;
-      table_idx = 8 + mid * 2;
-      end = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-      table_idx += 2 + num_segs2;
-      start = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+      end = FTUtil.FT_PEEK_USHORT(end_code, mid * 2);
+      start = FTUtil.FT_PEEK_USHORT(start_code, mid * 2);
       if (charcode < start) {
         max = mid;
       } else {
         if (charcode > end) {
           min = mid + 1;
         } else {
-          table_idx += num_segs2;
-          delta = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-          table_idx += num_segs2;
-          offset = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+          delta = FTUtil.FT_PEEK_USHORT(id_delta, mid * 2);
+          offset = FTUtil.FT_PEEK_USHORT(id_range_offset, mid * 2);
             /* some fonts have an incorrect last segment; */
             /* we have to catch it                        */
           if (mid >= num_segs - 1 && start == 0xFFFF && end == 0xFFFF) {
@@ -558,22 +548,15 @@ public class TTCMap4Class extends TTCMapClassRec {
               /* search in segments before the current segment */
             for (i = max ; i > 0; i--) {
               int prev_end;
-              int  oldIdx;
 
-              oldIdx = table_idx;
-              table_idx = 8 + ( i - 1 ) * 2;
-              prev_end = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+              prev_end = FTUtil.FT_PEEK_USHORT(end_code, (i - 1) * 2);
               if (charcode > prev_end) {
-                table_idx = oldIdx;
                 break;
               }
               end = prev_end;
-              table_idx += 2 + num_segs2;
-              start = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-              table_idx += num_segs2;
-              delta = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-              table_idx += num_segs2;
-              offset = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+              start = FTUtil.FT_PEEK_USHORT(start_code, (i - 1) * 2);
+              delta = FTUtil.FT_PEEK_USHORT(id_delta, (i - 1) * 2);
+              offset = FTUtil.FT_PEEK_USHORT(id_range_offset, (i - 1) * 2);
               if (offset != 0xFFFF) {
                 mid = i - 1;
               }
@@ -581,14 +564,10 @@ public class TTCMap4Class extends TTCMapClassRec {
               /* no luck */
             if (mid == max + 1) {
               if (i != max) {
-                table_idx = 8 + max * 2;
-                end = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-                table_idx += 2 + num_segs2;
-                start = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-                table_idx += num_segs2;
-                delta = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-                table_idx += num_segs2;
-                offset = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+                end = FTUtil.FT_PEEK_USHORT(end_code, max * 2);
+                start = FTUtil.FT_PEEK_USHORT(start_code, max * 2);
+                delta = FTUtil.FT_PEEK_USHORT(id_delta, max * 2);
+                offset = FTUtil.FT_PEEK_USHORT(id_range_offset, max * 2);
               }
               mid = max;
                 /* search in segments after the current segment */
@@ -596,19 +575,15 @@ public class TTCMap4Class extends TTCMapClassRec {
                 int next_end;
                 int next_start;
 
-                table_idx = 8 + i * 2;
-                next_end = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-                table_idx += 2 + num_segs2;
-                next_start = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+                next_end = FTUtil.FT_PEEK_USHORT(end_code, i * 2);
+                next_start = FTUtil.FT_PEEK_USHORT(start_code, i * 2);
                 if (charcode < next_start) {
                   break;
                 }
                 end = next_end;
                 start = next_start;
-                table_idx += num_segs2;
-                delta  = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-                table_idx += num_segs2;
-                offset = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+                delta  = FTUtil.FT_PEEK_USHORT(id_delta, i * 2);
+                offset = FTUtil.FT_PEEK_USHORT(id_range_offset, i * 2);
                 if (offset != 0xFFFF) {
                   mid = i;
                 }
@@ -622,14 +597,10 @@ public class TTCMap4Class extends TTCMapClassRec {
             }
               /* end, start, delta, and offset are for the i'th segment */
             if (mid != i) {
-              table_idx = 8 + mid * 2;
-              end = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-              table_idx += 2 + num_segs2;
-              start = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-              table_idx += num_segs2;
-              delta = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
-              table_idx += num_segs2;
-              offset = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+              end = FTUtil.FT_PEEK_USHORT(end_code, mid * 2);
+              start = FTUtil.FT_PEEK_USHORT(start_code, mid * 2);
+              delta = FTUtil.FT_PEEK_USHORT(id_delta, mid * 2);
+              offset = FTUtil.FT_PEEK_USHORT(id_range_offset, mid * 2);
             }
           } else {
             if (offset == 0xFFFF) {
@@ -637,13 +608,12 @@ public class TTCMap4Class extends TTCMapClassRec {
             }
           }
           if (offset != 0) {
-            table_idx += offset + (charcode - start) * 2;
-            gindex = FTUtil.FT_PEEK_USHORT(cmap.getCur_values(), table_idx);
+            gindex = FTUtil.FT_PEEK_USHORT(glyph_index_array, (charcode - start) * 2);
             if (gindex != 0) {
-              gindex = (int)(gindex + delta) & 0xFFFF;
+              gindex = (gindex + delta) & 0xFFFF;
             }
           } else {
-            gindex = (int)(charcode + delta) & 0xFFFF;
+            gindex = (charcode + delta) & 0xFFFF;
           }
           break;
         }
@@ -753,8 +723,7 @@ public class TTCMap4Class extends TTCMapClassRec {
   /* ==================== charIndex ===================================== */
   @Override
   public int charIndex(FTCMapRec cmap, int char_code) {
-    Log.e(TAG, "charIndex not yet implemented");
-    return -1;
+    return tt_cmap4_char_index((TTCMap4Rec)cmap, char_code);
   }
 
   /* ==================== charNext ===================================== */

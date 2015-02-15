@@ -83,6 +83,149 @@ public class FTSizeMetricsRec extends FTDebug {
 
   }
 
+  /* =====================================================================
+   * RequestMetrics
+   * =====================================================================
+   */
+  public FTError.ErrorTag RequestMetrics(FTFaceRec face, FTSizeRequestRec req) {
+    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
+    boolean doall = true;
+
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTRequestMetrics:");
+    FTSizeMetricsRec metrics;
+
+    metrics = face.getSize().metrics;
+    if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
+      int w = 0;
+      int h = 0;
+      int scaled_w = 0;
+      int scaled_h = 0;
+
+      switch (req.getType()) {
+      case NOMINAL:
+        h = face.getUnits_per_EM();
+        w = h;
+Debug(0, DebugTag.DBG_SIZE, TAG, "met1: "+w+"!"+h+"!");
+        break;
+      case REAL_DIM:
+        h = face.getAscender() - face.getDescender();
+        w = h;
+Debug(0, DebugTag.DBG_SIZE, TAG, "met2: "+w+"!"+h+"!");
+        break;
+      case BBOX:
+        w = face.getBbox().getxMax() - face.getBbox().getxMin();
+        h = face.getBbox().getyMax() - face.getBbox().getyMin();
+Debug(0, DebugTag.DBG_SIZE, TAG, "met3: "+w+"!"+h+"!");
+        break;
+      case CELL:
+        w = face.getMax_advance_width();
+        h = face.getAscender() - face.getDescender();
+Debug(0, DebugTag.DBG_SIZE, TAG, "met4: "+w+"!"+h+"!");
+        break;
+      case SCALES:
+        metrics.x_scale = req.getWidth();
+        metrics.y_scale = req.getHeight();
+        if (metrics.x_scale == 0) {
+          metrics.x_scale = metrics.y_scale;
+        } else {
+          if (metrics.y_scale == 0) {
+            metrics.y_scale = metrics.x_scale;
+          }
+        }
+        doall = false;
+Debug(0, DebugTag.DBG_SIZE, TAG, "met5: "+w+"!"+h+"!");
+        break;
+      case MAX:
+        break;
+      }
+      if (doall) {
+        /* to be on the safe side */
+        if (w < 0) {
+          w = -w;
+        }
+        if (h < 0) {
+          h = -h;
+        }
+Debug(0, DebugTag.DBG_SIZE, TAG, "req: "+req.getWidth()+" "+req.getHeight()+" "+req.getHoriResolution()+" "+req.getVertResolution());
+        scaled_w = req.getHoriResolution() != 0
+            ? ((req.getWidth() * req.getHoriResolution() + 36) / 72)
+            : req.getWidth();
+        scaled_h = req.getVertResolution() != 0
+            ? ((req.getHeight() * req.getVertResolution() + 36) / 72)
+            : req.getHeight();
+Debug(0, DebugTag.DBG_SIZE, TAG, "scaled_w: "+scaled_w+"!"+scaled_h+"!"+req);
+        /* determine scales */
+        if (req.getWidth() != 0) {
+          metrics.x_scale = FTCalc.FTDivFix(scaled_w, w);
+          if (req.getHeight() != 0) {
+            metrics.y_scale = FTCalc.FTDivFix(scaled_h, h);
+            if (req.getType() == FTTags.SizeRequestType.CELL) {
+              if (metrics.y_scale > metrics.x_scale) {
+                metrics.y_scale = metrics.x_scale;
+              } else {
+                metrics.x_scale = metrics.y_scale;
+              }
+            }
+          } else {
+            metrics.y_scale = metrics.x_scale;
+            scaled_h = FTCalc.FT_MulDiv(scaled_w, h, w);
+          }
+        } else {
+          metrics.x_scale = metrics.y_scale = FTCalc.FTDivFix(scaled_h, h);
+          scaled_w = FTCalc.FT_MulDiv(scaled_h, w, h);
+        }
+      }
+      /* calculate the ppems */
+      if (req.getType() != FTTags.SizeRequestType.NOMINAL) {
+        scaled_w = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.x_scale);
+        scaled_h = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.y_scale);
+      }
+      metrics.x_ppem = (short)((scaled_w + 32) >> 6);
+      metrics.y_ppem = (short)((scaled_h + 32) >> 6);
+Debug(0, DebugTag.DBG_SIZE, TAG, String.format("scaled: %d %d %d %d", scaled_w, scaled_h, metrics.x_ppem, metrics.y_ppem));
+      ft_recompute_scaled_metrics(face);
+    } else {
+//        FT_ZERO( metrics );
+      metrics.x_scale = 1 << 16;
+      metrics.y_scale = 1 << 16;
+    }
+Debug(0, DebugTag.DBG_SIZE, TAG, String.format("metrics: asc: %d, desc: %d, height: %d, max_advance: %d", metrics.ascender, metrics.descender, metrics.height, metrics.max_advance));
+    FTTrace.Trace(7, TAG, "FT_Request_Metrics:");
+    FTTrace.Trace(7, TAG, String.format("  x scale: %d (%f)",
+                metrics.x_scale, metrics.x_scale / 65536.0 ));
+    FTTrace.Trace(7, TAG, String.format("  y scale: %d (%f)",
+                metrics.y_scale, metrics.y_scale / 65536.0 ));
+    FTTrace.Trace(7, TAG, String.format("  ascender: %f", metrics.ascender / 64.0));
+    FTTrace.Trace(7, TAG, String.format("  descender: %f", metrics.descender / 64.0));
+    FTTrace.Trace(7, TAG, String.format("  height: %f", metrics.height / 64.0));
+    FTTrace.Trace(7, TAG, String.format("  max advance: %f", metrics.max_advance / 64.0));
+    FTTrace.Trace(7, TAG, String.format("  x ppem: %d", metrics.x_ppem ));
+    FTTrace.Trace(7, TAG, String.format("  y ppem: %d", metrics.y_ppem ));
+    return error;
+  }
+ 
+  /* =====================================================================
+   * ft_recompute_scaled_metrics
+   * =====================================================================
+   */
+  public int ft_recompute_scaled_metrics(FTFaceRec face) {
+    int error = 0;
+
+Debug(0, DebugTag.DBG_SIZE, TAG, "ft_recompute_scaled_metrics:");
+    /* Compute root ascender, descender, test height, and max_advance */
+
+    ascender = FTCalc.FT_PIX_CEIL(FTCalc.FTMulFix(face.getAscender(), y_scale));
+    descender = FTCalc.FT_PIX_FLOOR(FTCalc.FTMulFix(face.getDescender(), y_scale));
+    height = FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(face.getHeight(), y_scale));
+    max_advance = FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(face.getMax_advance_width(), x_scale));
+
+//    ascender = FTCalc.FTMulFix(face.getAscender(), y_scale);
+//    descender = FTCalc.FTMulFix(face.getDescender(), y_scale);
+//    height = FTCalc.FTMulFix(face.getHeight(), y_scale);
+//    max_advance = FTCalc.FTMulFix(face.getMax_advance_width(), x_scale);
+    return error;
+  }
+
   /* ==================== getX_ppem ================================== */
   public int getX_ppem() {
     return x_ppem;
@@ -161,151 +304,6 @@ public class FTSizeMetricsRec extends FTDebug {
   /* ==================== setMax_advance ================================== */
   public void setMax_advance(int max_advance) {
     this.max_advance = max_advance;
-  }
-
-  /* =====================================================================
-   * RequestMetrics
-   * =====================================================================
-   */
-  public FTError.ErrorTag RequestMetrics(FTFaceRec face, FTSizeRequestRec req) {
-    FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    boolean doall = true;
-
-Debug(0, DebugTag.DBG_INIT, TAG, "FTRequestMetrics:");
-    FTSizeMetricsRec metrics;
-
-    metrics = face.getSize().metrics;
-    if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
-      int w = 0;
-      int h = 0;
-      int scaled_w = 0;
-      int scaled_h = 0;
-
-      switch (req.getType()) {
-      case NOMINAL:
-        h = face.getUnits_per_EM();
-        w = h;
-Debug(0, DebugTag.DBG_INIT, TAG, "met1: "+w+"!"+h+"!");
-        break;
-      case REAL_DIM:
-        h = face.getAscender() - face.getDescender();
-        w = h;
-Debug(0, DebugTag.DBG_INIT, TAG, "met2: "+w+"!"+h+"!");
-        break;
-      case BBOX:
-        w = face.getBbox().getxMax() - face.getBbox().getxMin();
-        h = face.getBbox().getyMax() - face.getBbox().getyMin();
-Debug(0, DebugTag.DBG_INIT, TAG, "met3: "+w+"!"+h+"!");
-        break;
-      case CELL:
-        w = face.getMax_advance_width();
-        h = face.getAscender() - face.getDescender();
-Debug(0, DebugTag.DBG_INIT, TAG, "met4: "+w+"!"+h+"!");
-        break;
-      case SCALES:
-        metrics.x_scale = req.getWidth();
-        metrics.y_scale = req.getHeight();
-        if (metrics.x_scale == 0) {
-          metrics.x_scale = metrics.y_scale;
-        } else {
-          if (metrics.y_scale == 0) {
-            metrics.y_scale = metrics.x_scale;
-          }
-        }
-        doall = false;
-Debug(0, DebugTag.DBG_INIT, TAG, "met5: "+w+"!"+h+"!");
-        break;
-      case MAX:
-        break;
-      }
-      if (doall) {
-        /* to be on the safe side */
-        if (w < 0) {
-          w = -w;
-        }
-        if (h < 0) {
-          h = -h;
-        }
-        scaled_w = req.getHoriResolution() != 0
-            ? ((req.getWidth() * req.getHoriResolution() + 36) / 72)
-            : req.getWidth();
-        scaled_h = req.getVertResolution() != 0
-            ? ((req.getHeight() * req.getVertResolution() + 36) / 72)
-            : req.getHeight();
-Debug(0, DebugTag.DBG_INIT, TAG, "scaled_w: "+scaled_w+"!"+scaled_h+"!"+req);
-        /* determine scales */
-        if (req.getWidth() != 0) {
-          metrics.x_scale = FTCalc.FTDivFix(scaled_w, w);
-          if (req.getHeight() != 0) {
-            metrics.y_scale = FTCalc.FTDivFix(scaled_h, h);
-            if (req.getType() == FTTags.SizeRequestType.CELL) {
-              if (metrics.y_scale > metrics.x_scale) {
-                metrics.y_scale = metrics.x_scale;
-              } else {
-                metrics.x_scale = metrics.y_scale;
-              }
-            }
-          } else {
-          metrics.y_scale = metrics.x_scale;
-            scaled_h = FTCalc.FT_MulDiv(scaled_w, h, w);
-          }
-        } else {
-          metrics.x_scale = metrics.y_scale = FTCalc.FTDivFix(scaled_h, h);
-          scaled_w = FTCalc.FT_MulDiv(scaled_h, w, h);
-        }
-      }
-      /* calculate the ppems */
-      if (req.getType() != FTTags.SizeRequestType.NOMINAL) {
-        scaled_w = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.x_scale);
-        scaled_h = FTCalc.FTMulFix(face.getUnits_per_EM(), metrics.y_scale);
-      }
-      metrics.x_ppem = (short)((scaled_w + 32) >> 6);
-      metrics.y_ppem = (short)((scaled_h + 32) >> 6);
-Debug(0, DebugTag.DBG_INIT, TAG, String.format("scaled: %d %d %d %d", scaled_w, scaled_h, metrics.x_ppem, metrics.y_ppem));
-      FTReference<FTSizeMetricsRec> metrics_ref = new FTReference<FTSizeMetricsRec>();
-      metrics_ref.Set(metrics);
-      ft_recompute_scaled_metrics(face, metrics_ref);
-      metrics = metrics_ref.Get();
-    } else {
-//        FT_ZERO( metrics );
-      metrics.x_scale = 1 << 16;
-      metrics.y_scale = 1 << 16;
-    }
-    FTTrace.Trace(7, TAG, "FT_Request_Metrics:");
-    FTTrace.Trace(7, TAG, String.format("  x scale: %d (%f)",
-                metrics.x_scale, metrics.x_scale / 65536.0 ));
-    FTTrace.Trace(7, TAG, String.format("  y scale: %d (%f)",
-                metrics.y_scale, metrics.y_scale / 65536.0 ));
-    FTTrace.Trace(7, TAG, String.format("  ascender: %f", metrics.ascender / 64.0));
-    FTTrace.Trace(7, TAG, String.format("  descender: %f", metrics.descender / 64.0));
-    FTTrace.Trace(7, TAG, String.format("  height: %f", metrics.height / 64.0));
-    FTTrace.Trace(7, TAG, String.format("  max advance: %f", metrics.max_advance / 64.0));
-    FTTrace.Trace(7, TAG, String.format("  x ppem: %d", metrics.x_ppem ));
-    FTTrace.Trace(7, TAG, String.format("  y ppem: %d", metrics.y_ppem ));
-    return error;
-  }
- 
-  /* =====================================================================
-   * ft_recompute_scaled_metrics
-   * =====================================================================
-   */
-  public int ft_recompute_scaled_metrics(FTFaceRec face, FTReference<FTSizeMetricsRec> metrics_ref) {
-    int error = 0;
-    FTSizeMetricsRec metrics = metrics_ref.Get();
-
-Debug(0, DebugTag.DBG_INIT, TAG, "ft_recompute_scaled_metrics:");
-    /* Compute root ascender, descender, test height, and max_advance */
-
-//    metrics->ascender    = FT_PIX_CEIL( FT_MulFix( face->ascender, metrics->y_scale ) ); 
-//    metrics->descender   = FT_PIX_FLOOR( FT_MulFix( face->descender, metrics->y_scale ) );
-//    metrics->height      = FT_PIX_ROUND( FT_MulFix( face->height, metrics->y_scale ) );
-//    metrics->max_advance = FT_PIX_ROUND( FT_MulFix( face->max_advance_width, metrics->x_scale ) );
-    metrics.ascender = FTCalc.FTMulFix(face.getAscender(), metrics.y_scale);
-    metrics.descender = FTCalc.FTMulFix(face.getDescender(), metrics.y_scale);
-    metrics.height = FTCalc.FTMulFix(face.getHeight(), metrics.y_scale);
-    metrics.max_advance = FTCalc.FTMulFix(face.getMax_advance_width(), metrics.x_scale);
-    metrics_ref.Set(metrics);
-    return error;
   }
 
 }

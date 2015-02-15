@@ -71,7 +71,7 @@ public class grayTRasterRec extends FTRasterRec {
   public FTError.ErrorTag gray_raster_reset(grayTWorkerRec worker, byte[] pool_base, int pool_size) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_reset");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_reset");
     if (pool_base != null) {
       buffer = pool_base;
       buffer_size = pool_size;
@@ -94,7 +94,7 @@ public class grayTRasterRec extends FTRasterRec {
    * =====================================================================
    */
   public FTError.ErrorTag gray_raster_render(FTRasterParamsRec params) {
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_render");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_render");
     FTOutlineRec outline = (FTOutlineRec)params.getSource();
     FTBitmapRec target_map = params.getTarget();
 
@@ -169,7 +169,7 @@ public class grayTRasterRec extends FTRasterRec {
    * =====================================================================
    */
   public FTError.ErrorTag gray_raster_done() {
-    Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_done");
+Debug(0, DebugTag.DBG_RENDER, TAG, "gray_raster_done");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     // nothing to do
     return error;

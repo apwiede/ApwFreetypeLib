@@ -72,8 +72,9 @@ public class TTCMapClassRec extends FTCMapClassRec {
   @Override
   public FTError.ErrorTag initCMap(FTCMapRec cmap) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
-    Log.e(TAG, "initCMap not yet implemented");
-//    cmap.data = table;
+    // we can use this common method for nearly all TTCMap*ClassRec classes
+    // these classes know about their own clazz.glyph_indices,
+    // so we do not need the cmap.data field used in the original code.
     return error;
   }
 

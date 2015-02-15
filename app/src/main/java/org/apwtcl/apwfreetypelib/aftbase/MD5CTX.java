@@ -449,7 +449,7 @@ Debug(0, DebugTag.DBG_MD5, TAG, String.format("end ctx.d: 0x%08x", d));
     result[14] = (byte)(this.d >> 16);
     result[15] = (byte)(this.d >> 24);
 for(int j = 0; j < 16; j++) {
-  Debug(2, DebugTag.DBG_MD5, TAG, String.format("MD5 j: %d 0x%02x", j, result[j] & 0xFF));
+  Debug(0, DebugTag.DBG_MD5, TAG, String.format("MD5 j: %d 0x%02x", j, result[j] & 0xFF));
 }
   }
 

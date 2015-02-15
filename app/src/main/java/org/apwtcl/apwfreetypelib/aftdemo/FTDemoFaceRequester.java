@@ -26,7 +26,7 @@ public class FTDemoFaceRequester extends FTFaceRequester {
   private static int oid = 0;
 
   private int id;
-  private static String TAG = "FTFaceRequester";
+  private static String TAG = "FTDemoFaceRequester";
 
   /* ==================== FTCSBitRec ================================== */
   public FTDemoFaceRequester() {
@@ -58,7 +58,7 @@ public class FTDemoFaceRequester extends FTFaceRequester {
     TFont font = (TFont)face_id;
 
     face_ref.Set(null);
-Debug(0, DebugTag.DBG_INIT, TAG, "my_face_requester");
+Debug(0, DebugTag.DBG_INIT, TAG, "requestFace");
     if (font.getFile_address() != null) {
       Log.w(TAG, "file_address not yet implemented");
 //        error = FTNewMemoryFace(lib,

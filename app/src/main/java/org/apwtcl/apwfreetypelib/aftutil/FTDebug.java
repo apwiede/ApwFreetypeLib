@@ -28,18 +28,19 @@ public class FTDebug extends Object {
   private static String TAG = "FTDebug";
 
   public enum DebugTag {
-    DBG_BASE(1, 0, true, "DBG_BASE"),
-    DBG_CACHE(2, 0, true, "DBG_CACHE"),
-    DBG_CMAP(3, 0, true, "DBG_CMAP"),
-    DBG_INIT(4, 2, true, "DBG_INIT"),
-    DBG_INTERP(5, 2, true, "DBG_INTERP"),
-    DBG_LIBRARY(6, 0, true, "DBG_LIBRARY"),
-    DBG_LOAD_FACE(7, 0, true, "DBG_LOAD_FACE"),
-    DBG_LOAD_GLYPH(8, 2, true, "DBG_LOAD_GLYPH"),
-    DBG_RENDER(9, 0, true, "DBG_RENDER"),
-    DBG_DECOMPOSE(10, 0, true, "DBG_DECOMPOSE"),
-    DBG_SWEEP(11, 0, true, "DBG_SWEEP"),
-    DBG_MD5(12, 2, true, "DBG_MD5");
+    DBG_BASE(1 << 0, 0, true, "DBG_BASE"),
+    DBG_SIZE(1 << 1, 0, true, "DBG_SIZE"),
+    DBG_CACHE(1 << 2, 0, true, "DBG_CACHE"),
+    DBG_CMAP(1 << 3, 0, true, "DBG_CMAP"),
+    DBG_INIT(1 << 4, 2, true, "DBG_INIT"),
+    DBG_INTERP(1 << 5, 2, true, "DBG_INTERP"),
+    DBG_LIBRARY(1 << 6, 0, true, "DBG_LIBRARY"),
+    DBG_LOAD_FACE(1 << 7, 0, true, "DBG_LOAD_FACE"),
+    DBG_LOAD_GLYPH(1 << 8, 2, true, "DBG_LOAD_GLYPH"),
+    DBG_RENDER(1 << 9, 0, true, "DBG_RENDER"),
+    DBG_DECOMPOSE(1 << 10, 0, true, "DBG_DECOMPOSE"),
+    DBG_SWEEP(1 << 11, 0, true, "DBG_SWEEP"),
+    DBG_MD5(1 << 12, 2, true, "DBG_MD5");
 
     private int val;
     private int level;
@@ -74,7 +75,7 @@ public class FTDebug extends Object {
         return str;
       }
   }
-  private static final int DBG_MAX_TYPES = 20;
+  private static final int DBG_MAX_TYPES = 32;
 
   /* ==================== constructor ================================== */
   public FTDebug() {
@@ -103,8 +104,9 @@ public class FTDebug extends Object {
  
   /* ==================== Debug ================================== */
   public static void Debug(int level, DebugTag type, String tag, String str) throws IndexOutOfBoundsException {
-    if (type.getVal() < 0 || type.getVal() >= DBG_MAX_TYPES) {
-      throw new IndexOutOfBoundsException(String.format("bad type: %d in FTShowDebug", type));
+    // ATTENTION take care that 1 << <nn> in th next line fits to the maximum Debug type!!
+    if (type.getVal() < 0 || type.getVal() > (1 << 12)) {
+      throw new IndexOutOfBoundsException(String.format("bad type: %s (0x%08x) in Debug", type, type.getVal()));
     }
     if (type.isOn() && level >= type.level()) {
       Log.i(TAG, type.getDescription()+": "+tag+": "+str);

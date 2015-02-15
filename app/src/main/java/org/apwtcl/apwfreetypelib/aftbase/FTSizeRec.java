@@ -83,7 +83,7 @@ public class FTSizeRec extends FTDebug {
     FTSizeRec size;
     FTListNodeRec node = null;
 
-Debug(0, DebugTag.DBG_INIT, TAG, "FTNewSize");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTNewSize");
     if (face == null) {
       size_ref.Set(null);
       return FTError.ErrorTag.INTERP_INVALID_FACE_HANDLE;
@@ -115,7 +115,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewSize");
 //        FT_FREE( node );
 //        FT_FREE( size );
     }
-Debug(0, DebugTag.DBG_INIT, TAG, "FTNewSize END: "+error+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTNewSize END: "+error+"!");
     size_ref.Set(size);
     return error;
   }
@@ -128,7 +128,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTNewSize END: "+error+"!");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     FTFaceRec face;
 
-Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTActivateSize");
     face = this.face;
     if (face == null || face.getDriver() == null) {
       return FTError.ErrorTag.GLYPH_INVALID_ARGUMENT;
@@ -136,7 +136,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize");
     /* we don't need anything more complex than that; all size objects */
     /* are already listed by the face                                  */
     face.setSize(this);
-Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTActivateSize END: "+error+"!");
     return error;
   }
 
@@ -145,7 +145,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
    * =====================================================================
    */
   public FTError.ErrorTag MatchSize(FTFaceRec face, FTSizeRequestRec req, boolean ignore_width, FTReference<Integer> size_index_ref) {
-    Debug(0, DebugTag.DBG_INIT, TAG, "FTMatchSize:");
+    Debug(0, DebugTag.DBG_SIZE, TAG, "FTMatchSize:");
     int i;
     int w;
     int h;
@@ -196,7 +196,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
   public FTError.ErrorTag SelectMetrics(int strike_index) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Debug(0, DebugTag.DBG_INIT, TAG, "FTSelectMetrics:");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTSelectMetrics:");
     FTBitmapSize  bsize;
 
     bsize = face.getAvailable_sizes()[strike_index];
@@ -205,10 +205,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     if (face.getFace_flags().contains(Flags.Face.SCALABLE)) {
       metrics.setX_scale(FTCalc.FTDivFix(bsize.x_ppem, face.getUnits_per_EM()));
       metrics.setY_scale(FTCalc.FTDivFix(bsize.y_ppem, face.getUnits_per_EM()));
-      FTReference<FTSizeMetricsRec> metrics_ref = new FTReference<FTSizeMetricsRec>();
-      metrics_ref.Set(metrics);
-      metrics.ft_recompute_scaled_metrics(face, metrics_ref);
-      metrics = metrics_ref.Get();
+      metrics.ft_recompute_scaled_metrics(face);
     } else {
       metrics.setX_scale(1 << 16);
       metrics.setY_scale(1 << 16);
@@ -238,7 +235,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
   public FTError.ErrorTag SelectSize(FTFaceRec face, int strike_index) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Debug(0, DebugTag.DBG_INIT, TAG, "FTSelectSize:");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTSelectSize:");
     FTDriverClassRec clazz;
 
     if (face == null || !face.getFace_flags().contains(Flags.Face.FIXED_SIZES)) {
@@ -279,7 +276,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     FTDriverClassRec clazz;
     int strike_index;
 
-    Debug(0, DebugTag.DBG_INIT, TAG, "FTRequestSize:");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTRequestSize:");
     if (face == null) {
       return FTError.ErrorTag.GLYPH_INVALID_FACE_HANDLE;
     }
@@ -289,9 +286,9 @@ Debug(0, DebugTag.DBG_INIT, TAG, "FTActivateSize END: "+error+"!");
     }
     clazz = face.getDriver().getDriver_clazz();
     FTSizeMetricsRec metrics = face.getSize().metrics;
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ME1: "+face.getSize().metrics.getX_ppem()+"!"+face.getSize().metrics.getY_ppem()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "ME1: "+face.getSize().metrics.getX_ppem()+"!"+face.getSize().metrics.getY_ppem()+"!");
     error = clazz.requestSize(face.getSize(), req);
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ME2: "+face.getSize().metrics.getX_ppem()+"!"+face.getSize().metrics.getY_ppem()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "ME2: "+face.getSize().metrics.getX_ppem()+"!"+face.getSize().metrics.getY_ppem()+"!");
     if (error != FTError.ErrorTag.FACE_NO_SIZE_REQUEST_FUNCTION) {
       FTTrace.Trace(9, TAG, "FT_Request_Size (font driver's `request_size'):");
       FTTrace.Trace(9, TAG, String.format("  x scale: %d (%f)",
@@ -301,7 +298,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ME2: "+face.getSize().metrics.getX_ppem(
       FTTrace.Trace(9, TAG, String.format("  ascender: %f", metrics.getAscender() / 64.0));
       FTTrace.Trace(9, TAG, String.format("  descender: %f", metrics.getDescender() / 64.0));
       FTTrace.Trace(9, TAG, String.format("  height: %f", metrics.getHeight() / 64.0));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+metrics.getAscender()+" "+metrics.getDescender()+" "+metrics.getHeight());
+Debug(0, DebugTag.DBG_SIZE, TAG, "ascender: "+metrics.getAscender()+" "+metrics.getDescender()+" "+metrics.getHeight());
       FTTrace.Trace(9, TAG, String.format("  max advance: %f", metrics.getMax_advance() / 64.0));
       FTTrace.Trace(9, TAG, String.format("  x ppem: %d", metrics.getX_ppem()));
       FTTrace.Trace(9, TAG, String.format("  y ppem: %d", metrics.getY_ppem()));
@@ -327,7 +324,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+metrics.getAscender()+" "+me
     }
     face.getSize().getMetrics().RequestMetrics(face, req);
 
-    Debug(0, DebugTag.DBG_INIT, TAG, "FTRequestSize: done");
+Debug(0, DebugTag.DBG_SIZE, TAG, "FTRequestSize: done");
     return FTError.ErrorTag.ERR_OK;
   }
 
@@ -336,10 +333,10 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+metrics.getAscender()+" "+me
    * =====================================================================
    */
   public FTError.ErrorTag SetCharSize(FTFaceRec face, int char_width, int char_height, int horz_resolution, int vert_resolution) {
-    FTReference<FTSizeRequestRec> req_ref = new FTReference<FTSizeRequestRec>();
+    FTReference<FTSizeRequestRec> req_ref = new FTReference<>();
     FTSizeRequestRec req = new FTSizeRequestRec();
 
- Debug(0, DebugTag.DBG_INIT, TAG, String.format("FTSetCharSize: cw: %d ch: %d hr: %d vr: %d", char_width, char_height, horz_resolution, vert_resolution));
+ Debug(0, DebugTag.DBG_SIZE, TAG, String.format("FTSetCharSize: cw: %d ch: %d hr: %d vr: %d", char_width, char_height, horz_resolution, vert_resolution));
     if (char_width == 0) {
       char_width = char_height;
     } else {

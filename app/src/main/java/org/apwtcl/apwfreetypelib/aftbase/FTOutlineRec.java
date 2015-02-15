@@ -386,11 +386,11 @@ Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("v_start: %d %d v_last: %d %
         tagsIdx--;
       }
 Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "Decompose:");
-      FTTrace.Trace(7, TAG, String.format("  move to (%.2f, %.2f)",
-                  v_start.getX() / 64.0, v_start.getY() / 64.0));
+      FTTrace.Trace(7, TAG, String.format("  move to (%.2f, %.2f), x: %d, y: %d",
+                  v_start.getX() / 64.0, v_start.getY() / 64.0, v_start.getX(), v_start.getY()));
       error = moveTo(v_start, user);
-      FTTrace.Trace(7, TAG, String.format("  move to after (%.2f, %.2f)",
-          v_start.getX() / 64.0, v_start.getY() / 64.0));
+      FTTrace.Trace(7, TAG, String.format("  move to after (%.2f, %.2f), x: %d, y: %d",
+          v_start.getX() / 64.0, v_start.getY() / 64.0, v_start.getX(), v_start.getY()));
       if (error != FTError.ErrorTag.ERR_OK) {
         FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));
         return error;
@@ -405,11 +405,11 @@ Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("==2 v_start.x: %d, v_start.
           /* emit a single line_to */
           FTVectorRec vec = new FTVectorRec();
 
-Debug(0, DebugTag.DBG_DECOMPOSE, TAG, "FT_CURVE_TAG_ON");
+Debug(0, DebugTag.DBG_DECOMPOSE, TAG, String.format("FT_CURVE_TAG_ON shift: %d, delta: %d", shift, delta));
           vec.setX((((points[pointIdx].getX())) << shift) - delta);
           vec.setY(((points[pointIdx].getY()) << shift) - delta);
-          FTTrace.Trace(7, TAG, String.format("  line to (%.2f, %.2f)\n",
-                vec.getX() / 64.0, vec.getY() / 64.0));
+          FTTrace.Trace(7, TAG, String.format("  line to (%.2f, %.2f) x: %d y: %d\n",
+                vec.getX() / 64.0, vec.getY() / 64.0, vec.getX(), vec.getY()));
           error = lineTo(vec, user);
           if (error != FTError.ErrorTag.ERR_OK) {
             FTTrace.Trace(7, TAG, String.format("FT_Outline_Decompose: Error %d", error));

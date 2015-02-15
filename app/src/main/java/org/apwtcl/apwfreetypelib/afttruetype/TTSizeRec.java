@@ -80,7 +80,7 @@ public class TTSizeRec extends FTSizeRec {
     }
     graphics_state = new TTDefaultGraphicsStateClass();
     twilight = new TTGlyphZoneRec();
-Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "exec1 ttsize: "+context+"!");
   }
     
   /* ==================== mySelf ================================== */
@@ -127,7 +127,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
   * =====================================================================
  */
   public FTError.ErrorTag tt_size_init() {
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_init");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     bytecode_ready = false;
@@ -153,7 +153,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
    * =====================================================================
    */
   public void tt_size_done_bytecode() {   /* TT_Face */
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_done_bytecode");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_done_bytecode");
 
     cvt = null;
     cvt_size = 0;
@@ -175,7 +175,7 @@ Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
    * =====================================================================
    */
   public FTError.ErrorTag tt_size_request(FTSizeRequestRec req) {
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_request");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_request");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
     face.getSize().getMetrics().RequestMetrics(face, req);
@@ -201,11 +201,11 @@ Debug(0, DebugTag.DBG_INIT, TAG, "exec1 ttsize: "+context+"!");
     TTFaceRec ttface = (TTFaceRec)face;
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_reset");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_reset");
     ttmetrics.setValid(false);
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "facse ascender: "+ttface.getAscender()+" "+ttface.getDescender()+" "+ttface.getHeight());
+Debug(0, DebugTag.DBG_SIZE, TAG, "facse ascender: "+ttface.getAscender()+" "+ttface.getDescender()+" "+ttface.getHeight());
       /* copy the result from base layer */
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "RES: "+metrics.getX_ppem()+"!"+metrics.getY_ppem()+"!"+local_metrics.getX_ppem()+"!"+local_metrics.getY_ppem()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "RES: "+metrics.getX_ppem()+"!"+metrics.getY_ppem()+"!"+local_metrics.getX_ppem()+"!"+local_metrics.getY_ppem()+"!");
     local_metrics.copy(metrics);
     if (local_metrics.getX_ppem() < 1 || local_metrics.getY_ppem() < 1) {
       return FTError.ErrorTag.GLYPH_INVALID_PPEM;
@@ -214,30 +214,30 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "RES: "+metrics.getX_ppem()+"!"+metrics.g
       /* rounded to integers.  Nearly all TrueType fonts have this bit */
       /* set, as hinting won't work really well otherwise.             */
       /*                                                               */
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "face.header.flags: "+(ttface.getHeader().getFlags() & 8)+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "face.header.flags: "+(ttface.getHeader().getFlags() & 8)+"!");
     if ((ttface.getHeader().getFlags() & 8) != 0) {
       local_metrics.setX_scale(FTCalc.FTDivFix(local_metrics.getX_ppem() << 6, ttface.getUnits_per_EM()));
       local_metrics.setY_scale(FTCalc.FTDivFix(local_metrics.getY_ppem() << 6, ttface.getUnits_per_EM()));
 
       local_metrics.setAscender(FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(ttface.getAscender(), local_metrics.getY_scale())));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "ascender: "+local_metrics.getAscender()+" "+ttface.getAscender()+" "+local_metrics.getY_scale());
+Debug(0, DebugTag.DBG_SIZE, TAG, "ascender: "+local_metrics.getAscender()+" "+ttface.getAscender()+" "+local_metrics.getY_scale());
       local_metrics.setDescender(FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(ttface.getDescender(), local_metrics.getY_scale())));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "descender: "+local_metrics.getDescender()+" "+ttface.getDescender()+" "+local_metrics.getY_scale());
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "descender2: "+metrics.getDescender()+" "+ttface.getDescender()+" "+local_metrics.getY_scale());
+Debug(0, DebugTag.DBG_SIZE, TAG, "descender: "+local_metrics.getDescender()+" "+ttface.getDescender()+" "+local_metrics.getY_scale());
+Debug(0, DebugTag.DBG_SIZE, TAG, "descender2: "+metrics.getDescender()+" "+ttface.getDescender()+" "+local_metrics.getY_scale());
       local_metrics.setHeight(FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(ttface.getHeight(), local_metrics.getY_scale())));
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "height: "+local_metrics.getHeight()+" "+ttface.getHeight()+" "+local_metrics.getY_scale());
+Debug(0, DebugTag.DBG_SIZE, TAG, "height: "+local_metrics.getHeight()+" "+ttface.getHeight()+" "+local_metrics.getY_scale());
       local_metrics.setMax_advance(FTCalc.FT_PIX_ROUND(FTCalc.FTMulFix(ttface.getMax_advance_width(), local_metrics.getX_scale())));
     }
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_reset: size: "+this+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_reset: size: "+this+"!");
       /* compute new transformation */
     if (local_metrics.getX_ppem() >= local_metrics.getY_ppem()) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "x_scale: "+local_metrics.getX_scale()+"!"+ttmetrics.getScale()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "x_scale: "+local_metrics.getX_scale()+"!"+ttmetrics.getScale()+"!");
       ttmetrics.setScale(local_metrics.getX_scale());
       ttmetrics.setPpem(local_metrics.getX_ppem());
       ttmetrics.setX_ratio(0x10000);
       ttmetrics.setY_ratio(FTCalc.FTDivFix(local_metrics.getY_ppem(), local_metrics.getX_ppem()));
     } else {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "y_scale: "+local_metrics.getX_scale()+"!"+ttmetrics.getScale()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "y_scale: "+local_metrics.getX_scale()+"!"+ttmetrics.getScale()+"!");
       ttmetrics.setScale(local_metrics.getY_scale());
       ttmetrics.setPpem(local_metrics.getY_ppem());
       ttmetrics.setX_ratio(FTCalc.FTDivFix(local_metrics.getX_ppem(), local_metrics.getY_ppem()));
@@ -255,7 +255,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "y_scale: "+local_metrics.getX_scale()+"!
    * =====================================================================
    */
   public FTError.ErrorTag tt_size_ready_bytecode(boolean pedantic) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_ready_bytecode");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     TTFaceRec ttface = (TTFaceRec)face;
 
@@ -271,7 +271,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode");
 
         /* Scale the cvt values to the new ppem.          */
         /* We use by default the y ppem to scale the CVT. */
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_ready_bytecode: "+this+"!");
       for (i = 0; i < cvt_size; i++) {
         cvt[i] = TTUtil.FTMulFix(ttface.getCvt_table().getCvtValue(i), ttmetrics.getScale());
         Debug(-1, DebugTag.DBG_LOAD_GLYPH, TAG, "size->cvt: i: "+i+" cvt[i]: "+cvt[i]+" cvt_value: "+ttface.getCvt_table().getCvtValue(i)+" scale: "+ttmetrics.getScale()+"!");
@@ -311,7 +311,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
    * =====================================================================
    */
   public FTError.ErrorTag tt_size_run_prep(boolean pedantic) {
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_run_prep");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_run_prep");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     TTExecContextRec exec;
     TTFaceRec ttface = (TTFaceRec)face;
@@ -332,7 +332,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
     exec.pedantic_hinting = pedantic;
     exec.TTSetCodeRange(TTInterpTags.CodeRange.CVT, ttface.getPrep_table().getPrepProgram(), null, ttface.getPrep_table().getPrepProgramSize());
     exec.TTClearCodeRange(TTInterpTags.CodeRange.GLYPH);
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "cvt_program_size: "+ttface.getPrep_table().getPrepProgramSize()+"!");
+Debug(0, DebugTag.DBG_SIZE, TAG, "cvt_program_size: "+ttface.getPrep_table().getPrepProgramSize()+"!");
     if (ttface.getPrep_table().getPrepProgramSize() > 0) {
       error = (exec.TTGotoCodeRange(TTInterpTags.CodeRange.CVT, 0) == FTError.ErrorTag.ERR_OK ? FTError.ErrorTag.ERR_OK : FTError.ErrorTag.UNEXPECTED_NULL_VALUE);
       if (error == FTError.ErrorTag.ERR_OK && !debug) {
@@ -372,7 +372,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_ready_bytecode: "+this+"!");
    * =====================================================================
    */
   public FTError.ErrorTag tt_size_init_bytecode(boolean pedantic) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init_bytecode");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_init_bytecode");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     TTFaceRec ttface = (TTFaceRec)face;
     int i;
@@ -452,7 +452,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_init_bytecode");
    * =====================================================================
    */
   public FTError.ErrorTag tt_size_run_fpgm(boolean pedantic) {
-Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_run_fpgm");
+Debug(0, DebugTag.DBG_SIZE, TAG, "tt_size_run_fpgm");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     TTFaceRec ttface = (TTFaceRec)face;
     TTDriverRec ttdriver = (TTDriverRec)ttface.getDriver();
@@ -516,7 +516,7 @@ Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "tt_size_run_fpgm");
    * =====================================================================
    */
   public FTError.ErrorTag TTSaveContext(TTExecContextRec exec) {
-    Debug(0, DebugTag.DBG_LOAD_GLYPH, TAG, "TTSaveContext");
+Debug(0, DebugTag.DBG_SIZE, TAG, "TTSaveContext");
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
     int i;
 

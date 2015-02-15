@@ -60,16 +60,6 @@ public class FTCMapClassRec extends FTDebug {
     return str.toString();
   }
 
-  /* ==================== getFormat ================================== */
-  public TTTags.CMapFormat getFormat() {
-    return format;
-  }
-
-  /* ==================== getLength ================================== */
-  public int getLength() {
-    return length;
-  }
-
   /* ==================== initCMap ===================================== */
   public FTError.ErrorTag initCMap(FTCMapRec cmap) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
@@ -129,7 +119,7 @@ public class FTCMapClassRec extends FTDebug {
   public int[] charVariantList(FTCMapRec cmap, int char_code) {
     FTError.ErrorTag error = FTError.ErrorTag.ERR_OK;
 
-    Log.e(TAG, "charvariantList not yet implemented");
+    Log.e(TAG, "charVariantList not yet implemented");
     return null;
   }
 
@@ -139,6 +129,16 @@ public class FTCMapClassRec extends FTDebug {
 
     Log.e(TAG, "variantcahrList not yet implemented");
     return null;
+  }
+
+  /* ==================== getFormat ================================== */
+  public TTTags.CMapFormat getFormat() {
+    return format;
+  }
+
+  /* ==================== getLength ================================== */
+  public int getLength() {
+    return length;
   }
 
 }
